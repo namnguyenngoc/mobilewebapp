@@ -1,5 +1,8 @@
 module.exports = {
-  publicPath: '/pizzaBuilder/',
+  devServer: {
+    disableHostCheck: true
+  },
+  publicPath: '/',
     css: {
       loaderOptions: {
         sass: {

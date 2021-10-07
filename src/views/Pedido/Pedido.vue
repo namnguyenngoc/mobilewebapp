@@ -1,6 +1,6 @@
 <template>
   <v-simple-table
-    height="600px"
+    height="750px"
     fixed-header
   >
     <template v-slot:default>

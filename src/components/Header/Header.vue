@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav>
+    <nav style="z-index: 9999">
       <div class="logo">
         <img src="@/assets/pizza.png" alt="Logo" srcset="" />
         <h3>Pizza Builder</h3>
@@ -15,7 +15,7 @@
       <ul class="desktopNav">
         <router-link to="/"><li>Pizza</li></router-link>
         <router-link to="/bebidas"><li>Bebidas</li></router-link>
-        <router-link to="/pedido"><li>Meu Pedido</li></router-link>
+        <router-link to="/pedido"><li>Covid</li></router-link>
       </ul>
     </nav>
     <div id="mySidenav" class="sidenav" :style="{ width: wid + 'px' }">
@@ -26,7 +26,7 @@
           ><li @click="closeNav()">Bebidas</li></router-link
         >
         <router-link to="/pedido"
-          ><li @click="closeNav()">Meu Pedido</li></router-link
+          ><li @click="closeNav()">Covid</li></router-link
         >
       </ul>
     </div>

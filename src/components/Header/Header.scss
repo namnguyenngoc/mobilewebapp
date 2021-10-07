@@ -61,9 +61,10 @@ nav {
   .desktopNav {
     display: none;
   }
-  #mySidenav {
-    z-index: 9999;
-  }
+ 
+}
+#mySidenav {
+  z-index: 9999;
 }
 @media screen and (min-device-width: 1200px) {
   .sidenav {

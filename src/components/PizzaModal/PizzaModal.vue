@@ -3,7 +3,7 @@
     <div class="backdrop">
       <div class="wrapper">
         <div id="pizzaModal">
-          <h4>Pizza Builder</h4>
+          <h4>Thông tin gia đình</h4>
           <h5>Ops ... Escolha os ingredientes corretamente</h5>
           <button  @click="$emit('close')" >OK</button>
         </div>

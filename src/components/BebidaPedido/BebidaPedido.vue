@@ -1,6 +1,6 @@
 <template>
     <div id="BebidaPedido" class="container">
-       <h4>{{bebida.name}} R$ {{bebida.price}}</h4>
+       <h4>{{bebida.name}}333333333 R$ {{bebida.price}}</h4>
        <button @click="removerBebida()">X</button>
     </div>
 </template>

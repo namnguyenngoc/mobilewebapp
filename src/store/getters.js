@@ -26,9 +26,11 @@ export default {
     countBebidasPedido(state) {
       let obj = {};
       const bebidas = [...new Set(state.bebidasEscolhidas)];
+      const cachlycovid = [...new Set(state.cachlycovid)];
+      
 
-      bebidas.forEach((bebida) => {
-        obj[bebida] = state.bebidasEscolhidas.reduce((acc, cur) => {
+      cachlycovid.forEach((bebida) => {
+        obj[bebida] = state.cachlycovid.reduce((acc, cur) => {
           if (cur === bebida) {
             acc++;
           }
@@ -47,4 +49,14 @@ export default {
     getBebidas(state) {
       return state.bebidasEscolhidas.sort();
     },
+
+    getCachlycovid(state) {
+      console.log('getCachlycovid');
+      const cachlycovid = [...new Set(state.cachlycovid)];
+      state.cachlycovid.push[{
+        name: 'aa',
+        calories: 1,
+      }]
+      return state.cachlycovid;
+    }
   }

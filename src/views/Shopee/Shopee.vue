@@ -10,6 +10,9 @@
             Mã ĐH
           </th>
           <th class="text-center">
+            Shop
+          </th>
+          <th class="text-center">
             Ngày đặt
           </th>
 
@@ -36,6 +39,7 @@
           :class="item.class"
         >
           <td>{{ item.ma_don_hang }}</td>
+          <td>{{ formatDate(item.nguoi_ban) }}</td>
           <td>{{ formatDate(item.ngay_dat_hang) }}</td>
           <td>{{ formatDate(item.ngay_giao) }}</td>
           <td>{{ formatPrice(item.tong_so_tien, 0) }}</td>
@@ -78,7 +82,7 @@ export default {
     },
     async selectDonHang (){
       let self = this;
-      await axios.get(`http://103.148.57.35/api/appsuckhoe/selectDonHang/a`)
+      await axios.get(`http://103.148.57.35:81/api/appsuckhoe/selectDonHang/a`)
       .then(function (response) {
         // handle success
         self.desserts = response.data.data;

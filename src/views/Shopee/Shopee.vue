@@ -78,7 +78,7 @@ export default {
     },
     async selectDonHang (){
       let self = this;
-      await axios.get(`http://localhost:8789/appsuckhoe/selectDonHang/a`)
+      await axios.get(`http://103.148.57.35/api/appsuckhoe/selectDonHang/a`)
       .then(function (response) {
         // handle success
         self.desserts = response.data.data;

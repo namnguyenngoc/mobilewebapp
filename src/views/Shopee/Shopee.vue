@@ -39,7 +39,7 @@
           :class="item.class"
         >
           <td>{{ item.ma_don_hang }}</td>
-          <td>{{ formatDate(item.nguoi_ban) }}</td>
+          <td>{{ item.nguoi_ban }}</td>
           <td>{{ formatDate(item.ngay_dat_hang) }}</td>
           <td>{{ formatDate(item.ngay_giao) }}</td>
           <td>{{ formatPrice(item.tong_so_tien, 0) }}</td>

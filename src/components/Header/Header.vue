@@ -16,6 +16,7 @@
         <!-- <router-link to="/"><li>Pizza</li></router-link> -->
         <router-link to="/bebidas"><li>Sức Khỏe</li></router-link>
         <router-link to="/pedido"><li>Covid</li></router-link>
+        <router-link to="/shopee"><li>ĐH Shopee</li></router-link>
       </ul>
     </nav>
     <div id="mySidenav" class="sidenav" :style="{ width: wid + 'px' }">
@@ -27,6 +28,9 @@
         >
         <router-link to="/pedido"
           ><li @click="closeNav()">Covid</li></router-link
+        >
+        <router-link to="/shopee"
+          ><li @click="closeNav()">ĐH Shopee</li></router-link
         >
       </ul>
     </div>

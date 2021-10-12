@@ -25,6 +25,12 @@ Vue.use(VueRouter)
     name: 'DadosEntrega',
     component: () => import('../views/DadosEntrega/DadosEntrega.vue')
   },
+
+  {
+    path: '/shopee',
+    name: 'Shopee',
+    component: () => import('../views/Shopee/Shopee.vue')
+  },
   
   
 ]

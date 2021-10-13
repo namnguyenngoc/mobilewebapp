@@ -49,20 +49,20 @@
               {{ `${proceseGroupName(group) != null ? proceseGroupName(group)[0] : ''}` }}
             </td>
             <td class="mt-1 mb-1 pt-1 pb-1 text-center">
-              {{ `${proceseGroupName(group) != null ? formatDate(proceseGroupName(group)[4]) : ''}` }}
+              {{ `${proceseGroupName(group) != null ? formatDate(proceseGroupName(group)[3]) : ''}` }}
             </td>
             <td class="mt-1 mb-1 pt-1 pb-1 text-right">
-              {{ `${proceseGroupName(group) != null ? formatPrice(proceseGroupName(group)[3], 0): ''}` }}
+              {{ `${proceseGroupName(group) != null ? formatPrice(proceseGroupName(group)[2], 0): ''}` }}
             </td>
-            <td class="mt-1 mb-1 pt-1 pb-1 text-right">
-              {{ `${proceseGroupName(group) != null ? proceseGroupName(group)[5] : ''}` }}
+            <td class="mt-1 mb-1 pt-1 pb-1 text-left">
+              <span class="text-bold">{{ `${proceseGroupName(group) != null ? proceseGroupName(group)[4] : ''}` }} </span>
             </td>
           </template>
           <template v-slot:item.ngay_dat_hang="{ item }">
-            <span>{{ formatDate(item.dia_chi_nhan_hang) }}</span>
+            {{ item.dia_chi_nhan_hang }}
           </template>
           <template v-slot:item.ngay_giao="{ item }">
-            <span>{{ formatDate(item.so_dien_thoai_nguoi_nhan) }}</span>
+            {{ item.ngay_giao }}
           </template>
         </v-data-table>
       </v-col>
@@ -95,28 +95,26 @@ export default {
         {
           text: 'Ngày đặt',
           value: 'ngay_dat_hang',
-          align: 'center',
+          align: 'left',
           width: '30%',
+          colspan: '3',
           sortable: false,
         },
         {
           text: 'Ngày giao',
-          value: 'ngay_giao',
           align: 'center',
           width: '30%',
           sortable: false,
         },
         {
           text: 'Tổng tiền',
-          value: 'tong_so_tien',
           align: 'right',
           width: '25%',
           sortable: false,
         },
         {
           text: 'Status',
-          value: 'trang_thai_don_hang',
-          align: 'right',
+          align: 'left',
           width: '15%',
           sortable: false,
         },
@@ -162,7 +160,19 @@ export default {
       await axios
         .get('http://103.148.57.35:81/api/appsuckhoe/selectDonHang/a')
         .then(response => {
+          // self.desserts = response.data.data;
+          // console.log('desserts', self.desserts);
+          /* eslint-disable */
           self.desserts = response.data.data;
+          // data = data.forEach(element => {
+          //   // let arr = element.group_name.split('|');
+          //   // if(arr != undefined && arr != null && arr.length > 0){
+          //   //   element.group_ngay_ban = '1111111';
+          //   //   console.log('element', element);
+          //   // }
+          // });
+          // data = 
+          // console.log('data', data);
         })
         .catch(error => {
           // handle error

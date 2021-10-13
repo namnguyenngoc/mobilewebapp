@@ -57,12 +57,41 @@ export default {
         { holidayDate: '2021-09-03', description: 'Quoc Khanh' },
       ],
       headers: [
-        { text: 'Ngày', value: 'ngay_bat_dau' },
-        { text: 'Trương', value: 'huyet_ap_tam_truong', align: 'right' },
-        { text: 'Thu', value: 'huyet_ap_tam_thu', align: 'right' },
-        { text: 'Tim', value: 'nhip_tim', align: 'right' },
-        { text: 'SPO2', value: 'spo2', align: 'right' },
-        { text: 'CN (Kg)', value: 'can_nang', align: 'right' },
+        {
+          text: 'Ngày',
+          value: 'ngay_bat_dau',
+          sortable: false,
+        },
+        {
+          text: 'Trương',
+          value: 'huyet_ap_tam_truong',
+          align: 'right',
+          sortable: false,
+        },
+        {
+          text: 'Thu',
+          value: 'huyet_ap_tam_thu',
+          align: 'right',
+          sortable: false,
+        },
+        {
+          text: 'Tim',
+          value: 'nhip_tim',
+          align: 'right',
+          sortable: false,
+        },
+        {
+          text: 'SPO2',
+          value: 'spo2',
+          align: 'right',
+          sortable: false,
+        },
+        {
+          text: 'CN (Kg)',
+          value: 'can_nang',
+          align: 'right',
+          sortable: false,
+        },
       ],
       icons: {
         mdiMinus,

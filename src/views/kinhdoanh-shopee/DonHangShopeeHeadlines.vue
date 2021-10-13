@@ -14,33 +14,55 @@
           :fixed-header="true"
           :items-per-page="10"
           :mobile-breakpoint="0"
+          :search="search"
           group-by="group_name"
           group-desc
         >
+          <template v-slot:top>
+            <v-row class="pt-0 pb-0 mb-0 mt-0">
+              <v-col
+                cols="9"
+                sm="9"
+                class="pt-0 pb-0 mb-0 mt-0"
+              >
+                <v-text-field
+                  v-model="search"
+                  label="Key"
+                  class="pt-0 pb-0 mb-0 mt-0"
+                ></v-text-field>
+              </v-col>
+              <v-col
+                cols="2"
+                sm="2"
+                class="pt-0 pb-0 mb-0 mt-0"
+              >
+                <v-btn @click="toggleAll()">Toggle</v-btn>
+              </v-col>
+            </v-row>
+          </template>
           <template v-slot:group.header="{ group, items, isOpen, toggle }">
-            <td colspan="3" class="mt-1 mb-1 pt-1 pb-1 custom-row">
-              <v-btn icon @click="toggle" class="h-2">
-                <v-icon v-if="isOpen" small>
-                  {{ icons.mdiMinus }}
-                </v-icon>
-                <v-icon v-else small>
-                  {{ icons.mdiPlus }}
-                </v-icon>
+            <td>
+              <v-btn @click="toggle" small icon :ref="group" :data-open="isOpen">
+                  <v-icon v-if="isOpen">{{ icons.mdiMinus }}</v-icon>
+                  <v-icon v-else>{{ icons.mdiPlus }}</v-icon>
               </v-btn>
-              <span>{{ `${proceseGroupName(group) != null ? proceseGroupName(group)[0] : ''}` }}</span>
+              {{ `${proceseGroupName(group) != null ? proceseGroupName(group)[0] : ''}` }}
             </td>
-            <td colspan="1" class="mt-1 mb-1 pt-1 pb-1 text-right">
-              <span>{{ `${proceseGroupName(group) != null ? formatPrice(proceseGroupName(group)[3], 0): ''}` }}</span>
+            <td class="mt-1 mb-1 pt-1 pb-1 text-center">
+              {{ `${proceseGroupName(group) != null ? formatDate(proceseGroupName(group)[4]) : ''}` }}
+            </td>
+            <td class="mt-1 mb-1 pt-1 pb-1 text-right">
+              {{ `${proceseGroupName(group) != null ? formatPrice(proceseGroupName(group)[3], 0): ''}` }}
+            </td>
+            <td class="mt-1 mb-1 pt-1 pb-1 text-right">
+              {{ `${proceseGroupName(group) != null ? proceseGroupName(group)[5] : ''}` }}
             </td>
           </template>
           <template v-slot:item.ngay_dat_hang="{ item }">
-            <span>{{ formatDate(item.ngay_dat_hang) }}</span>
+            <span>{{ formatDate(item.dia_chi_nhan_hang) }}</span>
           </template>
           <template v-slot:item.ngay_giao="{ item }">
-            <span>{{ formatDate(item.ngay_giao) }}</span>
-          </template>
-          <template v-slot:item.tong_so_tien="{ item }">
-            <span>{{ formatPrice(item.tong_so_tien/100,0) }}</span>
+            <span>{{ formatDate(item.so_dien_thoai_nguoi_nhan) }}</span>
           </template>
         </v-data-table>
       </v-col>
@@ -61,6 +83,7 @@ export default {
   },
   data() {
     return {
+      search: '',
       desserts: [],
       holidays: [
         { holidayDate: '2021-09-02', description: 'Quoc Khanh' },
@@ -129,7 +152,7 @@ export default {
     },
     proceseGroupName(str) {
       if (!str) return null;
-      const arr = str.split('_');
+      const arr = str.split('|');
       if (arr === undefined || arr === null || arr.length === 0) return null;
 
       return arr;
@@ -148,6 +171,18 @@ export default {
         .finally({
           // always executed
         });
+    },
+    toggleAll() {
+      Object.keys(this.$refs).forEach(k => {
+        this.$refs[k].$el.click();
+      });
+    },
+    /* eslint-disable */
+    filterOnlyCapsText(value, search, item) {
+      return value != null
+        && search != null
+        && typeof value === 'string'
+        && value.toString().toLocaleUpperCase().indexOf(search) !== -1;
     },
   },
 };

@@ -67,6 +67,7 @@
           target="_blank"
         ></nav-menu-link>
       </nav-menu-group>
+       <nav-menu-section-title title="SHOPPING"></nav-menu-section-title>
       <nav-menu-group
         title="Shopping"
         :icon="icons.mdiFileOutline"
@@ -76,7 +77,7 @@
           :to="{ name: 'donhangshopee' }"
         ></nav-menu-link>
       </nav-menu-group>
-      <nav-menu-section-title title="USER INTERFACE"></nav-menu-section-title>
+      <nav-menu-section-title title="GIA ĐÌNH"></nav-menu-section-title>
       <nav-menu-link
         title="Sức Khỏe"
         :to="{ name: 'suckhoe' }"

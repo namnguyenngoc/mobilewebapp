@@ -12,7 +12,7 @@
           class="list-table"
           height="650px"
           :fixed-header="true"
-          :items-per-page="10"
+          :items-per-page="100"
           :mobile-breakpoint="0"
           :search="search"
           group-by="group_name"
@@ -48,21 +48,50 @@
               </v-btn>
               {{ `${proceseGroupName(group) != null ? proceseGroupName(group)[0] : ''}` }}
             </td>
-            <td class="mt-1 mb-1 pt-1 pb-1 text-center">
-              {{ `${proceseGroupName(group) != null ? formatDate(proceseGroupName(group)[3]) : ''}` }}
-            </td>
             <td class="mt-1 mb-1 pt-1 pb-1 text-right">
               {{ `${proceseGroupName(group) != null ? formatPrice(proceseGroupName(group)[2], 0): ''}` }}
             </td>
             <td class="mt-1 mb-1 pt-1 pb-1 text-left">
-              <span class="text-bold">{{ `${proceseGroupName(group) != null ? proceseGroupName(group)[4] : ''}` }} </span>
+              <span class="text-bold">{{ `${proceseGroupName(group) != null ? nameByKey(proceseGroupName(group)[4]) : ''}` }} </span>
             </td>
           </template>
-          <template v-slot:item.ngay_dat_hang="{ item }">
-            {{ item.dia_chi_nhan_hang }}
+          <template v-slot:item.tmdt="{ item }">
+            <span>{{ item.tmdt }}</span>
           </template>
-          <template v-slot:item.ngay_giao="{ item }">
-            {{ item.ngay_giao }}
+          <template v-slot:item="{ item  }">
+            <tr>
+              <td colspan="3" class="pt-2 pb-2">
+                <div><strong>{{ item.ngay_dat_hang }} {{item.nguoi_ban}}</strong></div>
+                <div><strong>{{ item.tmdt }}</strong></div>
+                <div>Ngày đặt: <strong>{{ formatDate(item.ngay_dat_hang) }}</strong> Ngày giao: <strong>{{ formatDate(item.ngay_giao) }}</strong></div>
+                <div>{{ item.so_dien_thoai_nguoi_nhan }}</div>
+                <div>{{ item.dia_chi_nhan_hang }}</div>
+                <div v-if="item.tmdt == 'LAZADA'">
+                  <ul v-for="(kienhang, i) in item.product_list" :key="i" class="mt-1">
+                    <li v-for="(obj, prop) in kienhang" :key="prop">
+                      <div v-if="prop === 'nguoi_ban'">{{ strToArr(obj, 'Giao vào:')[0] }}<span class="font-weight-bold"> Giao vào:{{ strToArr(obj, 'Giao vào:')[1] }}</span></div>
+                      <div v-else-if="prop !== 'san_pham'">{{ obj }}</div>
+                      <div v-else>
+                        <h4>Sản phẩm</h4>
+                        <ul>
+                          <li v-for="(val, propsp) in obj" :key="propsp">
+                            {{val.ten_sp}}
+                          </li>
+                        </ul>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <div v-else>
+                  <h4>Sản phẩm</h4>
+                  <ul class="mt-1">
+                    <li v-for="(val, propsp) in item.product_list" :key="propsp">
+                      {{val.ten_sp}}
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
           </template>
         </v-data-table>
       </v-col>
@@ -93,29 +122,19 @@ export default {
         // { text: 'Mã ĐH', value: 'ma_don_hang' },
         // { text: 'Shop', value: 'nguoi_ban' },
         {
-          text: 'Ngày đặt',
-          value: 'ngay_dat_hang',
+          text: 'Mã ĐH',
           align: 'left',
-          width: '30%',
-          colspan: '3',
-          sortable: false,
-        },
-        {
-          text: 'Ngày giao',
-          align: 'center',
-          width: '30%',
+          value: 'tmdt',
           sortable: false,
         },
         {
           text: 'Tổng tiền',
           align: 'right',
-          width: '25%',
           sortable: false,
         },
         {
           text: 'Status',
           align: 'left',
-          width: '15%',
           sortable: false,
         },
       ],
@@ -155,6 +174,22 @@ export default {
 
       return arr;
     },
+    nameByKey(str) {
+      if (!str) return null;
+      let val = str;
+      switch (str.trim()) {
+        case 'DON_HANG_MOI':
+          val = 'ĐHM';
+          break;
+        case 'DAGIAO':
+          val = 'ĐG';
+          break;
+        default:
+          break;
+      }
+
+      return val;
+    },
     async getListSucKhoe() {
       const self = this;
       await axios
@@ -186,6 +221,18 @@ export default {
       Object.keys(this.$refs).forEach(k => {
         this.$refs[k].$el.click();
       });
+    },
+    strToArr(str, key){
+      console.log('addSpace');
+      if(str == undefined || str == null || str.trim().length == 0){
+        return null;
+      }
+      let arr = str.split(key);
+      if(arr == undefined || arr == null || arr.length == 1){
+        return str;
+      }
+      
+      return arr;
     },
     /* eslint-disable */
     filterOnlyCapsText(value, search, item) {

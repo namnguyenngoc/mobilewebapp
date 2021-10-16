@@ -39,6 +39,44 @@
                 <v-btn @click="toggleAll()">Toggle</v-btn>
               </v-col>
             </v-row>
+            <v-row class="pt-0 pb-0 mb-0 mt-0">
+              <v-col cols="3">
+                <v-btn
+                  tile
+                  color="secondary"
+                  @click="filterByStatus('DHM')"
+                >
+                  <v-icon left v-show="lsStatus[0].isCheck">
+                    {{ icons.mdiCheckCircle }}
+                  </v-icon>
+                  ĐHM ({{ lsStatus[0].count }})
+                </v-btn>
+              </v-col>
+              <v-col cols="3">
+                <v-btn
+                  tile
+                  color="success"
+                  @click="filterByStatus('VC')"
+                >
+                  <v-icon left v-show="lsStatus[1].isCheck">
+                    {{ icons.mdiCheckCircle }}
+                  </v-icon>
+                  ĐANG GIAO ({{ lsStatus[1].count }})
+                </v-btn>
+              </v-col>
+              <v-col cols="3">
+                <v-btn
+                  tile
+                  color="info"
+                  @click="filterByStatus('DG')"
+                >
+                  <v-icon left v-show="lsStatus[2].isCheck">
+                    {{ icons.mdiCheckCircle }}
+                  </v-icon>
+                  ĐÃ GIAO ({{ lsStatus[2].count }})
+                </v-btn>
+              </v-col>
+            </v-row>
           </template>
           <template v-slot:group.header="{ group, items, isOpen, toggle }">
             <td>
@@ -52,7 +90,7 @@
               {{ `${proceseGroupName(group) != null ? formatPrice(proceseGroupName(group)[2], 0): ''}` }}
             </td>
             <td class="mt-1 mb-1 pt-1 pb-1 text-left">
-              <span class="text-bold">{{ `${proceseGroupName(group) != null ? nameByKey(proceseGroupName(group)[4]) : ''}` }} </span>
+              <span class="text-bold">{{ `${proceseGroupName(group) != null ? nameByKey(proceseGroupName(group)[4]) : ''}` }}</span>
             </td>
           </template>
           <template v-slot:item.tmdt="{ item }">
@@ -61,8 +99,8 @@
           <template v-slot:item="{ item  }">
             <tr>
               <td colspan="3" class="pt-2 pb-2">
-                <div><strong>{{ item.ngay_dat_hang }} {{item.nguoi_ban}}</strong></div>
-                <div><strong>{{ item.tmdt }}</strong></div>
+                <div><strong>Shop: {{item.nguoi_ban}}</strong></div>
+                <div><strong>{{ item.ma_don_hang }}</strong> - <strong>{{ item.tmdt }}</strong></div>
                 <div>Ngày đặt: <strong>{{ formatDate(item.ngay_dat_hang) }}</strong> Ngày giao: <strong>{{ formatDate(item.ngay_giao) }}</strong></div>
                 <div>{{ item.so_dien_thoai_nguoi_nhan }}</div>
                 <div>{{ item.dia_chi_nhan_hang }}</div>
@@ -90,6 +128,16 @@
                     </li>
                   </ul>
                 </div>
+                <v-btn
+                  tile
+                  color="info"
+                  @click="changeStatus(item)"
+                >
+                  <v-icon left v-show="lsStatus[2].isCheck">
+                    {{ icons.mdiCheckCircle }}
+                  </v-icon>
+                  Đã Giao
+                </v-btn>
               </td>
             </tr>
           </template>
@@ -104,6 +152,8 @@ import moment from 'moment';
 import {
   mdiMinus,
   mdiPlus,
+  mdiNewBox,
+  mdiCheckCircle,
 } from '@mdi/js';
 
 export default {
@@ -114,6 +164,7 @@ export default {
     return {
       search: '',
       desserts: [],
+      dessertsOrigin: [],
       holidays: [
         { holidayDate: '2021-09-02', description: 'Quoc Khanh' },
         { holidayDate: '2021-09-03', description: 'Quoc Khanh' },
@@ -141,7 +192,57 @@ export default {
       icons: {
         mdiMinus,
         mdiPlus,
+        mdiNewBox,
+        mdiCheckCircle,
       },
+      lsBoxName: [
+        {
+          emailBox: 'DH_SHOPEE_DAGIAO',
+          dbStatus: 'DON_HANG_MOI',
+          display: 'ĐHM',
+          dbDiscription: 'Đã giao',
+        },
+        {
+          emailBox: 'DH_SHOPEE_XN_THANHTOAN',
+          dbStatus: 'DA_THANH_TOAN',
+          display: 'VC',
+          dbDiscription: 'Đã thanh toán',
+        },
+        {
+          emailBox: 'LAZADA_1_DONMOI',
+          dbStatus: 'DANG_GIAO',
+          display: 'VC',
+          dbDiscription: 'Đã thanh toán',
+        },
+        {
+          emailBox: 'LAZADA_1_DONMOI',
+          dbStatus: 'DA_GIAO',
+          display: 'ĐG',
+          dbDiscription: 'Đã thanh toán',
+        },
+      ],
+      lsStatus: [
+        {
+          name: 'DON_HANG_MOI',
+          count: 0,
+          isCheck: false,
+        },
+        {
+          name: 'DA_THANH_TOAN',
+          count: 0,
+          isCheck: false,
+        },
+        {
+          name: 'DANG_GIAO',
+          count: 0,
+          isCheck: false,
+        },
+        {
+          name: 'DA_GIAO',
+          count: 0,
+          isCheck: false,
+        },
+      ],
     };
   },
   created() {
@@ -175,17 +276,11 @@ export default {
       return arr;
     },
     nameByKey(str) {
+      console.log('str', str);
       if (!str) return null;
-      let val = str;
-      switch (str.trim()) {
-        case 'DON_HANG_MOI':
-          val = 'ĐHM';
-          break;
-        case 'DAGIAO':
-          val = 'ĐG';
-          break;
-        default:
-          break;
+      let val = this.lsBoxName.find(({ dbStatus }) => dbStatus === str);
+      if (val !== undefined && val !== null) {
+        val = val.display;
       }
 
       return val;
@@ -199,6 +294,10 @@ export default {
           // console.log('desserts', self.desserts);
           /* eslint-disable */
           self.desserts = response.data.data;
+          self.dessertsOrigin = response.data.data;
+          self.lsStatus[0].count = response.data.data.filter(item => (item.trang_thai_don_hang == 'DON_HANG_MOI' || item.trang_thai_don_hang == 'DA_THANH_TOAN')).length;
+          self.lsStatus[1].count = response.data.data.filter(item => item.trang_thai_don_hang == 'DANG_GIAO').length;
+          self.lsStatus[2].count = response.data.data.filter(item => item.trang_thai_don_hang == 'DA_GIAO').length;
           // data = data.forEach(element => {
           //   // let arr = element.group_name.split('|');
           //   // if(arr != undefined && arr != null && arr.length > 0){
@@ -240,6 +339,59 @@ export default {
         && search != null
         && typeof value === 'string'
         && value.toString().toLocaleUpperCase().indexOf(search) !== -1;
+    },
+    filterByStatus (status){
+      const countArr = this.dessertsOrigin;
+      switch (status) {
+        case 'DHM':
+          this.lsStatus[0].isCheck = !this.lsStatus[0].isCheck;
+          if(this.lsStatus[0].isCheck) {
+            this.desserts = this.desserts.filter(item => (item.trang_thai_don_hang == 'DON_HANG_MOI' || item.trang_thai_don_hang == 'DA_THANH_TOAN'));
+          } else {
+            this.desserts = this.desserts.filter(item => (item.trang_thai_don_hang != 'DON_HANG_MOI' && item.trang_thai_don_hang != 'DA_THANH_TOAN'));
+          }
+          // this.lsStatus[0].count = this.desserts.length;
+          break;
+        case 'VC':
+          this.lsStatus[1].isCheck = !this.lsStatus[1].isCheck;
+          if(this.lsStatus[1].isCheck) {
+            this.desserts = this.desserts.filter(item => (item.trang_thai_don_hang == 'DANG_GIAO'));
+          } else {
+            this.desserts = this.desserts.filter(item => (item.trang_thai_don_hang != 'DANG_GIAO'));
+          }
+          // this.lsStatus[1].count = this.desserts.length;
+          break;
+        case 'DG':
+          this.lsStatus[2].isCheck = !this.lsStatus[2].isCheck;
+          if(this.lsStatus[2].isCheck) {
+            this.desserts = this.desserts.filter(item => (item.trang_thai_don_hang == 'DA_GIAO'));
+          } else {
+            this.desserts = this.desserts.filter(item => (item.trang_thai_don_hang != 'DA_GIAO'));
+          }
+          // this.lsStatus[2].count = this.desserts.length;
+          break;
+        default:
+          break;
+        }
+      if (this.lsStatus[2].isCheck && this.lsStatus[1].isCheck && this.lsStatus[0].isCheck){
+        this.desserts = this.dessertsOrigin;
+        // this.lsStatus[0].count = countArr.filter(item => (item.trang_thai_don_hang == 'DON_HANG_MOI' || item.trang_thai_don_hang == 'DA_THANH_TOAN')).length;
+        // this.lsStatus[1].count = countArr.filter(item => item.trang_thai_don_hang == 'DANG_GIAO').length;
+        // this.lsStatus[2].count = countArr.filter(item => item.trang_thai_don_hang == 'DA_GIAO').length;
+        
+      }
+      
+    },
+    async changeStatus (item) {
+      const self = this;
+      await axios
+        .post(`http://103.148.57.35:81/api/appsuckhoe/updateDonHang`, item)
+        .then(function (response) {
+          self.getListSucKhoe();
+        })
+        .catch(error => {
+          console.log(error)
+      })
     },
   },
 };

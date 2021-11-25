@@ -1,16 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="pb-0">Sức khỏe</v-card-title>
-    <v-row class="ma-0 pb-0">
-      <v-col
-        cols="12"
-        sm="12"
-        class="ma-0 pb-0"
-        style="color:#FFFFFF"
-      >
-      <h5 color="warning" style="background:#fafafa;" class="pa-1 pt-2 pb-2">Hôm nay: {{ tuan_mang_thai }}</h5>
-      </v-col>
-    </v-row>
+    <v-card-title class="pb-0">Thoi dõi thai kì</v-card-title>
     <v-row class="ma-0 pb-1 px-1">
       <v-col
         cols="12"
@@ -24,7 +14,7 @@
           :fixed-header="true"
           :items-per-page="10"
           :mobile-breakpoint="0"
-          group-by="ngay_bat_dau_group"
+          group-by="ngay_bat_dau"
           group-desc
         >
           <template v-slot:group.header="{ group, items, isOpen, toggle }">
@@ -62,12 +52,16 @@ export default {
   data() {
     return {
       desserts: [],
-      tuan_mang_thai: '',
       holidays: [
         { holidayDate: '2021-09-02', description: 'Quoc Khanh' },
         { holidayDate: '2021-09-03', description: 'Quoc Khanh' },
       ],
       headers: [
+        {
+          text: 'Ngày',
+          value: 'ngay_bat_dau',
+          sortable: false,
+        },
         {
           text: 'Trương',
           value: 'huyet_ap_tam_truong',
@@ -106,7 +100,6 @@ export default {
     };
   },
   created() {
-    this.getCurrentDate();
     this.getListSucKhoe();
   },
   methods: {
@@ -121,23 +114,12 @@ export default {
 
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     },
-    async getCurrentDate() {
-      const self = this;
-      await axios
-        .get('http://anvatchibeo.ddns.net:81/api/appsuckhoe/getCurrentDate')
-        .then(response => {
-          // seft.hotSettings.data = response.data.data;
-          
-          self.tuan_mang_thai = response.data.data[0].ngay_bat_dau_group;
-        });
-    },
     async getListSucKhoe() {
       const self = this;
       await axios
         .get('http://anvatchibeo.ddns.net:81/api/appsuckhoe/selectSucKhoe')
         .then(response => {
           // seft.hotSettings.data = response.data.data;
-
           self.desserts = response.data.data;
           console.log('jiraBoards', response.data);
         });

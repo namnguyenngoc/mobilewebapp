@@ -33,3 +33,9 @@ export default {
   },
 };
 </script>
+<style>
+  .v-image.v-responsive.upgrade-banner, div[aria-label="upgrade-banner"]{
+    display: none;  
+  }
+  
+</style>

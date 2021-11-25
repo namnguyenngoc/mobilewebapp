@@ -1,3 +1,4 @@
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 <template>
   <v-card>
     <v-card-title class="pb-0">Shopee</v-card-title>
@@ -19,7 +20,7 @@
           group-desc
         >
           <template v-slot:top>
-            <v-row class="pt-0 pb-0 mb-0 mt-0">
+            <!-- <v-row class="pt-0 pb-0 mb-0 mt-0">
               <v-col
                 cols="9"
                 sm="9"
@@ -35,10 +36,11 @@
                 cols="2"
                 sm="2"
                 class="pt-0 pb-0 mb-0 mt-0"
+              
               >
                 <v-btn @click="toggleAll()">Toggle</v-btn>
               </v-col>
-            </v-row>
+            </v-row> -->
             <v-row class="pt-0 pb-0 mb-0 mt-0">
               <v-col cols="3">
                 <v-btn
@@ -52,22 +54,23 @@
                   ĐHM ({{ lsStatus[0].count }})
                 </v-btn>
               </v-col>
-              <v-col cols="3">
+              <!-- <v-col cols="3">
                 <v-btn
                   tile
                   color="success"
-                  @click="filterByStatus('VC')"
+                   @click="filterByStatus('VC')"
                 >
                   <v-icon left v-show="lsStatus[1].isCheck">
                     {{ icons.mdiCheckCircle }}
                   </v-icon>
                   ĐANG GIAO ({{ lsStatus[1].count }})
                 </v-btn>
-              </v-col>
+              </v-col> -->
               <v-col cols="3">
                 <v-btn
                   tile
                   color="info"
+                  class="ml-5"
                   @click="filterByStatus('DG')"
                 >
                   <v-icon left v-show="lsStatus[2].isCheck">
@@ -136,7 +139,18 @@
                   <v-icon left v-show="lsStatus[2].isCheck">
                     {{ icons.mdiCheckCircle }}
                   </v-icon>
-                  Đã Giao
+                  Đã giao
+                </v-btn>
+                <v-btn
+                  tile
+                  color="error"
+                  class="ml-5"
+                  @click="changeStatus(item, 'HUY')"
+                >
+                  <v-icon left v-show="lsStatus[2].isCheck">
+                    {{ icons.mdiCheckCircle }}
+                  </v-icon>
+                  Hủy đơn
                 </v-btn>
               </td>
             </tr>
@@ -245,8 +259,9 @@ export default {
       ],
     };
   },
-  created() {
-    this.getListSucKhoe();
+  async created() {
+    await this.loadDonHang('DHM');
+    // await this.filterByStatus('DHM');
   },
   methods: {
     formatDate(str) {
@@ -285,10 +300,23 @@ export default {
 
       return val;
     },
-    async getListSucKhoe() {
+    async loadDonHang() {
       const self = this;
+      let searchObj = {
+          "shopName":[
+              "SHOPEE",
+              "LAZADA"
+          ],
+          "status":[
+              "DON_HANG_MOI",
+              "DA_THANH_TOAN",
+              "DA_GIAO",
+              "HUY"
+          ]
+        };
+        
       await axios
-        .get('http://103.148.57.35:81/api/appsuckhoe/selectDonHang/a')
+        .get(`http://anvatchibeo.ddns.net:81/api/appsuckhoe/getDonHang`, searchObj)
         .then(response => {
           // self.desserts = response.data.data;
           // console.log('desserts', self.desserts);
@@ -340,7 +368,7 @@ export default {
         && typeof value === 'string'
         && value.toString().toLocaleUpperCase().indexOf(search) !== -1;
     },
-    filterByStatus (status){
+    async filterByStatus (status){
       const countArr = this.dessertsOrigin;
       switch (status) {
         case 'DHM':
@@ -382,16 +410,62 @@ export default {
       }
       
     },
-    async changeStatus (item) {
+    async changeStatus (item, new_trang_thai_don_hang) {
       const self = this;
+      if(new_trang_thai_don_hang != undefined){
+        item.new_trang_thai_don_hang = new_trang_thai_don_hang;
+      }
       await axios
-        .post(`http://103.148.57.35:81/api/appsuckhoe/updateDonHang`, item)
+        .post(`http://anvatchibeo.ddns.net:81/api/appsuckhoe/updateDonHang`, item)
         .then(function (response) {
-          self.getListSucKhoe();
+          self.loadDonHang();
         })
         .catch(error => {
           console.log(error)
       })
+
+      let searchObj = {
+          "shopName":[
+              "SHOPEE",
+              "LAZADA"
+          ],
+          "status":[
+              "DON_HANG_MOI",
+              "DA_THANH_TOAN",
+              "DA_GIAO",
+              "HUY"
+          ]
+        };
+        
+      // await axios
+      //   .post(`http://anvatchibeo.ddns.net:81/api/appsuckhoe/selectDonHang`, searchObj)
+      //   .then(response => {
+      //     // self.desserts = response.data.data;
+      //     // console.log('desserts', self.desserts);
+      //     /* eslint-disable */
+      //     self.desserts = response.data.data;
+      //     self.dessertsOrigin = response.data.data;
+      //     self.lsStatus[0].count = response.data.data.filter(item => (item.trang_thai_don_hang == 'DON_HANG_MOI' || item.trang_thai_don_hang == 'DA_THANH_TOAN')).length;
+      //     self.lsStatus[1].count = response.data.data.filter(item => item.trang_thai_don_hang == 'DANG_GIAO').length;
+      //     self.lsStatus[2].count = response.data.data.filter(item => item.trang_thai_don_hang == 'DA_GIAO').length;
+      //     // data = data.forEach(element => {
+      //     //   // let arr = element.group_name.split('|');
+      //     //   // if(arr != undefined && arr != null && arr.length > 0){
+      //     //   //   element.group_ngay_ban = '1111111';
+      //     //   //   console.log('element', element);
+      //     //   // }
+      //     // });
+      //     // data = 
+      //     // console.log('data', data);
+      //   })
+      //   .catch(error => {
+      //     // handle error
+      //     console.log(error);
+      //   })
+      //   .finally({
+      //     // always executed
+      //   });
+
     },
   },
 };

@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="pb-0">Sức khỏe</v-card-title>
+    <v-card-title class="pb-0">Sức khỏe mang thai</v-card-title>
     <v-row class="ma-0 pb-0">
       <v-col
         cols="12"
@@ -8,7 +8,7 @@
         class="ma-0 pb-0"
         style="color:#FFFFFF"
       >
-      <h5 color="warning" style="background:#fafafa;" class="pa-1 pt-2 pb-2">Hôm nay: {{ tuan_mang_thai }}</h5>
+      <h5 color="warning" style="background:#fafafa;" class="pa-1 pt-2 pb-2">Hôm nay: {{ tuan_tuoi }}</h5>
       </v-col>
     </v-row>
     <v-row class="ma-0 pb-1 px-1">
@@ -50,6 +50,8 @@
 </template>
 <script>
 import axios from 'axios';
+import config from '../../config/config';
+
 import {
   mdiMinus,
   mdiPlus,
@@ -62,7 +64,7 @@ export default {
   data() {
     return {
       desserts: [],
-      tuan_mang_thai: '',
+      tuan_tuoi: '',
       holidays: [
         { holidayDate: '2021-09-02', description: 'Quoc Khanh' },
         { holidayDate: '2021-09-03', description: 'Quoc Khanh' },
@@ -123,18 +125,19 @@ export default {
     },
     async getCurrentDate() {
       const self = this;
+      
       await axios
-        .get('http://anvatchibeo.ddns.net:81/api/appsuckhoe/getCurrentDate')
+        .get(`${config.API_URL}/getCurrentDate/2021-03-01`)
         .then(response => {
           // seft.hotSettings.data = response.data.data;
           
-          self.tuan_mang_thai = response.data.data[0].ngay_bat_dau_group;
+          self.tuan_tuoi = response.data.data[0].ngay_bat_dau_group;
         });
     },
     async getListSucKhoe() {
       const self = this;
       await axios
-        .get('http://anvatchibeo.ddns.net:81/api/appsuckhoe/selectSucKhoe')
+        .get(`${config.API_URL}/selectSucKhoe`)
         .then(response => {
           // seft.hotSettings.data = response.data.data;
 

@@ -7,14 +7,14 @@
       cols="12"
       md="7"
     >
-      <SucKhoeHeadlines></SucKhoeHeadlines>
+      <ChamConHeadlines></ChamConHeadlines>
     </v-col>
-    <v-col
+    <!-- <v-col
       cols="12"
       md="5"
     >
       <DpnHangShopeeHeadlines></DpnHangShopeeHeadlines>
-    </v-col>
+    </v-col> -->
   </v-row>
 </template>
 
@@ -29,6 +29,8 @@ import DashboardCardSalesByCountries from './DashboardCardSalesByCountries.vue'
 import DpnHangShopeeHeadlines from '../kinhdoanh-shopee/DonHangShopeeHeadlines.vue'
 import SucKhoeHeadlines from '../family-suckhoe/SucKhoeHeadlines.vue';
 import SucKhoeVoMangThai from '../family-suckhoe/SucKhoeVoMangThai.vue';
+import ChamConHeadlines from '../family-chamcon/ChamConHeadlines.vue';
+import ChamCon from '../family-chamcon/ChamCon.vue';
 
 export default {
   components: {
@@ -37,6 +39,8 @@ export default {
     DpnHangShopeeHeadlines,
     SucKhoeHeadlines,
     SucKhoeVoMangThai,
+    ChamCon,
+    ChamConHeadlines
   },
   setup() {
     const totalProfit = {

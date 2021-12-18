@@ -84,6 +84,11 @@
         :icon="icons.mdiAlphaTBoxOutline"
       ></nav-menu-link>
       <nav-menu-link
+        title="Chăm con"
+        :to="{ name: 'chamcon' }"
+        :icon="icons.mdiAlphaTBoxOutline"
+      ></nav-menu-link>
+      <nav-menu-link
         title="Form Layouts"
         :to="{ name: 'form-layouts' }"
         :icon="icons.mdiFormSelect"

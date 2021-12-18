@@ -77,6 +77,11 @@ const routes = [
     component: () => import('@/views/family-suckhoe/SucKhoe.vue'),
   },
   {
+    path: '/family/chamcon',
+    name: 'chamcon',
+    component: () => import('@/views/family-chamcon/ChamCon.vue'),
+  },
+  {
     path: '/kinhdoanhshopee/donhangshopee',
     name: 'donhangshopee',
     component: () => import('@/views/kinhdoanh-shopee/DonHangShopee.vue'),

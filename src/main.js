@@ -5,8 +5,10 @@ import App from './App.vue'
 import vuetify from './plugins/vuetify'
 import router from './router'
 import store from './store'
+import CircularCountDownTimer from "vue-circular-count-down-timer";
 
 Vue.config.productionTip = false
+Vue.use(CircularCountDownTimer)
 
 new Vue({
   router,

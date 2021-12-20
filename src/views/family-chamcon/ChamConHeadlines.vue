@@ -394,6 +394,7 @@ export default {
 							underneathStrokeColor: '#DCDCDC',
 							valueFontSize: 20,
 							labelFontSize: 10,
+              fillColor: '#312d4b'
 						},
 						{
 							id: '2',
@@ -404,7 +405,8 @@ export default {
 							label: 'Phút',
               strokeColor: '#4169E1',
 							underneathStrokeColor: '#DCDCDC',
-              dependentCircles: [ '3' ]
+              dependentCircles: [ '3' ],
+              fillColor: '#312d4b'
 						},
 						{
 							id: '1',
@@ -415,7 +417,8 @@ export default {
 							label: 'Giây',
               strokeColor: '#C71585',
 							underneathStrokeColor: '#DCDCDC',
-							dependentCircles: [ '2' ]
+							dependentCircles: [ '2' ],
+              fillColor: '#312d4b'
 						}
 					]
 				},
@@ -463,7 +466,7 @@ export default {
                 }
               },
               title: {
-                text: "Số ml sữa",
+                text: "Thể tích sữa (ml)",
                 style: {
                   color: "#FF1654"
                 }
@@ -484,7 +487,7 @@ export default {
                 }
               },
               title: {
-                text: "Thời gian ngủ",
+                text: "Thời gian ngủ (phút)",
                 style: {
                   color: "#247BA0"
                 }
@@ -713,11 +716,13 @@ export default {
         value: hour,
         stepLength: -1,
         label: 'Giờ',
-        strokeWidth: 10,
+        strokeWidth: 7,
+        labelFontSize: 12,
+        fillColor: '#312d4b',
         strokeColor: '#008080',
         underneathStrokeColor: '#DCDCDC',
         valueFontSize: 20,
-        labelFontSize: 10,
+        labelFontSize: 12,
       }
     );
 
@@ -727,6 +732,9 @@ export default {
         size: 50,
         value: min%60,
         stepLength: -1,
+        strokeWidth: 7,
+        labelFontSize: 12,
+        fillColor: '#312d4b',
         label: 'Phút',
         strokeColor: '#4169E1',
         underneathStrokeColor: '#DCDCDC',
@@ -740,6 +748,9 @@ export default {
       value: 60,
       stepLength: -1,
       label: 'Giây',
+      strokeWidth: 7,
+      labelFontSize: 12,
+      fillColor: '#312d4b',
       strokeColor: '#C71585',
       underneathStrokeColor: '#DCDCDC',
       dependentCircles: [ '2' ]
@@ -759,11 +770,12 @@ export default {
         value: parseInt(duration.asHours()),
         stepLength: -1,
         label: 'Giờ',
-        strokeWidth: 10,
+        strokeWidth: 7,
         strokeColor: '#008080',
         underneathStrokeColor: '#DCDCDC',
         valueFontSize: 20,
-        labelFontSize: 10,
+        labelFontSize: 12,
+        fillColor: '#312d4b'
       }
     );
 
@@ -773,10 +785,13 @@ export default {
         size: 50,
         value: parseInt(duration.asMinutes())%60,
         stepLength: -1,
+        strokeWidth: 7,
+        labelFontSize: 12,
         label: 'Phút',
         strokeColor: '#4169E1',
         underneathStrokeColor: '#DCDCDC',
-        dependentCircles: [ '3' ]
+        dependentCircles: [ '3' ],
+        fillColor: '#312d4b'
       },
     );
     self.nguCountDown.circles.push({
@@ -788,7 +803,10 @@ export default {
       label: 'Giây',
       strokeColor: '#C71585',
       underneathStrokeColor: '#DCDCDC',
-      dependentCircles: [ '2' ]
+      dependentCircles: [ '2' ],
+      strokeWidth: 7,
+      labelFontSize: 12,
+      fillColor: '#312d4b'
     })
     //End ngu
 

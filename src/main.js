@@ -6,9 +6,11 @@ import vuetify from './plugins/vuetify'
 import router from './router'
 import store from './store'
 import CircularCountDownTimer from "vue-circular-count-down-timer";
+import VueApexCharts from 'vue-apexcharts';
 
-Vue.config.productionTip = false
-Vue.use(CircularCountDownTimer)
+Vue.config.productionTip = false;
+Vue.use(CircularCountDownTimer);
+Vue.component('apexchart', VueApexCharts);
 
 new Vue({
   router,

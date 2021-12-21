@@ -7,7 +7,7 @@
       cols="12"
       md="7"
     >
-      <ChamConHeadlines></ChamConHeadlines>
+      <ChamConHeadlinesV2></ChamConHeadlinesV2>
     </v-col>
     <!-- <v-col
       cols="12"
@@ -31,6 +31,7 @@ import SucKhoeHeadlines from '../family-suckhoe/SucKhoeHeadlines.vue';
 import SucKhoeVoMangThai from '../family-suckhoe/SucKhoeVoMangThai.vue';
 import ChamConHeadlines from '../family-chamcon/ChamConHeadlines.vue';
 import ChamCon from '../family-chamcon/ChamCon.vue';
+import ChamConHeadlinesV2 from '../family-chamcon/ChamConHeadlines-V2.vue';
 
 export default {
   components: {
@@ -40,7 +41,8 @@ export default {
     SucKhoeHeadlines,
     SucKhoeVoMangThai,
     ChamCon,
-    ChamConHeadlines
+    ChamConHeadlines,
+    ChamConHeadlinesV2
   },
   setup() {
     const totalProfit = {

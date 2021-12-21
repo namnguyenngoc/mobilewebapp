@@ -85,7 +85,13 @@
       ></nav-menu-link>
       <nav-menu-link
         title="Chăm con"
-        :to="{ name: 'chamcon' }"
+        :to="{ name: 'chamcon-v2' }"
+        :icon="icons.mdiAlphaTBoxOutline"
+      ></nav-menu-link>
+
+      <nav-menu-link
+        title="Chăm con v2"
+        :to="{ name: 'chamcon-V2' }"
         :icon="icons.mdiAlphaTBoxOutline"
       ></nav-menu-link>
       <nav-menu-link

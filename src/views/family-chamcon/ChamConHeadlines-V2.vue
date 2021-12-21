@@ -1,131 +1,27 @@
 <template>
-  <v-card>
-    <v-card-title class="pb-0">Chăm sóc Đăng Khôi</v-card-title>
-    <v-row class="ma-0 pb-0 pb-0 pt-0 pb-0">
-      <v-col
-        cols="12"
-        sm="12"
-        class="ma-0 pb-0 pt-0 pb-0"
-        style="color:#FFFFFF"
-      >
-      <h5 color="warning" class="pa-1 pt-2 pb-2">Hôm nay: {{ tuan_tuoi }}</h5>
-      </v-col>
-    </v-row>
-    
-    <v-row class="ma-0 pb-0 pt-0 mt-0">
-      <v-row class="ml-2 mr-2">
-        <v-col cols="4" md="4" sm="4" class="pr-0 mr-0">
-          <v-btn color="success" @click="insert('BSB')" style="width:100%"> Ti bình </v-btn>
-        </v-col>
-        <v-col cols="4" md="4" sm="4" class="pr-0 mr-0">
-          <v-btn color="info" @click="insert('BSM')" style="width:100%" > Ti Mẹ </v-btn>
-        </v-col>
-        <v-col cols="4" md="4" sm="4">
-          <v-btn color="warning" @click="update('BSM')" style="width:100%"  :disabled="true"> Update </v-btn>
-        </v-col>
-      </v-row>
-      
-      <v-row class="ml-2 mr-2">
-        <v-col cols="5" md="5" class="pb-0 mb-0" >
-          <v-dialog
-          ref="dialogTiGanNhat"
-          v-model="ti_me_model.modalTiBinh"
-          :return-value.sync="ti_me_model.timeTiBinh"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-text-field
-                v-model="ti_me_model.timeTiBinh"
-                label="Lần ti bình gần nhất"
-                class="text-right"
-                readonly
-                v-bind="attrs"
-                v-on="on"
-                append-outer-icon="mdi-map-marker"
-              ></v-text-field>
-            </template>
-            <v-time-picker
-              v-if="ti_me_model.modalTiBinh"
-              v-model="ti_me_model.timeTiBinh"
-              full-width
-            >
-              <v-spacer></v-spacer>
-              <v-btn
-                text
-                color="primary"
-                @click="ti_me_model.modalTiBinh = false"
-              >
-                Cancel
-              </v-btn>
-              <v-btn
-                text
-                color="primary"
-                @click="$refs.dialogTiGanNhat.save(ti_me_model.timeTiBinh)"
-              >
-                Save
-              </v-btn>
-            </v-time-picker>
-          </v-dialog>
-        </v-col>
-        <v-col cols="5" md="5" class="pb-0 mb-0" >
-          <v-dialog
-            ref="dialogTiKeTiep"
-            v-model="ti_me_model.modalTiBinh1"
-            :return-value.sync="ti_me_model.timeTiBinh1"
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <v-text-field
-                  v-model="ti_me_model.timeTiBinh1"
-                label="Lần ti kế tiếp"
-                class="text-right"
-                readonly
-                v-bind="attrs"
-                v-on="on"
-                
-              ></v-text-field>
-            </template>
-            <v-time-picker
-              v-if="ti_me_model.modalTiBinh1"
-              v-model="ti_me_model.timeTiBinh1"
-              full-width
-            >
-              <v-spacer></v-spacer>
-              <v-btn
-                text
-                color="primary"
-                @click="ti_me_model.modalTiBinh1 = false"
-              >
-                Cancel
-              </v-btn>
-              <v-btn
-                text
-                color="primary"
-                @click="$refs.dialogTiKeTiep.save(ti_me_model.timeTiBinh1)"
-              >
-                Save
-              </v-btn>
-            </v-time-picker>
-          </v-dialog>
-        </v-col>
-        <v-col cols="2" md="2" class="pb-0 mb-0" >
-          <v-text-field
-            v-model="ti_me_model.thong_tin_them"
-            label="Thể tích lần trước"
-            class="text-right"
-            readonly
-            suffix="ml"
-            text-align="right"
-          ></v-text-field>
-        </v-col>
-      </v-row>
-
-      <v-row class="mb-3 ml-2 mr-2">
-        <v-col cols="8" md="8" class="pb-0 mb-0" >
-          <circular-count-down-timer
+  <v-row class="match-height">
+    <v-card-title class="pb-0">
+      Chăm sóc Đăng Khôi
+      <h5 color="warning">{{ tuan_tuoi }}</h5>
+    </v-card-title>
+    <!-- Bú sữa -->
+    <v-col
+      cols="12"
+      md="12"
+      class="pa-0"
+    >
+      <v-card>
+        <v-card-title class="pt-5 pb-2">
+          <v-col cols="5" md="5" class="pb-0 mb-0" >
+            Uống sữa
+          </v-col>
+          <v-col cols="7" md="7" class="pa-0 ma-0 text-right" >
+            <circular-count-down-timer
             :circles="tibinhCountDown.circles"
             :interval="tibinhCountDown.interval"
             :main-circle-id="tibinhCountDown.mainCircleId || '1'"
             :size="tibinhCountDown.size"
-            :container-classes="tibinhCountDown.containerClasses"
+            :container-classes="['countdown']"
             :circle-classes="tibinhCountDown.circleClasses"
             :stop-conditions="tibinhCountDown.stopConditions"
             :trigger-update="tibinhCountDown.triggerUpdate"
@@ -137,173 +33,351 @@
             :label-font-size="tibinhCountDown.labelFontSize"
             :label-position="tibinhCountDown.labelPosition"
           />
-        </v-col>
-        <v-col cols="4" md="4" class="pt-2 pb-0 mb-0" >
-         <v-text-field
-            v-model="ti_me_model.thong_tin_them_new"
-            label="Thể tích"
-            type="number"
-            class="mb-4 mt-1"
-            suffix="ml"
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <!-- <v-col cols="12" md="12" class="pl-3 pt-2 pb-0 mb-0" >
-        <v-btn color="warning" @click="insert('BSM')" style="width:100%"> Ti mẹ {{ti_me_gan_nhat}}</v-btn>
-      </v-col> -->
-      <v-col cols="9" md="9" class="pl-3 pt-2 mt-1 pb-0 mb-4 pr-4" >
-        <v-row class="mb-4">
-          <v-col cols="4" s="4" class="pl-3 mr-0 pr-0" >
-            <v-btn color="success" @click="insert('NGU')" style="width:100%" :disabled="!isNgu"> NGỦ</v-btn>
           </v-col>
-          <v-col cols="4" ssm="4" class="" >
-            <v-btn color="info" @click="update('NGU')" style="width:100%" :disabled="isNgu"> Thức</v-btn>
-          </v-col>
-          <v-col cols="4" ssm="4" class="" >
-            <v-btn color="warning" @click="update('NGU')" style="width:100%" :disabled="true"> Update</v-btn>
-          </v-col>
-        </v-row>
-        <circular-count-down-timer
-          :circles="nguCountDown.circles"
-          :interval="nguCountDown.interval"
-          :main-circle-id="nguCountDown.mainCircleId || '1'"
-          :size="nguCountDown.size"
-          :container-classes="nguCountDown.containerClasses"
-          :circle-classes="nguCountDown.circleClasses"
-          :stop-conditions="nguCountDown.stopConditions"
-          :trigger-update="nguCountDown.triggerUpdate"
-          :stroke-width="nguCountDown.strokeWidth"
-          :stroke-color="nguCountDown.strokeColor"
-          :underneath-stroke-color="nguCountDown.underneathStrokeColor"
-          :fill-color="nguCountDown.fillColor"
-          :value-font-size="nguCountDown.valueFontSize"
-          :label-font-size="nguCountDown.labelFontSize"
-          :label-position="nguCountDown.labelPosition"
-        />
-      </v-col>
-      <v-col cols="3" md="3" class="pt-2 pb-0 mb-0" >
-        <v-dialog
-        ref="dialogNguGanNhat"
-        v-model="ngu_model.modalNgu"
-        :return-value.sync="ngu_model.timeNgu"
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-text-field
-              v-model="ngu_model.timeNgu"
-              label="Ngủ"
-              class="text-right"
-              readonly
-              v-bind="attrs"
-              v-on="on"
-            ></v-text-field>
-          </template>
-          <v-time-picker
-            v-if="ngu_model.modalNgu"
-            v-model="ngu_model.timeNgu"
-            full-width
-          >
-            <v-spacer></v-spacer>
-            <v-btn
-              text
-              color="primary"
-              @click="ngu_model.modalNgu = false"
-            >
-              Cancel
-            </v-btn>
-            <v-btn
-              text
-              color="primary"
-              @click="$refs.dialogNguGanNhat.save(ngu_model.timeNgu)"
-            >
-              Save
-            </v-btn>
-          </v-time-picker>
-        </v-dialog>
-        <v-dialog
-          ref="dialogNguKeTiep"
-          v-model="ngu_model.modalNgu1"
-          :return-value.sync="ngu_model.timeNgu1"
-          >
-            <template v-slot:activator="{ on, attrs }">
+        </v-card-title>
+        
+        <v-divider class="mx-4"></v-divider>
+        <v-card-text class="mt-0 mb-0 pt-3 pb-1">
+          <!-- Row 1 -->
+          <v-row class="ml-2 mr-2">
+            <v-col cols="4" md="4" class="pb-0 mb-0 ml-0 mr-0 pl-0 pr-0" >
+              <v-dialog
+              ref="dialogTiGanNhat"
+              v-model="ti_me_model.modalTiBinh"
+              :return-value.sync="ti_me_model.timeTiBinh"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="ti_me_model.timeTiBinh"
+                    label="Bắt đầu"
+                    class="text-right"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    append-outer-icon="mdi-map-marker"
+                  ></v-text-field>
+                </template>
+                <v-time-picker
+                  v-if="ti_me_model.modalTiBinh"
+                  v-model="ti_me_model.timeTiBinh"
+                  full-width
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="ti_me_model.modalTiBinh = false"
+                  >
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.dialogTiGanNhat.save(ti_me_model.timeTiBinh)"
+                  >
+                    Save
+                  </v-btn>
+                </v-time-picker>
+              </v-dialog>
+            </v-col>
+            <v-col cols="4" md="4" class="pb-0 mb-0 ml-0 pl-0" >
+              <v-dialog
+                ref="dialogTiKeTiep"
+                v-model="ti_me_model.modalTiBinh1"
+                :return-value.sync="ti_me_model.timeTiBinh1"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="ti_me_model.timeTiBinh1"
+                      label="Tiếp theo"
+                      class="text-right"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                      hide-details
+                  ></v-text-field>
+                </template>
+                <v-time-picker
+                  v-if="ti_me_model.modalTiBinh1"
+                  v-model="ti_me_model.timeTiBinh1"
+                  full-width
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="ti_me_model.modalTiBinh1 = false"
+                  >
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.dialogTiKeTiep.save(ti_me_model.timeTiBinh1)"
+                  >
+                    Save
+                  </v-btn>
+                </v-time-picker>
+              </v-dialog>
+            </v-col>
+            <v-col cols="4" md="4"  class="pb-0 mb-0 ml-0 mr-0 pl-0 pr-0" >
               <v-text-field
-              v-model="ngu_model.timeNgu1"
-              label="Thức giấc"
-              class="text-right"
-              readonly
-              v-bind="attrs"
-              v-on="on"
-            ></v-text-field>
-          </template>
-          <v-time-picker
-            v-if="ngu_model.modalNgu1"
-            v-model="ngu_model.timeNgu1"
-            full-width
+                v-model="ti_me_model.thong_tin_them"
+                label="Thể tích hiện tại"
+                class="text-right"
+                readonly
+                suffix="ml"
+                text-align="right"
+                hide-details
+              ></v-text-field>
+            </v-col>
+          </v-row>
+
+          <!-- Row 2 -->
+          <v-row class="mb-0 ml-2 mr-2">
+            <v-col cols="9" md="9" class="pb-0 mb-0" >
+              <v-radio-group
+                v-model="ti_me_model.loai_sua"
+                row
+              >
+                <v-radio
+                  label="Sữa mẹ"
+                  value="BSM"
+                  hide-details
+                ></v-radio>
+                <v-radio
+                  label="Sữa Bình"
+                  value="BSB"
+                  hide-details
+                ></v-radio>
+              </v-radio-group>
+            </v-col>
+            <v-col cols="3" md="3" class="pt-2 pb-0 mb-0 ml-0 pa-0" >
+            <v-text-field
+                v-model="ti_me_model.thong_tin_them_new"
+                label="Thể tích mới"
+                type="number"
+                class="mb-4 mt-1"
+                suffix="ml"
+                hide-details
+              ></v-text-field>
+            </v-col>
+          </v-row>
+
+          <!-- Row 3 -->
+        </v-card-text>
+        <v-divider class="mx-4"></v-divider>
+        <v-card-actions>
+          <v-row
+            class="pl-2 float-end"
           >
             <v-spacer></v-spacer>
-            <v-btn
-              text
-              color="primary"
-              @click="ngu_model.modalNgu1 = false"
-            >
-              Cancel
+            <!-- <v-btn color="success" @click="insert('BSB')" class="mr-1"> Ti bình </v-btn> -->
+            <v-btn color="success" @click="insert('TIME')"  class="mr-1" small> Lưu cữ mới </v-btn>
+            <v-btn color="warning" @click="update('BSM')"  class="mr-1" :disabled="true" small> 
+              <v-icon dark>
+                {{icons.mdiCircleEditOutline}}
+              </v-icon>
             </v-btn>
-            <v-btn
-              text
-              color="primary"
-              @click="$refs.dialogNguKeTiep.save(ngu_model.timeNgu1)"
-            >
-              Save
+            <v-btn color="error" @click="update('BSM')" class="mr-1" :disabled="true" small> 
+              <v-icon dark>
+                {{icons.mdiDeleteOutline}}
+              </v-icon>
             </v-btn>
-          </v-time-picker>
-        </v-dialog>
-      </v-col>
-      <!-- <v-col cols="12" md="12" class="pl-3 pt-2 mt-0 pb-0 mb-0" >
-        <v-btn color="error" @click="insert('BET')" style="width:100%">Đi WC {{wc_gan_nhat}}</v-btn>
-      </v-col>
-     -->
-    </v-row>
-    <v-row class="ma-0 pb-1">
-      <v-col
-        cols="12"
-        sm="12"
-        class="pa-0 ma-0"
-      >
-        <v-col
-          cols="12"
-          sm="12"
-        >
-        <v-btn color="warning" @click="insert('WC')" style="width:100%"> Con WC ({{be_wc_model.so_lan_i}} lần)</v-btn>
-        </v-col>
-      </v-col>
-    </v-row>
-    <v-row class="ma-0 pb-0 mb-0">
-      <v-col
-        cols="12"
-        sm="12"
-        class="pa-0 ma-0 mb-0 pb-0"
-      >
-        <v-col
-          cols="12"
-          sm="12"
-          class="mb-0 pb-0"
-        >
-          <v-slider
-            v-model="slider"
-            :thumb-size="24"
-            thumb-label="always"
-            max="15"
-            min="1"
-            @change="changeSlider()"
+          </v-row>
+        </v-card-actions>
+      </v-card>
+    </v-col>
+
+    <!-- NGỦ-->
+    <v-col
+      cols="12"
+      md="12"
+      class="pa-0 mt-2"
+    >
+      <v-card>
+        <v-card-title class="pt-5 pb-2">
+          <v-col cols="5" md="5" class="pb-0 mb-0" >
+            Ngủ - WC
+          </v-col>
+          <v-col cols="7" md="7" class="pa-0 ma-0 text-right" >
+            <circular-count-down-timer
+              :circles="nguCountDown.circles"
+              :interval="nguCountDown.interval"
+              :main-circle-id="nguCountDown.mainCircleId || '1'"
+              :size="nguCountDown.size"
+              :container-classes="['countdown']"
+              :circle-classes="nguCountDown.circleClasses"
+              :stop-conditions="nguCountDown.stopConditions"
+              :trigger-update="nguCountDown.triggerUpdate"
+              :stroke-width="nguCountDown.strokeWidth"
+              :stroke-color="nguCountDown.strokeColor"
+              :underneath-stroke-color="nguCountDown.underneathStrokeColor"
+              :fill-color="nguCountDown.fillColor"
+              :value-font-size="nguCountDown.valueFontSize"
+              :label-font-size="nguCountDown.labelFontSize"
+              :label-position="nguCountDown.labelPosition"
+            />
+          </v-col>
+        </v-card-title>
+        
+        <v-divider class="mx-4"></v-divider>
+        <v-card-text class="mt-0 mb-0 pt-3 pb-1">
+          <!-- Row 1 -->
+          <v-row class="ml-2 mr-2">
+            <v-col cols="4" md="4" class="pb-0 mb-0 ml-0 mr-0 pl-0 pr-0" >
+              <v-dialog
+                ref="dialogNguGanNhat"
+                v-model="ngu_model.modalNgu"
+                :return-value.sync="ngu_model.timeNgu"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="ngu_model.timeNgu"
+                      label="Ngủ"
+                      class="text-right"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-time-picker
+                    v-if="ngu_model.modalNgu"
+                    v-model="ngu_model.timeNgu"
+                    full-width
+                  >
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="ngu_model.modalNgu = false"
+                    >
+                      Cancel
+                    </v-btn>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="$refs.dialogNguGanNhat.save(ngu_model.timeNgu)"
+                    >
+                      Save
+                    </v-btn>
+                  </v-time-picker>
+                </v-dialog>
+            </v-col>
+            <v-col cols="4" md="4" class="pb-0 mb-0 ml-0 pl-0" >
+              <v-dialog
+                ref="dialogNguKeTiep"
+                v-model="ngu_model.modalNgu1"
+                :return-value.sync="ngu_model.timeNgu1"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                    v-model="ngu_model.timeNgu1"
+                    label="Thức giấc"
+                    class="text-right"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-time-picker
+                  v-if="ngu_model.modalNgu1"
+                  v-model="ngu_model.timeNgu1"
+                  full-width
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="ngu_model.modalNgu1 = false"
+                  >
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.dialogNguKeTiep.save(ngu_model.timeNgu1)"
+                  >
+                    Save
+                  </v-btn>
+                </v-time-picker>
+              </v-dialog>
+            </v-col>
+            <v-col cols="4" md="4"  class="pb-0 mb-0 ml-0 mr-0 pl-0 pr-0 mt-3" >
+              <v-btn color="warning" @click="insert('WC')" style="width:100%"> WC ({{be_wc_model.so_lan_i}} lần)</v-btn>
+            </v-col>
+          </v-row>
+
+          <!-- Row 3 -->
+        </v-card-text>
+        <v-divider class="mx-4"></v-divider>
+        <v-card-actions>
+          <v-row
+            class="pl-2 float-end"
           >
-            <template v-slot:thumb-label="{ value }">
-              {{ value }}
-            </template>
-          </v-slider>
-        </v-col>
-        <apexchart type="bar" :options="chartOptions" :series="series"></apexchart>
-      </v-col>
-    </v-row>
-  </v-card>
+            <v-spacer></v-spacer>
+            <v-btn color="info" @click="insert('NGU')" :disabled="!isNgu" class="mr-1" small>
+              <!-- <v-icon dark>
+                {{icons.mdiSleep}} 
+              </v-icon> -->
+              Ngủ
+            </v-btn>
+            <v-btn color="success" @click="update('NGU')" :disabled="isNgu" class="mr-1" small> Thức</v-btn>
+            <v-btn color="warning" @click="update('BSM')"  class="mr-1" :disabled="true" small> 
+              <v-icon dark>
+                {{icons.mdiCircleEditOutline}}
+              </v-icon>
+            </v-btn>
+            <v-btn color="error" @click="update('BSM')" class="mr-1" :disabled="true" small> 
+              <v-icon dark>
+                {{icons.mdiDeleteOutline}}
+              </v-icon>
+            </v-btn>
+          </v-row>
+        </v-card-actions>
+      </v-card>
+    </v-col>
+    
+    <!-- CHART-->
+    <v-col
+      cols="12"
+      md="12"
+      class="pa-0 mt-2"
+    >
+      <v-card>
+        <v-card-title class="pt-5 pb-2">
+          <v-col cols="6" md="6" class="pb-0 mb-0" >
+            Thống kê số lần
+          </v-col>
+          <v-col cols="6" md="6" class="pa-0 ma-0 text-right pt-4 pb-0 mb-0" >
+           <v-slider
+              v-model="slider"
+              :thumb-size="24"
+              thumb-label="always"
+              max="15"
+              min="1"
+              class="pt-0 pb-0 mb-0"
+              hide-details
+              @change="changeSlider()"
+            >
+              <template v-slot:thumb-label="{ value }">
+                {{ value }}
+              </template>
+            </v-slider>
+          </v-col>
+        </v-card-title>
+        
+        <v-divider class="mx-4"></v-divider>
+        <v-card-text class="mt-0 mb-0 pt-3 pb-1">
+          <!-- Row 1 -->
+          <apexchart type="bar" :options="chartOptions" :series="series"></apexchart>
+
+          <!-- Row 3 -->
+        </v-card-text>
+      </v-card>
+    </v-col>
+  </v-row>
+
 </template>
 <script>
 import axios from 'axios';
@@ -315,6 +389,9 @@ import {
   mdiMinus,
   mdiOneUp,
   mdiPlus,
+  mdiDeleteOutline,
+  mdiCircleEditOutline,
+  mdiSleep
 } from '@mdi/js';
 import { reactive } from '@vue/composition-api';
 
@@ -328,6 +405,13 @@ export default {
       slider: 5,
       desserts: [],
       tuan_tuoi: '',
+      icons: {
+        mdiMinus,
+        mdiPlus,
+        mdiDeleteOutline,
+        mdiCircleEditOutline,
+        mdiSleep
+      },
       be_wc_model: {
         so_lan_i: 0,
       },
@@ -342,6 +426,7 @@ export default {
         modalTiBinh1: false,
         thong_tin_them: '',
         thong_tin_them_new: '',
+        loai_sua: 'BSB',
         
       },
       ti_me_gan_nhat: '',
@@ -415,10 +500,7 @@ export default {
           sortable: false,
         },
       ],
-      icons: {
-        mdiMinus,
-        mdiPlus,
-      },
+      
       tibinhCountDown: {
           title: 'Ti bình đếm',
 					circles: [
@@ -431,11 +513,11 @@ export default {
             {
 							id: '3',
 							steps: 60,
-							size: 50,
+							size: 40,
 							value: 2,
 							// stepLength: -1,
-							label: 'Giờ',
-              strokeWidth: 10,
+							// label: 'Giờ',
+              strokeWidth: 5,
 							strokeColor: '#008080',
 							underneathStrokeColor: '#DCDCDC',
 							valueFontSize: 20,
@@ -445,10 +527,10 @@ export default {
 						{
 							id: '2',
 							steps: 60,
-							size: 50,
+							size: 40,
 							value: 20,
 							// stepLength: -1,
-							label: 'Phút',
+							// label: 'Phút',
               strokeColor: '#4169E1',
 							underneathStrokeColor: '#DCDCDC',
               dependentCircles: [ '3' ],
@@ -457,10 +539,10 @@ export default {
 						{
 							id: '1',
 							steps: 60,
-							size: 50,
+							size: 40,
 							value: 10,
 							// stepLength: -1,
-							label: 'Giây',
+							// label: 'Giây',
               strokeColor: '#C71585',
 							underneathStrokeColor: '#DCDCDC',
 							dependentCircles: [ '2' ],
@@ -641,10 +723,14 @@ export default {
     },
 
     async insert(ma_cv) {
+      let code_cv = ma_cv;
       let currentDate = new Date();
       let gio_bat_dau = moment(currentDate).format("YYYY-MM-DD HH:mm:ss");
+      if('TIME' == ma_cv){
+        code_cv = this.ti_me_model.loai_sua;
+      }
       let congviec = {
-        ma_cv : ma_cv,
+        ma_cv : code_cv,
         gio_bat_dau : gio_bat_dau,
         thong_tin_them: this.ti_me_model.thong_tin_them_new
       }
@@ -775,11 +861,11 @@ export default {
     self.tibinhCountDown.circles.push({
         id: '3',
         steps: 60,
-        size: 50,
+        size: 40,
         value: parseInt(durationTM.asHours()),
         // stepLength: -1,
-        label: 'Giờ',
-        strokeWidth: 7,
+        // label: 'Giờ',
+        strokeWidth: 5,
         labelFontSize: 12,
         fillColor: '#312d4b',
         strokeColor: '#008080',
@@ -792,13 +878,13 @@ export default {
     self.tibinhCountDown.circles.push({
         id: '2',
         steps: 60,
-        size: 50,
+        size: 40,
         value: parseInt(durationTM.asMinutes())%60,
         // stepLength: -1,
-        strokeWidth: 7,
+        strokeWidth: 5,
         labelFontSize: 12,
         fillColor: '#312d4b',
-        label: 'Phút',
+        // label: 'Phút',
         strokeColor: '#4169E1',
         underneathStrokeColor: '#DCDCDC',
         dependentCircles: [ '3' ]
@@ -807,11 +893,11 @@ export default {
     self.tibinhCountDown.circles.push({
       id: '1',
       steps: 60,
-      size: 50,
+      size: 40,
       value: parseInt(durationTM.asSeconds)%60,
       // stepLength: -1,
-      label: 'Giây',
-      strokeWidth: 7,
+      // label: 'Giây',
+      strokeWidth: 5,
       labelFontSize: 12,
       fillColor: '#312d4b',
       strokeColor: '#C71585',
@@ -830,12 +916,12 @@ export default {
     self.nguCountDown.circles.push({
         id: '3',
         steps: 60,
-        size: 50,
+        size: 40,
         value: parseInt(duration.asHours()),
         // value: 0,
         // stepLength: -1,
-        label: 'Giờ',
-        strokeWidth: 7,
+        // label: 'Giờ',
+        strokeWidth: 5,
         strokeColor: '#008080',
         underneathStrokeColor: '#DCDCDC',
         valueFontSize: 20,
@@ -847,13 +933,13 @@ export default {
     self.nguCountDown.circles.push({
         id: '2',
         steps: 60,
-        size: 50,
+        size: 40,
         value: parseInt(duration.asMinutes())%60,
         // value: 0,
         // stepLength: -1,
-        strokeWidth: 7,
+        strokeWidth: 5,
         labelFontSize: 12,
-        label: 'Phút',
+        // label: 'Phút',
         strokeColor: '#4169E1',
         underneathStrokeColor: '#DCDCDC',
         dependentCircles: [ '3' ],
@@ -863,15 +949,15 @@ export default {
     self.nguCountDown.circles.push({
       id: '1',
       steps: 60,
-      size: 50,
+      size: 40,
       value: parseInt(duration.asSeconds())%60,
       value: 0,
       // stepLength: -1,
-      label: 'Giây',
+      // label: 'Giây',
       strokeColor: '#C71585',
       underneathStrokeColor: '#DCDCDC',
       dependentCircles: [ '2' ],
-      strokeWidth: 7,
+      strokeWidth: 5,
       labelFontSize: 12,
       fillColor: '#312d4b'
     })
@@ -939,4 +1025,7 @@ export default {
     text-align: right !important;
   }
   // @import './Bebidas.scss';
+  .countdown {
+    float: right;
+  }
 </style>

@@ -1,18 +1,18 @@
 <template>
   <v-card>
     <v-card-title class="pb-0">Chăm sóc Đăng Khôi</v-card-title>
-    <v-row class="ma-0 pb-0">
+    <v-row class="ma-0 pb-0 pb-0 pt-0 pb-0">
       <v-col
         cols="12"
         sm="12"
-        class="ma-0 pb-0"
+        class="ma-0 pb-0 pt-0 pb-0"
         style="color:#FFFFFF"
       >
       <h5 color="warning" class="pa-1 pt-2 pb-2">Hôm nay: {{ tuan_tuoi }}</h5>
       </v-col>
     </v-row>
-    <v-row class="ma-0 pb-0">
-      <v-col cols="6" md="6" class="pl-3 pt-2 mt-1 pb-0 mb-0" >
+    <v-row class="ma-0 pb-0 pt-0 mt-0">
+      <v-col cols="6" md="6" class="pl-3 pt-2 mt-1 pb-0 mb-0 pt-0 mt-0" >
         <v-btn color="success" @click="insert('BSB')" style="width:100%" class="mb-4"> Ti bình </v-btn>
        
         <circular-count-down-timer
@@ -236,7 +236,7 @@
       </v-col>
      -->
     </v-row>
-    <v-row class="ma-0 pb-0">
+    <v-row class="ma-0 pb-1">
       <v-col
         cols="12"
         sm="12"
@@ -245,6 +245,21 @@
         <v-col
           cols="12"
           sm="12"
+        >
+        <v-btn color="warning" @click="insert('WC')" style="width:100%"> Con WC ({{be_wc_model.so_lan_i}} lần)</v-btn>
+        </v-col>
+      </v-col>
+    </v-row>
+    <v-row class="ma-0 pb-0 mb-0">
+      <v-col
+        cols="12"
+        sm="12"
+        class="pa-0 ma-0 mb-0 pb-0"
+      >
+        <v-col
+          cols="12"
+          sm="12"
+          class="mb-0 pb-0"
         >
           <v-slider
             v-model="slider"
@@ -287,6 +302,9 @@ export default {
       slider: 5,
       desserts: [],
       tuan_tuoi: '',
+      be_wc_model: {
+        so_lan_i: 0,
+      },
       ti_me_model: {
         ti_binh_gan_nhat: '',
         timeTiBinh: null,
@@ -521,6 +539,7 @@ export default {
   },
   async created() {
     this.getCurrentDate();
+    this.countWorkInDay();
     await this.loadingChart();
     const self = this;
     await this.updateBtn();
@@ -564,13 +583,26 @@ export default {
       const self = this;
       
       await axios
-        .get(`${config.API_URL}/getCurrentDate/2021-11-30`)
-        .then(response => {
-          // seft.hotSettings.data = response.data.data;
-          
-          self.tuan_tuoi = response.data.data[0].ngay_bat_dau_group;
-        });
+      .get(`${config.API_URL}/getCurrentDate/2021-11-30`)
+      .then(response => {
+        // seft.hotSettings.data = response.data.data;
+        
+        self.tuan_tuoi = response.data.data[0].ngay_bat_dau_group;
+      });
     },
+
+    async countWorkInDay() {
+      const self = this;
+      
+      await axios
+      .get(`${config.API_URL}/countWorkInDay/WC/now()`)
+      .then(response => {
+        // seft.hotSettings.data = response.data.data;
+        
+        self.be_wc_model.so_lan_i = response.data.data[0]._count;
+      });
+    },
+
     async getListSucKhoe() {
       const self = this;
       await axios

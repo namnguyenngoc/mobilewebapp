@@ -87,6 +87,11 @@ const routes = [
     component: () => import('@/views/family-chamcon/ChamConHeadlines-V2.vue'),
   },
   {
+    path: '/family/chamcon-list',
+    name: 'chamcon-list',
+    component: () => import('@/views/family-chamcon/ChamConHeadlinesList.vue'),
+  },
+  {
     path: '/kinhdoanhshopee/donhangshopee',
     name: 'donhangshopee',
     component: () => import('@/views/kinhdoanh-shopee/DonHangShopee.vue'),

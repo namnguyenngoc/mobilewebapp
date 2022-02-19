@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-//  const API_URL = 'http://cameranamnguyentch.ddns.net'; //  platform server
-const API_URL = 'http://127.0.0.1';
+ const API_URL = 'http://anvatchibeo.ddns.net'; //  platform server
 
 // Only developing application connect to local ip ,another applications connect to developement server ip.
 const config = {

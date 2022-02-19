@@ -4,6 +4,28 @@
       Chăm sóc Đăng Khôi
       <h5 color="warning">{{ tuan_tuoi }}</h5>
     </v-card-title>
+    <!-- Theo doi suc khoe -->
+    <v-col cols="12" md="12" class="pa-0">
+      <v-card>
+        <v-card-title class="pt-5 pb-2">
+          <v-col cols="5" md="5" class="pb-0 mb-0"> Sức khỏe định kì</v-col>
+          <v-col cols="7" md="7" class="pa-0 ma-0 text-right">
+            <v-radio-group v-model="thong_tin_suc_khoe.chart_type_x" row>
+              <v-radio label="Theo ngày" value="NGAY" hide-details @click="loadingChartSK()"></v-radio>
+              <v-radio label="Theo tháng" value="THANG" hide-details @click="loadingChartSK()"></v-radio>
+            </v-radio-group>
+          </v-col>
+        </v-card-title>
+        <v-divider class="mx-4"></v-divider>
+        <v-card-text class="mt-0 mb-0 pt-3 pb-1">
+          <v-row class="mr-5 ml-1 mb-0 pb-0">
+            <v-col cols="12" sm="12" md="12" class="mb-0 pb-0">
+              <apexchart type="line" :options="chartSucKhoe" :series="serialsSucKhoe" ref="refChartSucKhoe" ></apexchart>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+    </v-col>
     <!-- Bú sữa -->
     <v-col cols="12" md="12" class="pa-0">
       <v-card>
@@ -428,19 +450,6 @@
                     </v-btn>
                   </v-card-actions> -->
                     <v-divider class="mx-4 mb-3 mt-4"></v-divider>
-                    <v-row>
-                       <v-col cols="12" sm="12" md="12" class="mb-0 pb-0 ml-15 ">
-                        <v-radio-group v-model="thong_tin_suc_khoe.chart_type_x" row>
-                          <v-radio label="Theo ngày" value="NGAY" hide-details @click="loadingChartSK()"></v-radio>
-                          <v-radio label="Theo tháng" value="THANG" hide-details @click="loadingChartSK()"></v-radio>
-                        </v-radio-group>
-                       </v-col>
-                    </v-row>
-                    <v-row class="mr-5 ml-1 mb-0 pb-0">
-                      <v-col cols="12" sm="12" md="12" class="mb-0 pb-0">
-                        <apexchart type="line" :options="chartSucKhoe" :series="serialsSucKhoe" ref="refChartSucKhoe" ></apexchart>
-                      </v-col>
-                    </v-row>
                 </v-card>
               </v-dialog>
               </v-form>
@@ -1106,6 +1115,7 @@ export default {
     await this.updateBtn()
     await this.loadingChart()
     const self = this
+    await this.loadingChartSK();
      
   },
   mounted() {
@@ -1183,6 +1193,7 @@ export default {
       await axios.post(`${config.API_URL}/insertSucKhoe`, this.thong_tin_suc_khoe).then(async function (response) {
         await self.updateBtn();
         self.thong_tin_suc_khoe.dialogCN = false;
+        await self.loadingChartSK();
       })
     },
 

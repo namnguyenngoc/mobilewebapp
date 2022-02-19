@@ -340,10 +340,9 @@
                           required
                           hide-details
                           @input="tinhCanNang()"
-                          :rules="emptyRules.can_nang"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="12" md="12" class="mb-0 pb-0">
+                      <v-col cols="12" sm="6" md="6" class="mb-0 pb-0">
                         <v-text-field
                           label="Cân nặng của con"
                           v-model="thong_tin_suc_khoe.can_nang"
@@ -353,6 +352,17 @@
                           required
                           hide-details
                           :rules="emptyRules.can_nang"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="6" class="mb-0 pb-0">
+                        <v-text-field
+                          label="Chiều cao"
+                          v-model="thong_tin_suc_khoe.chieu_cao"
+                          type="number"
+                          suffix="cm"
+                          clearable
+                          required
+                          hide-details
                         ></v-text-field>
                       </v-col>
                     </v-row>
@@ -642,6 +652,13 @@ export default {
           align: 'right',
           sortable: false,
         },
+         {
+          text: 'Cao (Cm)',
+          value: 'chieu_cao',
+          align: 'right',
+          sortable: false,
+        },
+        
       ],
 
       tibinhCountDown: {
@@ -956,6 +973,7 @@ export default {
         ngay_bat_dau: moment().format('YYYY-MM-DD HH:mm'),
         muc_tieu: 8,
         can_nang: 0,
+        chieu_cao: 0,
         can_nang_bo: 0,
         can_nang_total: 0,
         muc_dich: 'KTSKDK',
@@ -967,6 +985,7 @@ export default {
         text:   [v => !!v || "Item is required"],
         select: [(v) => !!v || "Item is required"],
         can_nang: [(v) =>  v > 0 || "Cân nặng phải lón hơn 0"],
+        chieu_cao: [(v) =>  v > 0 || "Chiều cao lón hơn 0"],
       },
 
       chartSucKhoe: {
@@ -975,11 +994,14 @@ export default {
           chart: {
             height: 150,
             width: '90%',
-            type: 'line',
+            type: 'bar',
             stacked: false,
           },
           dataLabels: {
             enabled: true,
+            style: {
+                colors: ['#ff0000',"#0000ff"]
+              },
           },
           dropShadow: {
             enabled: true,
@@ -990,7 +1012,7 @@ export default {
             opacity: 0.2
           },
           stroke: {
-            curve: 'smooth'
+            // curve: 'smooth'
           },
           title: {
             text: 'THEO DÕI SỨC KHỎE',
@@ -1067,14 +1089,11 @@ export default {
             offsetX: 40,
           },
           grid: {
-            borderColor: '#e7e7e7',
-            row: {
-              colors: ['#ccc', 'transparent'], // takes an array which will be repeated on columns
-              opacity: 0.01
-            },
+            borderColor: '#ff0000',
+           
           },
           markers: {
-            size: 1
+            size: 3
           },
         }
       },
@@ -1653,6 +1672,8 @@ export default {
       let limit = 5;
       let can_nang_arr = [];
       let ti_le_tang_arr = [];
+      let chieu_cao_arr = [];
+      let tang_chieu_cao = [];
       let myArray = [];
       let categories  = [];
       await axios
@@ -1665,6 +1686,8 @@ export default {
             categories.push(newitem);
             can_nang_arr.push(element.can_nang);
             ti_le_tang_arr.push(element.ti_le_tang_giam);
+            chieu_cao_arr.push(element.chieu_cao);
+            tang_chieu_cao.push(element.tang_chieu_cao);
           });
           
           self.$refs.refChartSucKhoe.updateOptions({ xaxis: {
@@ -1673,13 +1696,23 @@ export default {
 
           self.serialsSucKhoe.push({
             name: 'Cân nặng',
-            type: 'line',
+            type: 'bar',
             data: can_nang_arr,
           });
           self.serialsSucKhoe.push({
             name: 'Tỉ lệ tăng',
             type: 'line',
             data: ti_le_tang_arr,
+          });
+          // self.serialsSucKhoe.push({
+          //   name: 'Chiều Cao',
+          //   type: 'bar',
+          //   data: chieu_cao_arr,
+          // });
+          self.serialsSucKhoe.push({
+            name: 'Tỉ lệ tăng',
+            type: 'line',
+            data: tang_chieu_cao,
           });
 
           console.log('self.serialsSucKhoe', self.serialsSucKhoe);

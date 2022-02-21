@@ -8,18 +8,35 @@
     <v-col cols="12" md="12" class="pa-0">
       <v-card>
         <v-card-title class="pt-5 pb-2">
-          <v-col cols="5" md="5" class="pb-0 mb-0"> Sức khỏe định kì</v-col>
-          <v-col cols="7" md="7" class="pa-0 ma-0 text-right">
+          <v-col cols="12" md="12" class="ma-0 text-right pt-4 pb-0 mb-0">
+            <v-slider
+              inverse-label
+              label="Display"
+              v-model="sliderSK"
+              :thumb-size="24"
+              thumb-label="always"
+              max="15"
+              min="1"
+              class="pt-0 pb-0 mb-0"
+              hide-details
+              @change="changeSliderSK()"
+            >
+              <template v-slot:thumb-label="{ value }">
+                {{ value }}
+              </template>
+            </v-slider>
+          </v-col>
+          <v-col cols="12" md="12" class="pa-0 ma-0 text-right">
             <v-radio-group v-model="thong_tin_suc_khoe.chart_type_x" row>
               <v-radio label="Theo ngày" value="NGAY" hide-details @click="loadingChartSK()"></v-radio>
-              <v-radio label="Theo tháng" value="THANG" hide-details @click="loadingChartSK()"></v-radio>
+              <v-radio label="Theo tháng" value="THANG" hide-details @click="sliderSK()"></v-radio>
             </v-radio-group>
           </v-col>
         </v-card-title>
         <v-divider class="mx-4"></v-divider>
-        <v-card-text class="mt-0 mb-0 pt-3 pb-1">
-          <v-row class="mr-5 ml-1 mb-0 pb-0">
-            <v-col cols="12" sm="12" md="12" class="mb-0 pb-0">
+        <v-card-text class="ma-0 pa-0">
+          <v-row class="ma-0 pa-0">
+            <v-col cols="12" md="12" class="pa-0 ma-0 text-right">
               <apexchart type="line" :options="chartSucKhoe" :series="serialsSucKhoe" ref="refChartSucKhoe" ></apexchart>
             </v-col>
           </v-row>
@@ -174,7 +191,7 @@
     <v-col cols="12" md="12" class="pa-0 mt-2">
       <v-card>
         <v-card-title class="pt-5 pb-2">
-          <v-col cols="5" md="5" class="pb-0 mb-0"> Ngủ - WC </v-col>
+          <v-col cols="5" md="5" class="pb-0 mb-0"> Ngủ </v-col>
           <v-col cols="7" md="7" class="pa-0 ma-0 text-right">
             <circular-count-down-timer
               :circles="nguCountDown.circles"
@@ -192,6 +209,26 @@
               :value-font-size="nguCountDown.valueFontSize"
               :label-font-size="nguCountDown.labelFontSize"
               :label-position="nguCountDown.labelPosition"
+            />
+          </v-col>
+          <v-col cols="5" md="5" class="pb-0 mb-0">WC</v-col>
+          <v-col cols="7" md="7" class="pa-0 ma-0 text-right">
+            <circular-count-down-timer
+              :circles="wcCountDown.circles"
+              :interval="wcCountDown.interval"
+              :main-circle-id="wcCountDown.mainCircleId || '1'"
+              :size="wcCountDown.size"
+              :container-classes="['countdown']"
+              :circle-classes="wcCountDown.circleClasses"
+              :stop-conditions="wcCountDown.stopConditions"
+              :trigger-update="wcCountDown.triggerUpdate"
+              :stroke-width="wcCountDown.strokeWidth"
+              :stroke-color="wcCountDown.strokeColor"
+              :underneath-stroke-color="wcCountDown.underneathStrokeColor"
+              :fill-color="wcCountDown.fillColor"
+              :value-font-size="wcCountDown.valueFontSize"
+              :label-font-size="wcCountDown.labelFontSize"
+              :label-position="wcCountDown.labelPosition"
             />
           </v-col>
         </v-card-title>
@@ -680,7 +717,7 @@ export default {
           {
             id: '3',
             steps: 60,
-            size: 40,
+            size: 60,
             value: 2,
             // stepLength: -1,
             // label: 'Giờ',
@@ -694,7 +731,7 @@ export default {
           {
             id: '2',
             steps: 60,
-            size: 40,
+            size: 60,
             value: 20,
             // stepLength: -1,
             // label: 'Phút',
@@ -706,7 +743,7 @@ export default {
           {
             id: '1',
             steps: 60,
-            size: 40,
+            size: 60,
             value: 10,
             // stepLength: -1,
             // label: 'Giây',
@@ -716,6 +753,64 @@ export default {
             fillColor: '#312d4b',
           },
         ],
+      },
+      wcCountDown: {
+        // title: 'Decremental counter',
+        // circles: [
+        //   {
+        //     id: '4',
+        //     steps: 365,
+        //     size: 60,
+        //     value: this.wcCountDay,
+        //     // stepLength: -1,
+        //     label: 'Ngày',
+        //     strokeWidth: 5,
+        //     strokeColor: '#008080',
+        //     underneathStrokeColor: '#DCDCDC',
+        //     fillColor: '#312d4b',
+        //     key: 'NGAY',
+        //   },
+        //   {
+        //     id: '3',
+        //     steps: 24,
+        //     size: 60,
+        //     value: 23,
+        //     // stepLength: -1,
+        //     label: 'Giờ',
+        //     strokeWidth: 5,
+        //     strokeColor: '#008080',
+        //     underneathStrokeColor: '#DCDCDC',
+        //     dependentCircles: ['4'],
+        //     fillColor: '#312d4b',
+        //     key: 'GIO',
+        //   },
+        //   {
+        //     id: '2',
+        //     steps: 60,
+        //     size: 60,
+        //     value: 59,
+        //     // stepLength: -1,
+        //     label: 'Phút',
+        //     strokeColor: '#4169E1',
+        //     underneathStrokeColor: '#DCDCDC',
+        //     dependentCircles: ['3'],
+        //     fillColor: '#312d4b',
+        //     key: 'PHUT',
+        //   },
+        //   {
+        //     id: '1',
+        //     steps: 60,
+        //     size: 60,
+        //     value: 55,
+        //     // stepLength: -1,
+        //     label: 'Giây',
+        //     strokeColor: '#C71585',
+        //     underneathStrokeColor: '#DCDCDC',
+        //     dependentCircles: ['2'],
+        //     fillColor: '#312d4b',
+        //     key: 'GIAY',
+        //   },
+        // ],
       },
       cong_viec_model: {
         id: null,
@@ -1107,6 +1202,8 @@ export default {
         }
       },
       serialsSucKhoe:[],
+      sliderSK: 5,
+      countDownValue:[],
     }
   },
   async created() {
@@ -1116,6 +1213,7 @@ export default {
     await this.loadingChart()
     const self = this
     await this.loadingChartSK();
+    await this.summarySuckhoeByCongViec();
      
   },
   mounted() {
@@ -1143,6 +1241,9 @@ export default {
       }
       return false
     },
+    wcCountDay() {
+      return 1000;
+    }
   }, // end method
   methods: {
     formatPrice(value, tofix) {
@@ -1173,6 +1274,79 @@ export default {
         // seft.hotSettings.data = response.data.data;
 
         self.be_wc_model.so_lan_i = response.data.data[0]._count
+      })
+    },
+
+    async summarySuckhoeByCongViec() {
+      const self = this
+      let ho_ten = 'NGUYEN DANG KHOI';
+
+      await axios.get(`${config.API_URL}/summarySuckhoeByCongViec`).then(response => {
+        // seft.hotSettings.data = response.data.data;
+        self.countDownValue = response.data.data;
+        let wc = self.countDownValue.find(({ma_cv}) => ma_cv == 'WC');
+        // self.wcCountDown.circles.find(({key}) => key == 'NGAY').value = 10000;
+        // config.wcCountDay = 1000;
+        // self.$forceUpdate();
+        self.wcCountDown = {
+            title: 'wcCountDown',
+            circles: [
+              {
+                id: '4',
+                steps: 365,
+                size: 60,
+                value: wc.khoang_cach_max_day,
+                // stepLength: -1,
+                label: 'Ngày',
+                strokeWidth: 5,
+                strokeColor: '#008080',
+                underneathStrokeColor: '#DCDCDC',
+                fillColor: '#312d4b',
+                key: 'NGAY',
+              },
+              {
+                id: '3',
+                steps: 24,
+                size: 60,
+                value: wc.khoang_cach_max_hour,
+                // stepLength: -1,
+                label: 'Giờ',
+                strokeWidth: 5,
+                strokeColor: '#008080',
+                underneathStrokeColor: '#DCDCDC',
+                dependentCircles: ['4'],
+                fillColor: '#312d4b',
+                key: 'GIO',
+              },
+              {
+                id: '2',
+                steps: 60,
+                size: 60,
+                value: wc.khoang_cach_max_min,
+                // stepLength: -1,
+                label: 'Phút',
+                strokeColor: '#4169E1',
+                underneathStrokeColor: '#DCDCDC',
+                dependentCircles: ['3'],
+                fillColor: '#312d4b',
+                key: 'PHUT',
+              },
+              {
+                id: '1',
+                steps: 60,
+                size: 60,
+                value: wc.khoang_cach_max_sec,
+                // stepLength: -1,
+                label: 'Giây',
+                strokeColor: '#C71585',
+                underneathStrokeColor: '#DCDCDC',
+                dependentCircles: ['2'],
+                fillColor: '#312d4b',
+                key: 'GIAY',
+              },
+            ],
+          }
+        console.log('summarySuckhoeByCongViec', wc);
       })
     },
 
@@ -1680,7 +1854,7 @@ export default {
     
       self.serialsSucKhoe = [];
       let ho_ten = 'NGUYỄN ĐĂNG KHÔI';
-      let limit = 5;
+      // let limit = 5;
       let can_nang_arr = [];
       let ti_le_tang_arr = [];
       let chieu_cao_arr = [];
@@ -1688,7 +1862,7 @@ export default {
       let myArray = [];
       let categories  = [];
       await axios
-        .get(`${config.API_URL}/selectChartSucKhoe/${limit}/${self.thong_tin_suc_khoe.chart_type_x}`)
+        .get(`${config.API_URL}/selectChartSucKhoe/${self.sliderSK}/${self.thong_tin_suc_khoe.chart_type_x}`)
         .then(async function (response){
           myArray = response.data.data;
           let x_date = new Set();
@@ -1738,6 +1912,11 @@ export default {
       console.log('changeSlider', this.slider)
       await this.loadingChart()
     },
+    async changeSliderSK() {
+      console.log('changeSlider', this.sliderSK)
+      await this.loadingChartSK()
+    },
+    
   },
 }
 </script>

@@ -25,7 +25,7 @@
         ></v-img>
         <v-slide-x-transition>
           <h2 class="app-title text--primary">
-            MATERIO
+            FAMILY
           </h2>
         </v-slide-x-transition>
       </router-link>
@@ -42,6 +42,25 @@
         :to="{ name: 'dashboard' }"
         :icon="icons.mdiHomeOutline"
       ></nav-menu-link>
+
+      <nav-menu-group
+        title="Chi tiêu"
+        :icon="icons.mdiFileOutline"
+      >
+        <nav-menu-link
+          title="Dashboard"
+          :to="{ name: 'dashboard-ct' }"
+        ></nav-menu-link>
+        <nav-menu-link
+          title="Chi tiêu"
+          :to="{ name: 'chitieu-list' }"
+        ></nav-menu-link>
+        <nav-menu-link
+          title="Trả góp"
+          :to="{ name: 'tragop-list' }"
+        ></nav-menu-link>
+
+      </nav-menu-group>
       <nav-menu-link
         title="Account Settings"
         :to="{ name: 'pages-account-settings'}"

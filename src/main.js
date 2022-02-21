@@ -11,13 +11,18 @@ import "vue-easytable/libs/theme-default/index.css";
 import VueEasytable from "vue-easytable";
 import VueGoodTablePlugin from 'vue-good-table';
 // import the styles 
-import 'vue-good-table/dist/vue-good-table.css'
+import 'vue-good-table/dist/vue-good-table.css';
+import _ from "lodash";
+import vueCookies from 'vue-cookies';
+
 
 Vue.config.productionTip = false;
 Vue.use(CircularCountDownTimer);
 Vue.component('apexchart', VueApexCharts);
 Vue.use(VueEasytable);
 Vue.use(VueGoodTablePlugin);
+Vue.prototype._ = _;
+Vue.use(vueCookies);
 
 new Vue({
   router,

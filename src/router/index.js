@@ -14,6 +14,21 @@ const routes = [
     component: () => import('@/views/dashboard/Dashboard.vue'),
   },
   {
+    path: '/dashboard-ct',
+    name: 'dashboard-ct',
+    component: () => import('@/views/dashboard-chitieu/Dashboard.vue'),
+  },
+  {
+    path: '/chitieu-list',
+    name: 'chitieu-list',
+    component: () => import('@/views/family-chitieu/ChiTieuList.vue'),
+  },
+  {
+    path: '/tragop-list',
+    name: 'tragop-list',
+    component: () => import('@/views/family-chitieu/TraGopList.vue'),
+  },
+  {
     path: '/typography',
     name: 'typography',
     component: () => import('@/views/typography/Typography.vue'),
@@ -50,6 +65,11 @@ const routes = [
     meta: {
       layout: 'blank',
     },
+  },
+  {
+    path: '/pages/logout',
+    name: 'pages-logout',
+    component: () => import('@/views/pages/Logout.vue'),
   },
   {
     path: '/pages/register',

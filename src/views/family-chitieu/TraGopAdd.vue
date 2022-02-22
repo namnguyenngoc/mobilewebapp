@@ -4,9 +4,7 @@
     v-model="dialog"
     max-width="900px"
     persistent
-    fullscreen
     hide-overlay
-    transition="dialog-bottom-transition"
     scrollable
   >
     <v-card max-height="900px">
@@ -27,7 +25,7 @@
               style="color: #ffffff"
               @click.native="dialog = false"
             >
-              clear
+              x
             </v-icon>
           </v-card-title>
 
@@ -35,7 +33,7 @@
 
           <v-card-text class="v-scroll pt-0 pb-0 mt-0 mb-0" >
           
-            <v-row>
+            <v-row class="mt-3">
               <v-col cols="12" class="mt-0 mb-0 pt-0 pb-0">
                 <v-text-field
                   label="Sản phẩm"
@@ -258,7 +256,7 @@
   import config from '../../config/config.js';
   import moment from "moment";
   export default {
-    layout: 'addTraGop',
+    layout: 'tragopAdd',
     components: {
     },
     props: {

@@ -30,11 +30,30 @@
               @on-cell-click="onCellClick"
               >
               <template slot="table-row" slot-scope="props">
-                <span v-if="props.column.field == 'id_tra_gop' && props.formattedRow['status'] == 'TG'">
+                <span v-if="props.column.field == 'id'">
+                   <!-- && props.formattedRow['status'] == 'DN' -->
                   <v-btn
-                    v-if="props.formattedRow['id_tra_gop'] == undefined || props.formattedRow['id_tra_gop'] == null || props.formattedRow['id_tra_gop'] == ''"
+                    v-if="props.formattedRow['status'] == 'DN'"
+                    color="info"
+                    @click="confirmChangeStatus(props, 'CSK')"
+                  >
+                   <span>
+                    Chốt SK
+                   </span>
+                  </v-btn>
+                  <v-btn
+                    v-else-if="props.formattedRow['status'] == 'CSK'"
                     color="primary"
-                    @click="save()"
+                    @click="confirmChangeStatus(props, 'DTCSK')"
+                  >
+                   <span>
+                    Gạch nợ
+                   </span>
+                  </v-btn>
+                  <v-btn
+                    v-else-if="props.formattedRow['id_tra_gop'] == undefined || props.formattedRow['id_tra_gop'] == null || props.formattedRow['id_tra_gop'] == ''"
+                    color="info"
+                    @click="addTraGop(props)"
                   >
                    <span>
                     Chuyển đổi {{props.formattedRow['id_tra_gop']}}
@@ -76,11 +95,18 @@
         :title="chitieuTitle"
         :item="chitieuItem"
         :itemData="itemDataStatus"
-        :kyChiMoi="itemStatusMoi"
+        :statusMoi="itemStatusMoi"
         :v-model="chiTieuChangeStatusDialog"
         @refeshList="loadChiTieu()"
       />
-      
+        
+      <TraGopAdd
+        ref="tragopAdd"
+        :v-model="dialogTraGop"
+        :item="itemGop"
+        @refeshList="loadChiTieu()"
+      />
+
     </v-col>
   </v-row>
   
@@ -97,6 +123,7 @@ import { reactive } from '@vue/composition-api'
 import ChiTieuDetail from "./ChiTieuDetail";
 import ChiTieuChangeKyChi from "./ChiTieuChangeKyChi";
 import ChiTieuChangeStatus from "./ChiTieuChangeStatus";
+import TraGopAdd from "./TraGopAdd";
 
 export default {
   name: 'ChiTieuGiaDinh',
@@ -104,13 +131,50 @@ export default {
     VueGoodTable,
     ChiTieuDetail,
     ChiTieuChangeKyChi,
-    ChiTieuChangeStatus
+    ChiTieuChangeStatus,
+    TraGopAdd
   },
   data() {
     let self = this;
     return {
       sliderSK: 12,
       colChiTIeu: [
+        {
+          label: 'Action',
+          field: 'id',
+         
+        },
+        {
+          label: 'Số tiền',
+          field: 'so_tien',
+          type: 'number',
+          filterable: true,
+          formatFn: this.formatPrice,
+          filterOptions: {
+            styleClass: 'class-filter', // class to be added to the parent th element
+              enabled: true, // enable filter for this column
+              placeholder: 'Số Tiền', // placeholder for filter input
+              filterValue: '',
+              filterDropdownItems: [], // dropdown (with selected values) instead of text input
+              // filterFn: this.columnFilterFn, //custom filter function that
+              trigger: 'enter', //only trigger on enter not on keyup 
+          },
+          headerField: this.sumCount,
+        },
+        {
+          label: 'Status',
+          field: 'status',
+          filterable: true,
+          filterOptions: {
+            styleClass: 'class-filter', // class to be added to the parent th element
+              enabled: true, // enable filter for this column
+              placeholder: 'Status', // placeholder for filter input
+              filterValue: 'DN', // initial populated value for this filter
+              filterDropdownItems: ['DN', 'CSK', 'DTCSK', 'TG', 'HT'], // dropdown (with selected values) instead of text input
+              // filterFn: this.columnFilterFn, //custom filter function that
+              trigger: 'enter', //only trigger on enter not on keyup 
+          },
+        },
         {
           label: 'Bank',
           field: 'bank_code',
@@ -140,23 +204,6 @@ export default {
               // filterFn: this.columnFilterFn, //custom filter function that
               trigger: 'enter', //only trigger on enter not on keyup 
           },
-        },
-        {
-          label: 'Số tiền',
-          field: 'so_tien',
-          type: 'number',
-          filterable: true,
-          formatFn: this.formatPrice,
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Số Tiền', // placeholder for filter input
-              filterValue: '',
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
-          headerField: this.sumCount,
         },
         {
           label: 'Nội dung',
@@ -189,25 +236,6 @@ export default {
               trigger: 'enter', //only trigger on enter not on keyup 
           },
         },
-        {
-          label: 'Status',
-          field: 'status',
-          filterable: true,
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Status', // placeholder for filter input
-              filterValue: 'DN', // initial populated value for this filter
-              filterDropdownItems: ['DN', 'TG', 'DTCSK', 'HT'], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
-        },
-        {
-          label: 'Action',
-          field: 'id_tra_gop',
-         
-        },
       ],
       tblChiTieu:[ 
         {
@@ -232,6 +260,10 @@ export default {
       chiTieuChangeStatusDialog: false,
       itemDataStatus: {},
       itemStatusMoi: {},
+      dialogTraGop: false,
+      itemGop: {
+        tong_tien: 0,
+      },
 
     }
   },
@@ -407,9 +439,39 @@ export default {
       // this.chiTieuDetailDialog = true;
     },
 
-    
-    
-   
+    confirmChangeStatus (props, status){
+      console.log("props", props);
+      console.log("status", status);
+      this.itemStatusMoi = config.CHITIEU_ITEMS_STATUS.find(({id}) => id == status);
+      
+      console.log("this.itemStatusMoi", this.itemStatusMoi);
+      this.changeChiTieuStatus(props.row.noi_dung, props.row, props.row, props.row, true);
+    },
+    addTraGop (props) {
+      let item =  props.row;
+      this.itemGop = {
+          san_pham:  item.noi_dung,
+          bank: item.bank_code,
+          tong_tien: item.tong_tien,
+          moi_ky: 0,
+          tong_so_ky: 0,
+          ky_da_tra: 0,
+          ky_con_lai: 0,
+          tien_do_tra_gop: 0,
+          noi_mua: item.noi_mua,
+          ngay_mua: item.ngay_mua,
+          ghi_chu: `CHUYỂN ĐỔI TRẢ GÓP ${item.noi_dung}`,
+          ky_cuoi: "",
+          trang_thai: "",
+          ky_dau: moment(new Date()).format("DD/MM/YYYY"),
+          chitieulist: ""
+      };
+      
+      // props.row.noi_dung, props.row, props.row, props.row
+      this.$refs.tragopAdd.dialog = true
+      
+    },
+
   },
 }
 </script>

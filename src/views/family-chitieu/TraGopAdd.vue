@@ -34,7 +34,7 @@
           <v-card-text class="v-scroll pt-0 pb-0 mt-0 mb-0" >
           
             <v-row class="mt-3">
-              <v-col cols="12" class="mt-0 mb-0 pt-0 pb-0">
+              <v-col cols="12" class="mt-1 mb-0 pt-0 pb-0">
                 <v-text-field
                   label="Sản phẩm"
                   value=""
@@ -44,7 +44,7 @@
                   :rules="emptyRules"
                 ></v-text-field>
               </v-col>
-              <v-col cols="12" md="3">
+              <v-col cols="12" md="5" class="mt-1 mb-0 pt-0 pb-0">
                 <v-autocomplete
                   ref="bank"
                   :items="bankChecked"
@@ -58,29 +58,8 @@
                   :rules="emptyRules"
                 />
               </v-col>
-              <v-col cols="12" md="3" class="mt-0 mb-0 pt-0 pb-0">
-                <v-text-field
-                  label="Phí chuyển đổi"
-                  value="0"
-                  v-model="item.phi_chuyen"
-                  class="text-right"
-                  :rules="numberRules"
-                  @input="tinhSoTienMoiKy()"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" md="6" class="mt-0 mb-0 pt-0 pb-0">
-                <v-text-field
-                  label="Tổng tiền"
-                  value="0"
-                  v-model="item.tong_tien"
-                  class="text-right"
-                  required
-                  :rules="emptyNumberRules"
-                  @input="tinhSoTienMoiKy()"
-                ></v-text-field>
-              </v-col>
-
-              <v-col cols="12" md="6" class="mt-0 mb-0 pt-0 pb-0">
+              
+               <v-col cols="12" md="7" class="mt-1 mb-0 pt-0 pb-0">
                 <v-text-field
                   label="Số kỳ trả góp"
                   value="0"
@@ -91,7 +70,30 @@
                   @input="tinhSoTienMoiKy()"
                 ></v-text-field>
               </v-col>
-              <v-col cols="12" md="3">
+
+              <v-col cols="12" md="4" class="mt-1 mb-0 pt-0 pb-0">
+                <v-text-field
+                  label="Phí chuyển đổi"
+                  value="0"
+                  v-model="item.phi_chuyen"
+                  class="text-right"
+                  :rules="onlyNumber"
+                  required
+                  @input="tinhSoTienMoiKy()"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" md="4" class="mt-1 mb-0 pt-0 pb-0">
+                <v-text-field
+                  label="Giá trị sản phẩm"
+                  value="0"
+                  v-model="item.gia_san_pham"
+                  class="text-right"
+                  type="number"
+                  :rules="emptyNumberRules"
+                ></v-text-field>
+              </v-col>
+              
+              <v-col cols="12" md="4" class="mt-1 mb-0 pt-0 pb-0">
                 <v-text-field
                   label="Số tiền mỗi kỳ"
                   value="0"
@@ -103,19 +105,9 @@
                   :rules="emptyNumberRules"
                 ></v-text-field>
               </v-col>
-              <v-col cols="12" md="3">
-                <v-text-field
-                  label="Số tiền mỗi kỳ (fm)"
-                  value="0"
-                  v-model="item.moi_ky_fm"
-                  class="text-right"
-                  type="number"
-                  readonly
-                  required
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" md="4" class="mt-0 mb-0 pt-0 pb-0">
-                <v-menu
+              
+              <v-col cols="12" md="4" class="mt-1 mb-0 pt-0 pb-0">
+              <v-menu
                   ref="menu0"
                   v-model="menu0"
                   :close-on-content-click="false"
@@ -147,6 +139,32 @@
                     </v-btn>
                   </v-date-picker>
                 </v-menu>
+                
+              </v-col>
+
+              
+              <v-col cols="12" md="4" class="mt-1 mb-0 pt-0 pb-0">
+                <v-text-field
+                  label="Tổng tiền góp"
+                  value="0"
+                  v-model="item.tong_tien"
+                  class="text-right"
+                  required
+                  :rules="emptyNumberRules"
+                  @input="tinhSoTienMoiKy()"
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="12" md="4" class="mt-0 mb-0 pt-0 pb-0">
+                <v-text-field
+                  label="Số tiền mỗi kỳ (fm)"
+                  value="0"
+                  v-model="item.moi_ky_fm"
+                  class="text-right"
+                  type="number"
+                  readonly
+                  required
+                ></v-text-field>
               </v-col>
               <v-col cols="6" md="4" class="mt-0 mb-0 pt-0 pb-0">
                 <v-menu
@@ -216,7 +234,7 @@
                   </v-date-picker>
                 </v-menu>
               </v-col>
-              <v-col cols="12" class="mt-0 mb-0 pt-0 pb-0">
+              <v-col cols="12" class="mt-1 mb-0 pt-0 pb-0">
                 <v-text-field
                   v-model="item.noi_mua"
                   label="Nơi mua"
@@ -225,7 +243,7 @@
                   :rules="emptyRules"
                 ></v-text-field>
               </v-col>
-              <v-col cols="12" class="mt-0 mb-0 pt-0 pb-0">
+              <v-col cols="12" class="mt-1 mb-0 pt-0 pb-0">
                 <v-text-field
                   v-model="item.ghi_chu"
                   label="Ghi Chú"
@@ -271,6 +289,7 @@
           san_pham: "",
           bank: "",
           tong_tien: 0,
+          gia_san_pham: 0,
           moi_ky: 0,
           tong_so_ky: 0,
           ky_da_tra: 0,
@@ -281,7 +300,8 @@
           ghi_chu: "",
           ky_cuoi: "",
           trang_thai: "",
-          ky_dau: moment(new Date()).format("DD/MM/YYYY"),
+          ky_dau: moment(new Date()).format("YYYY-MM-DD"),
+          // ngay_mua = moment(String(chitieu.ngay_chi)).format("YYYY-MM-DD");
           chitieulist: ""
         })
       },
@@ -303,6 +323,12 @@
           v  => {
             if (!isNaN(parseFloat(v)) && v >= 0 && v <= 5000000) return true;
             return 'Number has to be between 1 and 5.000.000';
+          },
+        ],
+        onlyNumber: [
+          v  => {
+            if (!isNaN(parseFloat(v))) return true;
+            return 'Giá trị phải là số ' +  parseFloat(v);  
           },
         ],
         bankChecked: [
@@ -377,7 +403,7 @@
     },
     mounted: function () {}, // end method
     created () {
-     
+      this.item.tong_tien = parseFloat(this.item.gia_san_pham) + parseFloat(this.item.phi_chuyen);
     }, // end data
     methods: {
       formatDate (date) {
@@ -419,11 +445,12 @@
         }
       },
       tinhSoTienMoiKy(){
-        let soTienMoiKy = (this.item.tong_tien == undefined 
-                            || this.item.tong_tien == null 
-                            || this.item.tong_tien == "") ? 0 : this.item.tong_tien;
-        soTienMoiKy = (parseFloat(this.item.tong_tien) + parseFloat(this.item.phi_chuyen)) / parseFloat(this.item.tong_so_ky);
+        let soTienMoiKy = (this.item.gia_san_pham == undefined 
+                            || this.item.gia_san_pham == null 
+                            || this.item.gia_san_pham == "") ? 0 : this.item.gia_san_pham;
+        soTienMoiKy = (parseFloat(this.item.gia_san_pham) + parseFloat(this.item.phi_chuyen)) / parseFloat(this.item.tong_so_ky);
         this.item.moi_ky = Math.round(soTienMoiKy).toFixed(2);
+        this.item.tong_tien = parseFloat(this.item.gia_san_pham) + parseFloat(this.item.phi_chuyen);
         // this.item.moi_ky_fm = this.formatPrice(Math.round(soTienMoiKy),2);
         console.log("aaaaaaaaaaaa", moment(this.item.ky_dau, "DD/MM/YYYY").add(this.item.tong_so_ky,'months'));
         this.item.ky_cuoi = moment(new Date(this.item.ky_dau), "DD/MM/YYYY").add(this.item.tong_so_ky,'months').format("YYYY-MM-DD");
@@ -439,7 +466,8 @@
           let traGopObject = {
             san_pham: this.san_pham,
             bank: this.bank.code,
-            tong_tien: this.tong_tien,
+            tong_tien: this.gia_san_pham + this.item.phi_chuyen,
+            gia_san_pham: this.gia_san_pham,
             moi_ky: this.moi_ky,
             tong_so_ky: this.tong_so_ky,
             ky_da_tra: this.ky_da_tra,

@@ -114,6 +114,7 @@
 <script>
 import axios from 'axios';
 import config from '../../config/config';
+import common from '../../common/common';
 import moment from 'moment';
 import { VueGoodTable } from 'vue-good-table';
 
@@ -449,21 +450,27 @@ export default {
     },
     addTraGop (props) {
       let item =  props.row;
+      let kyObj = common.getKyTinh(item.bank_code, new Date(item.ngay_chi), new Date().getDate(), true);
+      console.log("kyObj", kyObj);
+      console.log("item", item);
+      let ky_dau = moment(new Date(kyObj.year, kyObj.month, kyObj.day)).format("YYYY-MM-DD");
       this.itemGop = {
           san_pham:  item.noi_dung,
           bank: item.bank_code,
           tong_tien: item.tong_tien,
+          gia_san_pham: item.so_tien,
           moi_ky: 0,
           tong_so_ky: 0,
           ky_da_tra: 0,
           ky_con_lai: 0,
           tien_do_tra_gop: 0,
+          phi_chuyen: 0,
           noi_mua: item.noi_mua,
-          ngay_mua: item.ngay_mua,
+          ngay_mua: moment(item.ngay_chi).format("YYYY-MM-DD"),
           ghi_chu: `CHUYỂN ĐỔI TRẢ GÓP ${item.noi_dung}`,
           ky_cuoi: "",
           trang_thai: "",
-          ky_dau: moment(new Date()).format("DD/MM/YYYY"),
+          ky_dau: ky_dau,
           chitieulist: ""
       };
       

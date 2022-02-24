@@ -2,7 +2,6 @@
   <v-dialog
     ref="chitieuDetail"
     v-model="dialog"
-    fullscreen
   >
     <v-card>
       <v-form ref="form">
@@ -68,6 +67,30 @@
             </v-col>
           </v-container>
         </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="dialog = false"
+          >
+            Close
+          </v-btn>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="save()"
+          >
+            Save
+          </v-btn>
+          <v-btn
+            color="danger darken-1"
+            text
+            @click="deleteChiTieu()"
+          >
+            Delete
+          </v-btn>
+        </v-card-actions>
       </v-form>
     </v-card>
   </v-dialog>
@@ -165,7 +188,19 @@
     }, // end method
     created () {}, // end data
     methods: {
-     
+     async deleteChiTieu () {
+      const seft = this;
+      await axios
+        .post(config.API_FAMILY + '/api/deleteChiTieu', this.item)
+        .then(function (response) {
+          console.log('succuess')
+          seft.dialog = false;
+          seft.$emit('refeshList');
+        })
+        .catch(error => {
+          console.log(error)
+        })
+      },
     }, // end created
   } // End exxport default
 </script>

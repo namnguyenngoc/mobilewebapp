@@ -78,6 +78,7 @@
         :title="chitieuTitle"
         :item="chitieuItem"
         :v-model="chiTieuDetailDialog"
+        @refeshList="loadChiTieu()"
       />
 
       <ChiTieuChangeKyChi

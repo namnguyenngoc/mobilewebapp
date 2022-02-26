@@ -367,7 +367,7 @@
         trang_thai: "",
         ky_dau: moment(new Date()).format("DD/MM/YYYY"),
         chitieulist: "2021-02-08",
-        item: {
+        item2: {
           // id: "",
           san_pham: "",
           bank: "",

@@ -1,12 +1,25 @@
 <template>
   <v-row class="match-height">
-    <v-col cols="12" md="12" class="pa-0">
+    <v-col>
       <!-- Theo doi suc khoe -->
       <v-card>
-        <v-card-title class="pb-0 mb-1">
-          Chi Tiêu List
+        <v-card-title class="pt-5 pb-2 mr-0 pr-2">
+          <v-col cols="10" md="10" class="pa-0 ma-0">
+            Chi Tiêu List
+          </v-col>
+         <v-col cols="2" md="2" class="pa-0 ma-0 text-right">
+            <v-btn
+              color="info"
+              icon
+              @click="loadChiTieu()"
+            >
+              <v-icon>
+                {{ icons.mdiReload }}
+              </v-icon>
+            </v-btn>
+          </v-col>
         </v-card-title>
-        <v-card-text class="ma-0 pa-0">
+        <v-card-text class="mt-0 mb-0 pt-1 pb-1 ma-0 pa-0">
           <v-row class="ma-0 pa-0">
             <v-col cols="12" md="12" class="pa-0 ma-0 text-right">
               <vue-good-table
@@ -120,7 +133,7 @@ import moment from 'moment';
 import { VueGoodTable } from 'vue-good-table';
 
 
-import { mdiMinus, mdiOneUp, mdiPlus, mdiDeleteOutline, mdiCircleEditOutline, mdiSleep, mdiConsoleNetworkOutline } from '@mdi/js'
+import { mdiReload, mdiMinus, mdiOneUp, mdiPlus, mdiDeleteOutline, mdiCircleEditOutline, mdiSleep, mdiConsoleNetworkOutline } from '@mdi/js'
 import { reactive } from '@vue/composition-api'
 import ChiTieuDetail from "./ChiTieuDetail";
 import ChiTieuChangeKyChi from "./ChiTieuChangeKyChi";
@@ -134,7 +147,8 @@ export default {
     ChiTieuDetail,
     ChiTieuChangeKyChi,
     ChiTieuChangeStatus,
-    TraGopAdd
+    TraGopAdd,
+    mdiReload
   },
   data() {
     let self = this;
@@ -171,7 +185,7 @@ export default {
             styleClass: 'class-filter', // class to be added to the parent th element
               enabled: true, // enable filter for this column
               placeholder: 'Status', // placeholder for filter input
-              filterValue: 'DN', // initial populated value for this filter
+              filterValue: (new Date()).getDate() > 21 ? 'CSK' : 'DN', // initial populated value for this filter
               filterDropdownItems: ['DN', 'CSK', 'DTCSK', 'TG', 'HT'], // dropdown (with selected values) instead of text input
               // filterFn: this.columnFilterFn, //custom filter function that
               trigger: 'enter', //only trigger on enter not on keyup 
@@ -225,8 +239,11 @@ export default {
           label: 'Ngày chi',
           field: 'ngay_chi',
           type: 'date',
-          dateInputFormat: 'yyyy-MM-dd\'T\'HH:mm:ss.SSS\'Z\'',
-          dateOutputFormat: 'dd-MM-yyyy',
+          // dateInputFormat: "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+          // dateOutputFormat: 'dd-MM-yyyy',
+          formatFn: function (value) {
+              return value != null ? moment(value).format('DD-MM-yyyy') : null
+          },
           filterable: true,
           filterOptions: {
             styleClass: 'class-filter', // class to be added to the parent th element
@@ -266,15 +283,32 @@ export default {
       itemGop: {
         tong_tien: 0,
       },
-
+      loadingInstance: null,
+      icons: {
+        mdiMinus,
+        mdiOneUp,
+        mdiPlus,
+        mdiDeleteOutline,
+        mdiCircleEditOutline,
+        mdiSleep,
+        mdiReload
+      },
     }
   },
-  async created() {
-    await this.loadChiTieu();
+  created() {
+    this.loadingInstance = this.$veLoading({
+        target: document.querySelector("#loading-container"),
+        // 等同于
+        // target:"#loading-container"
+        name: "wave",
+    });
+    this.loadChiTieu();
      
   },
   mounted() {
-    // this.loadingChart();
+    // // this.loadingChart();
+    
+    // this.show();
   },
   computed: {
   //  formatPrice(){
@@ -324,7 +358,10 @@ export default {
       // params.event - click event
       console.log('row', params.row);
     },
-    async loadChiTieu(){
+    loadChiTieu(){
+      // this.loadingInstance.show();
+      this.show();
+      // this.show();
       let self = this;
       self.tblChiTieu = 
           [ 
@@ -353,7 +390,7 @@ export default {
           : this.selectDateCurrent.code,
       ];
       kyChi = ['ALLINONE'];
-      await axios
+      axios
       .get(`${config.API_FAMILY}/api/chitieus/${JSON.stringify(kyChi)}/${this.allStatusChecked}/${this.includeGop}`)
       .then(response => {
         // seft.hotSettings.data = response.data.data;
@@ -372,7 +409,7 @@ export default {
             }
           ];
         console.log(self.tblChiTieu);
-        // self.close();
+        self.close();
       });
     },
 
@@ -385,7 +422,7 @@ export default {
 
     },
     sumCount(rowObj) {
-    	console.log(rowObj);
+    	console.log('sumCount', rowObj);
     	let sum = 0;
       for (let i = 0; i < rowObj.children.length; i++) {
         sum += parseFloat(rowObj.children[i].so_tien);
@@ -478,6 +515,16 @@ export default {
       // props.row.noi_dung, props.row, props.row, props.row
       this.$refs.tragopAdd.dialog = true
       
+    },
+    destroyed() {
+      this.loadingInstance.destroy();
+
+    }, // end method
+    show() {
+        this.loadingInstance.show();
+    },
+    close() {
+        this.loadingInstance.close();
     },
 
   },

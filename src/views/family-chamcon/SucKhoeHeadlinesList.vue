@@ -4,7 +4,7 @@
       <v-card>
         <v-card-title class="pt-5 pb-2 mr-0 pr-2">
           <v-col cols="10" md="10" class="pa-0 ma-0">
-            Danh sách công việc
+            Theo dõi sức khỏe định kì
           </v-col>
           <v-col cols="2" md="2" class="pa-0 ma-0 text-right">
             <v-btn
@@ -38,8 +38,8 @@
               />
           </v-col>
            <v-col cols="12">
-            <chamConDetail
-              ref="chamConDetail"
+            <suckhoeDetail
+              ref="suckhoeDetail"
               :title="chamConTitle"
               :item="chamConItem"
               :v-model="chamConDetaillDialog"
@@ -61,7 +61,7 @@ import config from '../../config/config';
 import moment from "moment";
 import "vue-easytable/libs/theme-dark/index.css";
 import { VueGoodTable } from 'vue-good-table';
-import chamConDetail from "./ChamConDetail";
+import suckhoeDetail from "./SucKhoeDetail";
 
 import {
   mdiMinus,
@@ -78,53 +78,38 @@ export default {
   name: 'SucKhoe',
   components: {
     VueGoodTable,
-    chamConDetail
+    suckhoeDetail
   },
   data() {
     return {
       loadingInstance: null,
       colCongViec: [
+        // {
+        //   label: 'id',
+        //   field: 'id',
+        //   filterable: true,
+        // },
         {
-          label: 'id',
-          field: 'id',
-          filterable: true,
-        },
-        {
-          label: 'Mã CV',
-          field: 'ma_cv',
+          label: 'Họ tên',
+          field: 'ho_ten',
           filterable: true,
           filterOptions: {
             styleClass: 'class-filter', // class to be added to the parent th element
               enabled: true, // enable filter for this column
               placeholder: 'Mã CV', // placeholder for filter input
-              filterValue: '',
+              filterValue: 'NGUYỄN ĐĂNG KHÔI',
               filterDropdownItems: [], // dropdown (with selected values) instead of text input
               // filterFn: this.columnFilterFn, //custom filter function that
               trigger: 'enter', //only trigger on enter not on keyup 
           },
         },
         {
-          label: 'Nội dung',
-          field: 'ten_cong_viec',
+          label: 'Ngày',
+          field: 'ngay_bat_dau',
           filterable: true,
           filterOptions: {
             styleClass: 'class-filter', // class to be added to the parent th element
               enabled: true, // enable filter for this column
-              placeholder: 'Nội dung', // placeholder for filter input
-              filterValue: '',
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
-        },
-        {
-          label: 'Ngày thực hiện',
-          field: 'ngay_thuc_hien',
-          filterable: false,
-          type: 'date',
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
               placeholder: 'Ngày', // placeholder for filter input
               filterValue: '',
               filterDropdownItems: [], // dropdown (with selected values) instead of text input
@@ -132,104 +117,122 @@ export default {
               trigger: 'enter', //only trigger on enter not on keyup 
           },
           formatFn: function (value) {
-              return value != null ? moment(value).format(config.DATE_TIME_FM) : null
+            return value != null ? moment(value).format(config.DATE_FM) : null
           },
         },
         {
-          label: 'Giờ bắt đầu',
-          field: 'gio_bat_dau',
+          label: 'Cân nặng',
+          field: 'can_nang',
           filterable: false,
-          type: 'date',
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Ngày', // placeholder for filter input
-              filterValue: '',
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
-          formatFn: function (value) {
-              return value != null ? moment(value).format(config.DATE_TIME_FM) : null
-          },
-         
-        },
-        {
-          label: 'Giờ kế tiếp',
-          field: 'gio_ke_tiep',
-          filterable: false,
-          type: 'date',
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Ngày', // placeholder for filter input
-              filterValue: '',
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
-          formatFn: function (value) {
-              return value != null ? moment(value).format(config.DATE_TIME_FM) : null
-          },
-        },
-        {
-          label: 'Thông tin thêm',
-          field: 'thong_tin_them',
-          filterable: false,
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Thông tin', // placeholder for filter input
-              filterValue: '',
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
-        },
-        {
-          label: 'Trạng thái',
-          field: 'status',
-          filterable: false,
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Trạng thái', // placeholder for filter input
-              filterValue: '',
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
-        },
-        {
-          label: 'Tổng thời gian',
-          field: 'working_time',
           type: 'number',
-          filterable: true,
-          formatFn: this.formatPrice,
           filterOptions: {
             styleClass: 'class-filter', // class to be added to the parent th element
               enabled: true, // enable filter for this column
-              placeholder: 'Số Tiền', // placeholder for filter input
+              placeholder: 'Cân nặng', // placeholder for filter input
               filterValue: '',
               filterDropdownItems: [], // dropdown (with selected values) instead of text input
               // filterFn: this.columnFilterFn, //custom filter function that
               trigger: 'enter', //only trigger on enter not on keyup 
           },
+          formatFn: function (value) {
+            return value != null ? `${value / 1000} kg` : null
+          },
+          
         },
         {
-          label: 'Ghi chú',
-          field: 'ghi_chu',
+          label: 'Chiều cao',
+          field: 'chieu_cao',
           filterable: false,
+          type: 'number',
           filterOptions: {
             styleClass: 'class-filter', // class to be added to the parent th element
               enabled: true, // enable filter for this column
-              placeholder: 'Ghi chú', // placeholder for filter input
+              placeholder: 'Chiều cao', // placeholder for filter input
               filterValue: '',
               filterDropdownItems: [], // dropdown (with selected values) instead of text input
               // filterFn: this.columnFilterFn, //custom filter function that
               trigger: 'enter', //only trigger on enter not on keyup 
           },
+          formatFn: function (value) {
+            return value != null ? `${value / 100} cm` : null
+          },
         },
+        // {
+        //   label: 'Giờ kế tiếp',
+        //   field: 'gio_ke_tiep',
+        //   filterable: false,
+        //   type: 'date',
+        //   filterOptions: {
+        //     styleClass: 'class-filter', // class to be added to the parent th element
+        //       enabled: true, // enable filter for this column
+        //       placeholder: 'Ngày', // placeholder for filter input
+        //       filterValue: '',
+        //       filterDropdownItems: [], // dropdown (with selected values) instead of text input
+        //       // filterFn: this.columnFilterFn, //custom filter function that
+        //       trigger: 'enter', //only trigger on enter not on keyup 
+        //   },
+        //   formatFn: function (value) {
+        //       return value != null ? moment(value).format(config.DATE_TIME_FM) : null
+        //   },
+        // },
+        // {
+        //   label: 'Thông tin thêm',
+        //   field: 'thong_tin_them',
+        //   filterable: false,
+        //   filterOptions: {
+        //     styleClass: 'class-filter', // class to be added to the parent th element
+        //       enabled: true, // enable filter for this column
+        //       placeholder: 'Thông tin', // placeholder for filter input
+        //       filterValue: '',
+        //       filterDropdownItems: [], // dropdown (with selected values) instead of text input
+        //       // filterFn: this.columnFilterFn, //custom filter function that
+        //       trigger: 'enter', //only trigger on enter not on keyup 
+        //   },
+        // },
+        // {
+        //   label: 'Trạng thái',
+        //   field: 'status',
+        //   filterable: false,
+        //   filterOptions: {
+        //     styleClass: 'class-filter', // class to be added to the parent th element
+        //       enabled: true, // enable filter for this column
+        //       placeholder: 'Trạng thái', // placeholder for filter input
+        //       filterValue: '',
+        //       filterDropdownItems: [], // dropdown (with selected values) instead of text input
+        //       // filterFn: this.columnFilterFn, //custom filter function that
+        //       trigger: 'enter', //only trigger on enter not on keyup 
+        //   },
+        // },
+        // {
+        //   label: 'Tổng thời gian',
+        //   field: 'working_time',
+        //   type: 'number',
+        //   filterable: true,
+        //   formatFn: this.formatPrice,
+        //   filterOptions: {
+        //     styleClass: 'class-filter', // class to be added to the parent th element
+        //       enabled: true, // enable filter for this column
+        //       placeholder: 'Số Tiền', // placeholder for filter input
+        //       filterValue: '',
+        //       filterDropdownItems: [], // dropdown (with selected values) instead of text input
+        //       // filterFn: this.columnFilterFn, //custom filter function that
+        //       trigger: 'enter', //only trigger on enter not on keyup 
+        //   },
+        // },
+        // {
+        //   label: 'Ghi chú',
+        //   field: 'ghi_chu',
+        //   filterable: false,
+        //   filterOptions: {
+        //     styleClass: 'class-filter', // class to be added to the parent th element
+        //       enabled: true, // enable filter for this column
+        //       placeholder: 'Ghi chú', // placeholder for filter input
+        //       filterValue: '',
+        //       filterDropdownItems: [], // dropdown (with selected values) instead of text input
+        //       // filterFn: this.columnFilterFn, //custom filter function that
+        //       trigger: 'enter', //only trigger on enter not on keyup 
+        //   },
+        // },
       ],
       tblDataCongViec: [
       ],
@@ -282,7 +285,7 @@ export default {
     async loadData(){
       let self = this;
       await axios
-      .get(`${config.API_URL}/getChamSocList`)
+      .get(`${config.API_URL}/selectSucKhoe`)
       .then(response => {
         // seft.hotSettings.data = response.data.data;
         let data = response.data.data;
@@ -309,26 +312,12 @@ export default {
        	id: params.row.id,
         ho_ten: params.row.ho_ten,
         nam_sinh: params.row.nam_sinh,
-        ma_cv: params.row.ma_cv,
-        ghi_chu: params.row.ghi_chu,
         ngay_thuc_hien:  moment(params.row.ngay_thuc_hien).format(config.DATE_TIME_FM),
-        gio_bat_dau:  moment(params.row.gio_bat_dau).format(config.DATE_TIME_FM),
-        gio_ke_tiep:  moment(params.row.gio_ke_tiep).format(config.DATE_TIME_FM),
-        thong_tin_them: params.row.thong_tin_them,
-        status: params.row.status,
-        working_time: params.row.working_time,
         can_nang: params.row.can_nang,
         chieu_cao: params.row.chieu_cao,
-        tinh_trang_suc_khoe: params.row.tinh_trang_suc_khoe,
-        updated_date: params.row.updated_date,
-        create_date: params.row.create_date,
-        the_tich_sua: params.row.the_tich_sua,
-        ten_cong_viec: params.row.ten_cong_viec,
-        vgt_id: params.row.vgt_id,
-        originalIndex:params.row.originalIndex 
       }
 //  moment.tz(new Date(), tzString).format("YYYY-MM-DD HH:mm:ss"),
-      this.$refs.chamConDetail.dialog = true;
+      this.$refs.suckhoeDetail.dialog = true;
     }
   },
 };

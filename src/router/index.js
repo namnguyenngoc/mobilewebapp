@@ -112,6 +112,16 @@ const routes = [
     component: () => import('@/views/family-chamcon/ChamConHeadlinesList.vue'),
   },
   {
+    path: '/family/chamcon-list',
+    name: 'chamcon-list',
+    component: () => import('@/views/family-chamcon/ChamConHeadlinesList.vue'),
+  },
+  {
+    path: '/working/jira-logtime-list',
+    name: 'jira-logtime-list',
+    component: () => import('@/views/workings/jiraLogTimeList.vue'),
+  },
+  {
     path: '/kinhdoanhshopee/donhangshopee',
     name: 'donhangshopee',
     component: () => import('@/views/kinhdoanh-shopee/DonHangShopee.vue'),

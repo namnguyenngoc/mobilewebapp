@@ -5,12 +5,12 @@
   >
     <v-card>
       <v-form ref="form">
-        <v-card-title class="text-left info pa-1">
+        <v-card-title class="text-right info pa-1">
           <h4
             class="pa-2"
             style="color: #ffffff"
           >
-            Chi tiết {{title}}
+            Chi tiết {{title.slice(0,100)}}
           </h4>
           <v-icon
             right
@@ -20,62 +20,8 @@
             x
           </v-icon>
         </v-card-title>
-
-        <v-divider />
-
-        <v-card-text>
-          <v-container class="pt-0 pb-0 mb-0 v-scroll">
-            <v-col  v-for="(value, key) in item" v-bind:key="item.id"
-              cols="12"
-              class="pa-0 ma-0"
-            >
-              <v-text-field
-                :label="lsProp.find(({code}) => code == key).text"
-                :value="value"
-                v-if="lsProp.find(({code}) => code == key)"
-                readonly
-                hide-details
-                class="mb-2"
-              ></v-text-field>
-            </v-col>
-            <v-col  v-for="(value, key) in item" v-bind:key="item.id"
-              cols="12"
-              class="pa-0 ma-0"
-            >
-              <v-textarea
-                clearable
-                clear-icon="mdi-close-circle"
-                :label="lsPropArea.find(({code}) => code == key).text"
-                :value="(value == undefined || value == null || value == '') ? '' : value.replace(/\r?\n|\r/g, '\n').replace(/&nbsp;/g, '').trim()"
-                v-if="lsPropArea.find(({code}) => code == key)"
-                rows="10"
-                class="mb-2"
-              ></v-textarea>
-            </v-col>
-            <v-col  v-for="(value, key) in item" v-bind:key="item.id"
-              cols="12"
-              class="pa-0 ma-0"
-            >
-              <v-text-field
-                :label="lsProp1.find(({code}) => code == key).text"
-                :value="value"
-                v-if="lsProp1.find(({code}) => code == key)"
-                readonly
-                hide-details
-                class="mb-2"
-              ></v-text-field>
-            </v-col>
-          </v-container>
-        </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="dialog = false"
-          >
-            Close
-          </v-btn>
           <v-btn
             color="blue darken-1"
             text
@@ -91,6 +37,54 @@
             Delete
           </v-btn>
         </v-card-actions>
+        <v-divider />
+
+        <v-card-text>
+          <v-container class="pt-0 pb-0 mb-0 v-scroll">
+            <v-col  v-for="(value, key) in item" v-bind:key="item.id"
+              cols="12"
+              class="pa-0 ma-0"
+            >
+              <v-text-field
+                v-if="lsProp.find(({code}) => code == key)"
+                :label="lsProp.find(({code}) => code == key).text"
+                :value="value"
+                v-model="item[key]"
+                hide-details
+                class="mb-2"
+              ></v-text-field>
+            </v-col>
+            <v-col  v-for="(value, key) in item" v-bind:key="item.id"
+              cols="12"
+              class="pa-0 ma-0"
+            >
+              <v-textarea
+                v-if="lsPropArea.find(({code}) => code == key)"
+                clearable
+                clear-icon="mdi-close-circle"
+                :label="lsPropArea.find(({code}) => code == key).text"
+                :value="(value == undefined || value == null || value == '') ? '' : value.replace(/\r?\n|\r/g, '\n').replace(/&nbsp;/g, '').trim()"
+                v-model="item[key]"
+                rows="10"
+                class="mb-2"
+              ></v-textarea>
+            </v-col>
+            <v-col  v-for="(value, key) in item" v-bind:key="item.id"
+              cols="12"
+              class="pa-0 ma-0"
+            >
+              <v-text-field
+                v-if="lsProp1.find(({code}) => code == key)"
+                :label="lsProp1.find(({code}) => code == key).text"
+                :value="value"
+                v-model="item[key]"
+                hide-details
+                class="mb-2"
+              ></v-text-field>
+            </v-col>
+          </v-container>
+        </v-card-text>
+        
       </v-form>
     </v-card>
   </v-dialog>
@@ -113,16 +107,16 @@
         type: Object,
         default: () => ({})
       },
-      dialog: {
-        type: Boolean,
-        default: false
-      },
+      // dialog: {
+      //   type: Boolean,
+      //   default: false
+      // },
     },
     data () {
       return {
          dialog: false,
         // title: '',
-        // item: Object,
+        itemChiTieu: {},
         lsProp: [
           {
             code: 'noi_dung',
@@ -181,14 +175,31 @@
         ],
       }
     },
-    computed () {
+    computed: {
+      propsChiTieu: function(item) {
+        return item;
+      }
     },
     mounted () {
      
     }, // end method
     created () {}, // end data
     methods: {
-     async deleteChiTieu () {
+      async save(){
+        const seft = this;
+        console.log('this.item',seft.item);
+        await axios
+        .post(config.API_FAMILY + '/api/updateChiTieu', seft.item)
+        .then(function (response) {
+          console.log('succuess')
+          seft.dialog = false;
+          seft.$emit('refeshList');
+        })
+        .catch(error => {
+          console.log(error)
+        })
+      },
+      async deleteChiTieu () {
       const seft = this;
       await axios
         .post(config.API_FAMILY + '/api/deleteChiTieu', this.item)

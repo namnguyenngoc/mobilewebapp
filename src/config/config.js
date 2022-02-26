@@ -6,6 +6,10 @@
 const config = {
   API_URL: `${API_URL}:81/api/appsuckhoe`,
   API_FAMILY: `${API_URL}:81/api`,
+  API_WORKING: {
+    JR_API_JIRA: `${API_URL}:81/workingapi`,
+
+  },
   wcCountDay:0,
   NAM_THONG_KE: [
     // '2020',
@@ -64,6 +68,8 @@ const config = {
     // statusMoi: null,
     // title: '',
     // item: Object,
+    DATE_TIME_FM: 'YYYY-MM-DD HH:mm:ss',
+    DATE_FM: 'YYYY-MM-DD'
     
 }
 

@@ -1,9 +1,9 @@
 <template>
   <v-row class="match-height">
-    <v-col cols="12" md="12" class="pa-0">
+    <v-col>
       <!-- Theo doi suc khoe -->
       <v-card>
-        <v-card-title class="pb-0 mb-1">
+        <v-card-title class="pt-5 pb-2 mr-0 pr-2">
           Trả góp List
         </v-card-title>
         <v-card-text class="ma-0 pa-0">

@@ -4,7 +4,7 @@
       <v-card>
         <v-card-title class="pt-5 pb-2 mr-0 pr-2">
           <v-col cols="10" md="10" class="pa-0 ma-0">
-            Danh sách công việc
+            jiraLogTimeList.vue
           </v-col>
           <v-col cols="2" md="2" class="pa-0 ma-0 text-right">
             <v-btn
@@ -61,7 +61,7 @@ import config from '../../config/config';
 import moment from "moment";
 import "vue-easytable/libs/theme-dark/index.css";
 import { VueGoodTable } from 'vue-good-table';
-import chamConDetail from "./ChamConDetail";
+import chamConDetail from "../family-chamcon/ChamConDetail";
 
 import {
   mdiMinus,
@@ -279,16 +279,226 @@ export default {
 
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     },
-    async loadData(){
-      let self = this;
+    async loadData(ticketList) {
+      if (!this.$refs.jrTicketLogTime.validate()) {
+        return;
+      }
+      const seft = this; //Current
+
+      seft.workCount = 0;
+      seft.strMemberTotalCLV= 0;
+      seft.strMemberTotal = 1;
+      seft.strMemberTotalCLV = 0,
+      seft.sKPICLV = 0.0,
+      seft.sWloadPercent = 0,
+      seft.strMemberEffort = "";
+
+      seft.isBtnDisable = true;
+      seft.overlay = true;
+      // seft.$refs.hotTableComponent.hotInstance.loadData([]);
+      this.efforJsonList.from =  this.date;
+      this.efforJsonList.to = this.date2;
+      // this.efforJsonList.itemsProject = this.itemsProject;
+      this.efforJsonList.team = this.team;
+      // this.projectsName = 'SmartLink [Internal]'
+      this.efforJsonList.itemsMember = this.member;
+
+      //Count working day
+      let countWD = this.workday_count(moment(this.date), moment(this.date2));
+      this.workCount = countWD;
+      console.log("countWD",countWD);
+
+      if(seft.valueProject.key != undefined && seft.valueProject.key.length > 0){
+        this.efforJsonList.itemsProject = seft.valueProject.key;
+
+      } else {
+        this.efforJsonList.itemsProject = this.itemsProject;
+      }
+
+      let url = `${config.JR_API_JIRA}/api/jiraWorklogs`;
+      let parameter = this.efforJsonList;
+
+      if(ticketList != undefined){
+        this.efforJsonList.tickets = ticketList;
+      }
+
       await axios
-      .get(`${config.API_URL}/getChamSocList`)
-      .then(response => {
-        // seft.hotSettings.data = response.data.data;
-        let data = response.data.data;
-        self.tblDataCongViec = data;
-        self.close();
-      });
+        .post(url, parameter)
+        .then(async function (response) {
+          // seft.hotSettings.data = response.data.data;
+          // console.log('pimDATA', seft.pimDATA);
+          // seft.pimDATA = response.data.data;
+          //lstMember
+          let data = response.data.data;
+          let lsMemberNames = [
+              {
+                  id: 'nam.nguyenngoc',
+                  name: 'Nam Nguyen Ngoc',
+                  total: 0
+              },
+              {
+                  id: 'doudevnn',
+                  name: 'Nam Nguyen Ngoc OLD',
+                  total: 0
+              },
+              // {
+              //     id: '203737',
+              //     name: 'Dung Cao',
+              //     total: 0
+              // },
+              {
+                  id: '203728',
+                  name: 'Khanh Nguyen',
+                  total: 0
+              },
+              {
+                  id: '213960',
+                  name: 'Trang Nguyen',
+                  total: 0
+              },
+              {
+                id: '213979',
+                email: 'thanh.nc@cyberlogitec.com',
+                name: 'Nguyen Chau Thanh',
+                total: 0
+              },
+              
+            ];
+          let lsCLV = config.CLV_PIM_ACCOUNT.MEM_LIST;
+
+          if(data != undefined && data.length > 0){
+            //Total
+            let flagMember = "";
+            let total;
+            seft.strMemberTotalCLV = 0;
+            seft.strMemberTotal = 0;
+            self.sKPICLV = 0;
+            let emailSeen = new Set();
+
+            //Get email
+            for(var i = 0; i < data.length; i++){
+              // data[i].assignee;
+              emailSeen.add(data[i].emailAddress);
+            }
+            let userTotal = [];
+            for(var i = 0; i < data.length; i++){
+              // data[i].assignee;
+              // emailSeen.add(data[i].emailAddress);
+              for(let email of emailSeen){
+                
+                if(data[i].emailAddress == email){
+                  
+                  let user = userTotal.find( ({ email }) => email  === data[i].emailAddress);
+                  if(user != undefined && user != null){
+                    let memberContract = lsCLV.find( ({ email }) => email  === data[i].emailAddress);
+                    console.log('memberContract',memberContract);
+                    if(memberContract != undefined && memberContract != null && memberContract.isBackup == 'N'){
+                      user.total += data[i].actualEffort;
+                    }
+                      // user.total += data[i].actualEffort;
+                  }else{
+                    userTotal.push({
+                      email: data[i].emailAddress,
+                      name: data[i].displayName,
+                      total: data[i].actualEffort,
+                    })
+                  }
+                }
+              }
+              // if(data[i].emailAddress == "nam.nguyenngoc@cyberlogitec.com"){
+              //   lsMemberNames[0].total += data[i].actualEffort;
+              // }
+              // else if(data[i].assignee == "Dung Cao"){
+              //   lsMemberNames[1].total += data[i].actualEffort;
+              // }else if(data[i].assignee == "Khanh Nguyen"){
+              //   lsMemberNames[2].total += data[i].actualEffort;
+              // }
+              
+              // if(lsMemberNames.find( ({ name }) => name === data[i].assignee)){
+              //   seft.strMemberTotalCLV += data[i].actualEffort;
+
+              // }
+              if(lsCLV.find( ({ email }) => email  === data[i].emailAddress)){
+                let memberContract = lsCLV.find( ({ email }) => email  === data[i].emailAddress);
+                console.log('memberContract',memberContract);
+                if(memberContract != undefined && memberContract != null && memberContract.isBackup == 'N'){
+                  seft.strMemberTotalCLV += data[i].actualEffort; //Need to check
+                }
+
+              }
+              seft.strMemberTotal += data[i].actualEffort;
+              
+
+            }
+            console.log("userTotal", userTotal);
+            seft.sKPICLV = seft.strMemberTotalCLV/(countWD*8);
+            seft.sWloadPercent = (seft.strMemberTotalCLV / (countWD * config.CLV_PIM_ACCOUNT.COUNT_CONTRACT * 8))*100;
+            // console.log('KPICLV', self.sKPICLV.toFixed(1));
+            let hWeek = countWD*8;
+            if(seft.isChangeHour == true){
+              hWeek = seft.totalHourWeek;
+            }
+            seft.strMemberEffort = userTotal.map(mem => `${mem.name}:${mem.total}h - ${mem.total * config.blueprintConfig.pointaHour}p (${Math.round(((mem.total/parseInt(hWeek))*100))}%)`).join(', ');
+            // console.log("lsMemberNames", lsMemberNames.map(mem => `${mem.name}:${mem.total}`).join(', '));
+            console.log("hWeek", hWeek);
+            console.log("self.isChangeHour", self.isChangeHour);
+            self.wordloadData = data;
+            console.log("wordloadData", self.wordloadData);
+            
+            // await seft.$refs.hotTableComponent.hotInstance.loadData(
+            //   data
+            // );
+
+            seft.tblDataWorklog = data;
+
+            // //set data to dialog
+            // // seft.sogDataItem = data;
+            //  seft.sogDataItem  = [];
+            // for(let i = 0; i < data.length; i ++){
+            //   let item = data[i];
+            //   let ob = {
+            //     title : item.ticketSubject,
+            //     month : item.effortDate,
+            //     issue :item.key,
+            //     projectName: 'SMARTLINK [Internal]',
+            //     worklog : item.actualEffort,
+            //     taskType : item.taskType,
+            //     new : 'N',
+            //     team : 'SML PF',
+            //     name : item.displayName,
+            //     employeeNumber : item.name,
+            //   }
+            //     // seft.sogDataItem.title = item.ticketSubject;
+            //     // seft.sogDataItem.month = item.effortDate;
+            //     // seft.sogDataItem.issue = item.ticketSubject;
+            //     // seft.sogDataItem.projectName = item.project;
+            //     // seft.sogDataItem.worklog = item.actualEffort;
+            //     // seft.sogDataItem.taskType = item.taskType;
+            //     // seft.sogDataItem.new = item.ticketSubject;
+            //     // seft.sogDataItem.team = item.ticketSubject;
+            //     // seft.sogDataItem.name = item.displayName;
+            //     // seft.sogDataItem.employeeNumber = item.name;
+            //     seft.sogDataItem.push(ob);
+            // };
+            // for(let i = 0; i < data.length; i++)
+            console.log("seft.sogDataItem ", seft.sogDataItem);
+
+                      
+          }else{
+            
+          }
+          seft.isBtnDisable = false;
+          seft.overlay = false;
+
+          
+          // seft.$refs.hotTableComponent.hotInstance.loadData(seft.pimDATA);
+        }).catch((error) => {
+            if( error.response ){
+                console.log(error.response.data); // => the response payload 
+                seft.isBtnDisable = false;
+                seft.overlay = false;
+            }
+        });
     },
     show() {
         this.loadingInstance.show();

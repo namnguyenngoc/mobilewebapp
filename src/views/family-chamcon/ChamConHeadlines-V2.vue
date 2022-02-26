@@ -1,11 +1,11 @@
 <template>
   <v-row class="match-height">
     <v-card-title class="pb-0">
-      Chăm sóc Đăng Khôi
+      Chăm sóc Đăng Khôi &nbsp
       <h5 color="warning">{{ tuan_tuoi }}</h5>
     </v-card-title>
     <!-- Theo doi suc khoe -->
-    <v-col cols="12" md="12" class="pa-0">
+    <v-col cols="12" md="12" class="pa-2">
       <v-card>
         <v-card-title class="pt-5 pb-2">
           <v-col cols="12" md="12" class="ma-0 text-right pt-4 pb-0 mb-0">
@@ -41,13 +41,33 @@
             </v-col>
           </v-row>
         </v-card-text>
+        <v-card-actions>
+          <v-row class="pl-2 float-end">
+            <v-btn color="info" @click="insert('CN')" class="mr-1" small>Cân Nặng </v-btn>
+            <v-btn color="success" @click="insert('BSB')" class="mr-1" small> Cữ sữa </v-btn>
+            <v-spacer></v-spacer>
+             <v-btn color="warning" @click="insert('WC')" class="mr-1" small>
+                WC ({{be_wc_model.ngay_thuc_hien_gan_nhat }})</v-btn>
+            <!-- <v-btn color="success" @click="insert('BSB')" class="mr-1"> Ti bình </v-btn> -->
+            <!-- <v-btn color="warning" @click="update('BSM')" class="mr-1" :disabled="true" small>
+              <v-icon dark>
+                {{ icons.mdiCircleEditOutline }}
+              </v-icon>
+            </v-btn> -->
+            <!-- <v-btn color="error" @click="update('BSM')" class="mr-1" :disabled="true" small>
+              <v-icon dark>
+                {{ icons.mdiDeleteOutline }}
+              </v-icon>
+            </v-btn> -->
+          </v-row>
+        </v-card-actions>
       </v-card>
     </v-col>
     <!-- Bú sữa -->
-    <v-col cols="12" md="12" class="pa-0">
+    <v-col cols="12" md="12" class="pa-2">
       <v-card>
         <v-card-title class="pt-5 pb-2">
-          <v-col cols="5" md="5" class="pb-0 mb-0"> Uống sữa </v-col>
+          <v-col cols="5" md="5" class="pb-0 mb-0"> Sữa </v-col>
           <v-col cols="7" md="7" class="pa-0 ma-0 text-right">
             <circular-count-down-timer
               :circles="tibinhCountDown.circles"
@@ -67,12 +87,33 @@
               :label-position="tibinhCountDown.labelPosition"
             />
           </v-col>
+          <v-col cols="3" md="3" class="pb-0 mb-0"> WC </v-col>
+          <v-col cols="9" md="9" class="pa-0 ma-0">
+            <circular-count-down-timer
+              :circles="wcCountDown.circles"
+              :interval="wcCountDown.interval"
+              :main-circle-id="wcCountDown.mainCircleId || '1'"
+              :size="wcCountDown.size"
+              :container-classes="['countdown']"
+              :circle-classes="wcCountDown.circleClasses"
+              :stop-conditions="wcCountDown.stopConditions"
+              :trigger-update="wcCountDown.triggerUpdate"
+              :stroke-width="wcCountDown.strokeWidth"
+              :stroke-color="wcCountDown.strokeColor"
+              :underneath-stroke-color="wcCountDown.underneathStrokeColor"
+              :fill-color="wcCountDown.fillColor"
+              :value-font-size="wcCountDown.valueFontSize"
+              :label-font-size="wcCountDown.labelFontSize"
+              :label-position="wcCountDown.labelPosition"
+            />
+        </v-col>
         </v-card-title>
 
-        <v-divider class="mx-4"></v-divider>
-        <v-card-text class="mt-0 mb-0 pt-3 pb-1">
+        <v-divider class="mx-1"></v-divider>
+        <v-card-text class="mt-0 mb-0 pt-0 pb-1">
+          
           <!-- Row 1 -->
-          <v-row class="ml-2 mr-2">
+          <v-row class="ml-2 mr-2" v-show="false">
             <v-col cols="3" md="3" class="pb-0 mb-0 ml-0 mr-0 pl-0 pr-0">
               <v-checkbox
                 v-model="ti_me_model.isEditTimeTiBinh"
@@ -165,30 +206,134 @@
 
           <!-- Row 3 -->
         </v-card-text>
-        <v-divider class="mx-4"></v-divider>
-        <v-card-actions>
-          <v-row class="pl-2 float-end">
-            <v-btn color="success" @click="insert('CN')" class="mr-1" small> Thêm Cân Nặng </v-btn>
-            <v-spacer></v-spacer>
-            <!-- <v-btn color="success" @click="insert('BSB')" class="mr-1"> Ti bình </v-btn> -->
-            <v-btn color="success" @click="insert('BSB')" class="mr-1" small> Lưu cữ mới </v-btn>
-            <v-btn color="warning" @click="update('BSM')" class="mr-1" :disabled="true" small>
-              <v-icon dark>
-                {{ icons.mdiCircleEditOutline }}
-              </v-icon>
-            </v-btn>
-            <v-btn color="error" @click="update('BSM')" class="mr-1" :disabled="true" small>
-              <v-icon dark>
-                {{ icons.mdiDeleteOutline }}
-              </v-icon>
-            </v-btn>
-          </v-row>
-        </v-card-actions>
+        
       </v-card>
     </v-col>
-
+    <v-row>
+      <v-dialog
+        v-model="dialogWC"
+        max-width="500px"
+      >
+        <v-card>
+          <v-card-title>
+            Thông tin WC
+          </v-card-title>
+          <v-card-text>
+            <v-col cols="12" md="12">
+              <v-menu
+                ref="menuWC"
+                v-model="menuWC"
+                :close-on-content-click="false"
+                :return-value.sync="be_wc_model.ngay_thuc_hien"
+                transition="scale-transition"
+                offset-y
+                hide-details
+                min-width="auto"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="be_wc_model.ngay_thuc_hien"
+                    label="Ngày thực hiện"
+                    prepend-icon="mdi-calendar"
+                    class="text-right"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    hide-details
+                    required
+                    :rules="emptyRules"
+                  ></v-text-field>
+                </template>
+                <v-date-picker v-model="be_wc_model.ngay_thuc_hien" no-title scrollable>
+                  <v-spacer></v-spacer>
+                  <v-btn text color="primary" @click="menuWC = false"> Cancel </v-btn>
+                  <v-btn text color="primary" @click="$refs.menuWC.save(be_wc_model.ngay_thuc_hien)">
+                    OK
+                  </v-btn>
+                </v-date-picker>
+              </v-menu>
+              <v-dialog
+                ref="dialogTimeWC"
+                v-model="modalWC"
+                :return-value.sync="time"
+                persistent
+                width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="be_wc_model.gio_thuc_hien"
+                    label="Giờ"
+                    prepend-icon="mdi-clock-time-four-outline"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-time-picker
+                  v-if="modalWC"
+                  v-model="be_wc_model.gio_thuc_hien"
+                  full-width
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="modalWC = false"
+                  >
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.dialogTimeWC.save(time)"
+                  >
+                    OK
+                  </v-btn>
+                </v-time-picker>
+              </v-dialog>
+            </v-col>
+            <v-col cols="12" md="12">
+              <v-autocomplete
+              label="Tình trạng phân"
+              v-model="be_wc_model.selectModel"
+              :items="be_wc_model.items"
+              item-text="name"
+              item-value="code"
+              dense>
+                
+              </v-autocomplete>
+            </v-col>
+            <v-col cols="12" md="12">
+              <v-text-field
+                label="Ghi chú thêm"
+                v-model="be_wc_model.ghi_chu_them"
+                hide-details
+                clearable
+            ></v-text-field>
+            </v-col>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="dialogWC = false"
+            >
+              Close
+            </v-btn>
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="insert('WC_INFO')"
+            >
+              Save
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
+    
     <!-- NGỦ-->
-    <v-col cols="12" md="12" class="pa-0 mt-2">
+    <v-col cols="12" md="12" class="pa-2">
       <v-card>
         <v-card-title class="pt-5 pb-2">
           <v-col cols="5" md="5" class="pb-0 mb-0"> Ngủ </v-col>
@@ -211,26 +356,8 @@
               :label-position="nguCountDown.labelPosition"
             />
           </v-col>
-          <v-col cols="5" md="5" class="pb-0 mb-0">WC</v-col>
-          <v-col cols="7" md="7" class="pa-0 ma-0 text-right">
-            <circular-count-down-timer
-              :circles="wcCountDown.circles"
-              :interval="wcCountDown.interval"
-              :main-circle-id="wcCountDown.mainCircleId || '1'"
-              :size="wcCountDown.size"
-              :container-classes="['countdown']"
-              :circle-classes="wcCountDown.circleClasses"
-              :stop-conditions="wcCountDown.stopConditions"
-              :trigger-update="wcCountDown.triggerUpdate"
-              :stroke-width="wcCountDown.strokeWidth"
-              :stroke-color="wcCountDown.strokeColor"
-              :underneath-stroke-color="wcCountDown.underneathStrokeColor"
-              :fill-color="wcCountDown.fillColor"
-              :value-font-size="wcCountDown.valueFontSize"
-              :label-font-size="wcCountDown.labelFontSize"
-              :label-position="wcCountDown.labelPosition"
-            />
-          </v-col>
+          <!-- <v-col cols="5" md="5" class="pb-0 mb-0">WC</v-col> -->
+          
         </v-card-title>
 
         <v-divider class="mx-4"></v-divider>
@@ -283,72 +410,20 @@
                 </v-time-picker>
               </v-dialog>
             </v-col>
-            <v-col cols="3" md="3" class="pb-0 mb-0 ml-0 mr-0 pl-0 pr-0 mt-3">
-              <v-btn color="warning" @click="insert('WC')" style="width: 100%">
-                WC ({{ be_wc_model.so_lan_i }} lần)</v-btn
-              >
-            </v-col>
-
           </v-row>
-          <v-row>
-            <v-dialog
-              v-model="dialogWC"
-              max-width="500px"
-            >
-              <v-card>
-                <v-card-title>
-                  Thông tin WC
-                </v-card-title>
-                <v-card-text>
-                  <v-autocomplete
-                  label="Tình trạng phân"
-                  v-model="be_wc_model.selectModel"
-                  :items="be_wc_model.items"
-                  item-text="name"
-                  item-value="code"
-                  dense>
-                    
-                  </v-autocomplete>
-                  <v-text-field
-                    label="Ghi chú thêm"
-                    v-model="be_wc_model.ghi_chu_them"
-                    hide-details
-                    clearable
-                ></v-text-field>
-                </v-card-text>
-                <v-card-actions>
-                  <v-btn
-                    color="blue darken-1"
-                    text
-                    @click="dialogWC = false"
-                  >
-                    Close
-                  </v-btn>
-                  <v-btn
-                    color="blue darken-1"
-                    text
-                    @click="insert('WC_INFO')"
-                  >
-                    Save
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-          </v-row>
+          
           <!-- Row 3 -->
 
           <!--- Row CN -->
           <v-row>
-              <v-form
+            <v-form
                 ref="thong_tin_suc_khoe"
                 v-model="thong_tin_suc_khoe.valid"
                 lazy-validation
               >
               <v-dialog
                 v-model="thong_tin_suc_khoe.dialogCN"
-                fullscreen
-                hide-overlay
-                transition="dialog-bottom-transition"
+                max-height="700"
               >
                 <v-card>
                   <v-toolbar
@@ -489,7 +564,7 @@
                     <v-divider class="mx-4 mb-3 mt-4"></v-divider>
                 </v-card>
               </v-dialog>
-              </v-form>
+            </v-form>
           </v-row>
           <!-- End -->
         </v-card-text>
@@ -521,7 +596,7 @@
 
     <!-- CHART-->
     
-    <v-col cols="12" md="12" class="pa-0 mt-2">
+    <v-col cols="12" md="12" class="pa-0 mt-2" v-show="false">
       <v-card>
         <v-card-title class="pt-5 pb-2">
           <!-- <v-col cols="12" md="12" class="pb-0 mb-0"> cHART 2 </v-col>
@@ -586,6 +661,8 @@ export default {
       be_wc_model: {
         so_lan_i: 0,
         selectModel: 'BT',
+        gio_thuc_hien: moment(new Date()).format('HH:mm:ss'),
+        ngay_thuc_hien: moment(new Date()).format("YYYY-MM-DD"),
         items: [
           {
           code: 'BT',
@@ -1204,9 +1281,23 @@ export default {
       serialsSucKhoe:[],
       sliderSK: 5,
       countDownValue:[],
+      menu2: false,
+      modalWC: false,
+      time: null,
+      color: null,
+      colors: [
+        'purple',
+        'info',
+        'success',
+        'warning',
+        'error'
+      ],
+      menuWC: false,
     }
   },
   async created() {
+    this.color = this.colors[Math.floor(Math.random() * this.colors.length)]
+
     this.getCurrentDate()
     this.countWorkInDay()
     await this.updateBtn()
@@ -1273,7 +1364,8 @@ export default {
       await axios.get(`${config.API_URL}/countWorkInDay/WC/now()`).then(response => {
         // seft.hotSettings.data = response.data.data;
 
-        self.be_wc_model.so_lan_i = response.data.data[0]._count
+        self.be_wc_model.so_lan_i = response.data.data[0]._count;
+        self.be_wc_model.ngay_thuc_hien_gan_nhat =  moment(response.data.data[0].ngay_thuc_hien_gan_nhat).format(config.DATE_TIME_FM);
       })
     },
 
@@ -1294,35 +1386,40 @@ export default {
               {
                 id: '4',
                 steps: 365,
-                size: 60,
+                size: 40,
                 value: wc.khoang_cach_max_day,
                 // stepLength: -1,
                 label: 'Ngày',
-                strokeWidth: 5,
+                strokeWidth: 3,
                 strokeColor: '#008080',
                 underneathStrokeColor: '#DCDCDC',
                 fillColor: '#312d4b',
                 key: 'NGAY',
+                valueFontSize: 20,
+                labelFontSize: 12,
               },
               {
                 id: '3',
                 steps: 24,
-                size: 60,
+                size: 40,
                 value: wc.khoang_cach_max_hour,
                 // stepLength: -1,
                 label: 'Giờ',
-                strokeWidth: 5,
+                strokeWidth: 3,
                 strokeColor: '#008080',
                 underneathStrokeColor: '#DCDCDC',
                 dependentCircles: ['4'],
                 fillColor: '#312d4b',
                 key: 'GIO',
+                valueFontSize: 20,
+                labelFontSize: 12,
               },
               {
                 id: '2',
                 steps: 60,
-                size: 60,
+                size: 40,
                 value: wc.khoang_cach_max_min,
+                strokeWidth: 3,
                 // stepLength: -1,
                 label: 'Phút',
                 strokeColor: '#4169E1',
@@ -1330,11 +1427,14 @@ export default {
                 dependentCircles: ['3'],
                 fillColor: '#312d4b',
                 key: 'PHUT',
+                valueFontSize: 20,
+                labelFontSize: 12,
               },
               {
                 id: '1',
                 steps: 60,
-                size: 60,
+                size: 40,
+                strokeWidth: 3,
                 value: wc.khoang_cach_max_sec,
                 // stepLength: -1,
                 label: 'Giây',
@@ -1343,6 +1443,8 @@ export default {
                 dependentCircles: ['2'],
                 fillColor: '#312d4b',
                 key: 'GIAY',
+                valueFontSize: 20,
+                labelFontSize: 12,
               },
             ],
           }
@@ -1419,20 +1521,23 @@ export default {
           self.dialogWC = true;
           break;
         case 'WC_INFO':
-          gio_bat_dau = moment(timeAndDate).format('YYYY-MM-DD HH:mm:ss');
-          thong_tin_them = JSON.stringify({
-            loai: self.be_wc_model.selectModel,
-            ghi_chu: self.be_wc_model.ghi_chu_them
-            });
-          self.dialogWC = false;
+          // gio_bat_dau = moment(be_wc_model.ngay).format('YYYY-MM-DD HH:mm:ss');
+          // thong_tin_them = JSON.stringify({
+          //   loai: self.be_wc_model.selectModel,
+          //   ghi_chu: self.be_wc_model.ghi_chu_them
+          //   });
+          // self.dialogWC = false;
           congviec = {
             ma_cv: 'WC',
-            gio_bat_dau: gio_bat_dau,
+            gio_bat_dau: moment(`${this.be_wc_model.ngay_thuc_hien} ${this.be_wc_model.gio_thuc_hien}`),
             the_tich_sua: this.ti_me_model.the_tich_sua_new,
             thong_tin_them: thong_tin_them,
           }
           await axios.post(config.API_URL + '/insertChamCon', congviec).then(async function (response) {
-            await self.updateBtn()
+            self.dialogWC = false;
+            self.loadingChartSK();
+            self.countWorkInDay();
+            await self.updateBtn();
           })
           break;
         case 'CN':
@@ -1548,7 +1653,7 @@ export default {
       })
 
       //update count down
-      let current = moment()
+      let current = moment();
 
       /**Ti Binh */
       let min7 = moment(self.ti_me_model.gio_bat_dau)
@@ -1558,21 +1663,41 @@ export default {
       // let second = current.diff(min7, "seconds");
       // self.tibinhCountDown.circles[1].value = min;
       console.log('MIN1', current.diff(min7, 'minutes')) // "7m"
-      self.tibinhCountDown.circles = []
+      console.log('self.ti_me_model.gio_bat_dau', self.ti_me_model.gio_bat_dau) // "7m"
+      
+      self.tibinhCountDown.circles = [];
       self.tibinhCountDown.circles.push({
-        id: '3',
-        steps: 60,
+        id: '4',
+        steps: 365,
         size: 40,
-        value: parseInt(durationTM.asHours()),
+        value: parseInt(durationTM.asDays()),
         // stepLength: -1,
         // label: 'Giờ',
-        strokeWidth: 5,
+        strokeWidth: 3,
         labelFontSize: 12,
         fillColor: '#312d4b',
         strokeColor: '#008080',
         underneathStrokeColor: '#DCDCDC',
         valueFontSize: 20,
         labelFontSize: 12,
+        key: 'NGAY',
+      })
+      self.tibinhCountDown.circles.push({
+        id: '3',
+        steps: 60,
+        size: 40,
+        value: parseInt(durationTM.asHours() % 60),
+        // stepLength: -1,
+        // label: 'Giờ',
+        strokeWidth: 3,
+        labelFontSize: 12,
+        fillColor: '#312d4b',
+        strokeColor: '#008080',
+        underneathStrokeColor: '#DCDCDC',
+        valueFontSize: 20,
+        labelFontSize: 12,
+        dependentCircles: ['4'],
+        key: 'GIO',
       })
 
       self.tibinhCountDown.circles.push({
@@ -1581,13 +1706,14 @@ export default {
         size: 40,
         value: parseInt(durationTM.asMinutes()) % 60,
         // stepLength: -1,
-        strokeWidth: 5,
+        strokeWidth: 3,
         labelFontSize: 12,
         fillColor: '#312d4b',
         // label: 'Phút',
         strokeColor: '#4169E1',
         underneathStrokeColor: '#DCDCDC',
         dependentCircles: ['3'],
+        key: 'PHUT',
       })
       self.tibinhCountDown.circles.push({
         id: '1',
@@ -1596,12 +1722,13 @@ export default {
         value: parseInt(durationTM.asSeconds) % 60,
         // stepLength: -1,
         // label: 'Giây',
-        strokeWidth: 5,
+        strokeWidth: 3,
         labelFontSize: 12,
         fillColor: '#312d4b',
         strokeColor: '#C71585',
         underneathStrokeColor: '#DCDCDC',
         dependentCircles: ['2'],
+        key: 'GIAY',
       })
 
       //End ti bin

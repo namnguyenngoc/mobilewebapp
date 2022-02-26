@@ -50,23 +50,27 @@
         <nav-menu-link
           title="Dashboard"
           :to="{ name: 'dashboard-ct' }"
+          :icon="icons.mdiViewDashboard"
+          
         ></nav-menu-link>
         <nav-menu-link
           title="Chi tiêu"
           :to="{ name: 'chitieu-list' }"
+          :icon="icons.mdiCash"
         ></nav-menu-link>
         <nav-menu-link
           title="Trả góp"
           :to="{ name: 'tragop-list' }"
+          :icon="icons.mdiCash"
         ></nav-menu-link>
 
       </nav-menu-group>
-      <nav-menu-link
+      <!-- <nav-menu-link
         title="Account Settings"
         :to="{ name: 'pages-account-settings'}"
         :icon="icons.mdiAccountCogOutline"
-      ></nav-menu-link>
-      <nav-menu-group
+      ></nav-menu-link> -->
+      <!-- <nav-menu-group
         title="Pages"
         :icon="icons.mdiFileOutline"
       >
@@ -85,8 +89,8 @@
           :to="{ name: 'error-404' }"
           target="_blank"
         ></nav-menu-link>
-      </nav-menu-group>
-       <nav-menu-section-title title="SHOPPING"></nav-menu-section-title>
+      </nav-menu-group> -->
+       <!-- <nav-menu-section-title title="SHOPPING"></nav-menu-section-title>
       <nav-menu-group
         title="Shopping"
         :icon="icons.mdiFileOutline"
@@ -95,25 +99,58 @@
           title="Đơn mua shopee"
           :to="{ name: 'donhangshopee' }"
         ></nav-menu-link>
-      </nav-menu-group>
+      </nav-menu-group> -->
       <nav-menu-section-title title="GIA ĐÌNH"></nav-menu-section-title>
-      <nav-menu-link
-        title="Sức Khỏe"
+       <nav-menu-group
+        title="Đăng Khôi"
+        :icon="icons.mdiFileOutline"
+        expand
+      >
+        <nav-menu-link
+        title="Vợ mang thai"
         :to="{ name: 'suckhoe' }"
+        v-show="false"
         :icon="icons.mdiAlphaTBoxOutline"
       ></nav-menu-link>
       <nav-menu-link
-        title="Chăm con"
-        :to="{ name: 'chamcon-list' }"
-        :icon="icons.mdiAlphaTBoxOutline"
-      ></nav-menu-link>
-
-      <nav-menu-link
-        title="Chăm con v2"
+        title="Dashboard"
         :to="{ name: 'chamcon-V2' }"
-        :icon="icons.mdiAlphaTBoxOutline"
+        :icon="icons.mdiViewDashboard"
       ></nav-menu-link>
       <nav-menu-link
+        title="Sinh hoạt"
+        :to="{ name: 'chamcon-list' }"
+        :icon="icons.mdiHandHeart"
+      ></nav-menu-link>
+      <nav-menu-link
+        title="Theo dõi sức khỏe"
+        :to="{ name: 'chamcon-suckhoe-list' }"
+        :icon="icons.mdiHeart"
+      ></nav-menu-link>
+      </nav-menu-group>
+      <nav-menu-section-title title="CÔNG VIỆC"></nav-menu-section-title>
+      <nav-menu-group
+        title="Smartlink"
+        :icon="icons.mdiFileOutline"
+        expand
+      >
+        <nav-menu-link
+          title="Dashboard"
+          :to="{ name: 'chamcon-V2' }"
+          :icon="icons.mdiViewDashboard"
+        ></nav-menu-link>
+        <nav-menu-link
+          title="Log Time"
+          :to="{ name: 'jira-logtime-list' }"
+          :icon="icons.mdiHeart"
+        ></nav-menu-link>
+        <nav-menu-link
+          title="Tickets"
+          :to="{ name: 'chamcon-suckhoe-list' }"
+          :icon="icons.mdiHeart"
+        ></nav-menu-link>
+      </nav-menu-group>
+       <nav-menu-link
         title="Form Layouts"
         :to="{ name: 'form-layouts' }"
         :icon="icons.mdiFormSelect"
@@ -146,6 +183,11 @@ import {
   mdiFileOutline,
   mdiFormSelect,
   mdiAccountCogOutline,
+  mdiHeart,
+  mdiHelp,
+  mdiHandHeart,
+  mdiViewDashboard,
+  mdiCash
 } from '@mdi/js';
 import NavMenuSectionTitle from './components/NavMenuSectionTitle.vue';
 import NavMenuGroup from './components/NavMenuGroup.vue';
@@ -174,6 +216,11 @@ export default {
         mdiFileOutline,
         mdiFormSelect,
         mdiAccountCogOutline,
+        mdiHeart,
+        mdiHelp,
+        mdiHandHeart,
+        mdiViewDashboard,
+        mdiCash
       },
     };
   },

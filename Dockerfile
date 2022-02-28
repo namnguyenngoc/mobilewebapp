@@ -3,14 +3,14 @@ FROM node:12-alpine
 # install simple http server for serving static content
 
 # make the 'app' folder the current working directory
-WORKDIR /usr/src/app2
+WORKDIR /usr/src/f_mobileapp
 
 COPY package*.json ./
 # install project dependencies
 RUN npm install
 # RUN npm install vue-i18n
 # RUN npm install i18n
-# COPY . ./
+COPY . ./
 # RUN npm run build
 
 EXPOSE 8792

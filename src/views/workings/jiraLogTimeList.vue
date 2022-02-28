@@ -1,37 +1,181 @@
 <template>
   <v-row class="match-height">
-    <v-col>
+    <v-col col="12">
       <v-card>
         <v-card-title class="pt-5 pb-2 mr-0 pr-2">
-          <v-col cols="10" md="10" class="pa-0 ma-0">
+           <v-col cols="12" sm="12" md="11" class="pa-0 ma-0">
+            <v-expansion-panels>
+              <v-expansion-panel>
+                <v-expansion-panel-header v-slot="{ open }">
+                  <v-row no-gutters>
+                    <v-col cols="12" md="2" sm="12">
+                    Worklog
+                    </v-col>
+                    <v-col
+                      cols="12" md="9" 
+                      sm="12"
+                      class="text--secondary"
+                    >
+                      <v-row
+                        justify="space-around"
+                        no-gutters
+                      >
+                        <v-col cols="12" md="5" sm="6" >
+                          <v-menu
+                            ref="startMenu"
+                            :close-on-content-click="false"
+                            :return-value.sync="trip.start"
+                            offset-y
+                            min-width="290px"
+                          >
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-text-field
+                                v-model="trip.start"
+                                label="Start date"
+                                prepend-icon="mdi-calendar"
+                                readonly
+                                v-bind="attrs"
+                                v-on="on"
+                              ></v-text-field>
+                            </template>
+                            <v-date-picker
+                              v-model="date"
+                              no-title
+                              scrollable
+                            >
+                              <v-spacer></v-spacer>
+                              <v-btn
+                                text
+                                color="primary"
+                                @click="$refs.startMenu.isActive = false"
+                              >
+                                Cancel
+                              </v-btn>
+                              <v-btn
+                                text
+                                color="primary"
+                                @click="$refs.startMenu.save(date)"
+                              >
+                                OK
+                              </v-btn>
+                            </v-date-picker>
+                          </v-menu>
+                        </v-col>
+
+                        <v-col cols="12" md="5" sm="6">
+                          <v-menu
+                            ref="endMenu"
+                            :close-on-content-click="false"
+                            :return-value.sync="trip.end"
+                            offset-y
+                            min-width="290px"
+                          >
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-text-field
+                                v-model="trip.end"
+                                label="End date"
+                                prepend-icon="mdi-calendar"
+                                readonly
+                                v-bind="attrs"
+                                v-on="on"
+                              ></v-text-field>
+                            </template>
+                            <v-date-picker
+                              v-model="date"
+                              no-title
+                              scrollable
+                            >
+                              <v-spacer></v-spacer>
+                              <v-btn
+                                text
+                                color="primary"
+                                @click="$refs.endMenu.isActive = false"
+                              >
+                                Cancel
+                              </v-btn>
+                              <v-btn
+                                text
+                                color="primary"
+                                @click="$refs.endMenu.save(date)"
+                              >
+                                OK
+                              </v-btn>
+                            </v-date-picker>
+                          </v-menu>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <v-row>
+                    <v-col cols="12" sm="2" md="2" class="text-right">
+                      <v-checkbox
+                        v-model="isChangeHour"
+                        label="Change hour/week"
+                        hide-details
+                      ></v-checkbox>
+                    </v-col>
+                    <v-col cols="12" sm="1" md="1" class="ma-0 pb-0 pt-0">
+                      <v-text-field
+                        v-model="totalHourWeek"
+                        hint="Total hour / Week"
+                        label="Total hour / Week"
+                        class="text-right"
+                        suffix="hour/week"
+                        :disabled="!isChangeHour"
+                        hide-details
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
+            </v-col>
+            
+            <v-col
+               cols="12" md="1" sm="12"
+              class="text--secondary pr-2"
+            >
+              <v-btn
+                color="info"
+                @click="loadData()"
+              >
+                <!-- <v-icon>
+                    {{ icons.mdiReload }}
+                </v-icon> -->
+                Search
+              </v-btn>
+            </v-col>
+            <v-col cols="12" sm="12" md="12" class="pt-3 mt-5">
+              <h3 class="bold">Working days[{{this.workCount}}] CLV/Total:{{this.strMemberTotalCLV}}/{{this.strMemberTotal}} - KPI {{this.sKPICLV.toFixed(1)}}: ({{this.sWloadPercent.toFixed(2)}}%) </h3>
+              <span> {{this.strMemberEffort}} </span>
+            </v-col>
+          <!-- <v-col cols="10" md="10" class="pa-0 ma-0">
             jiraLogTimeList.vue
           </v-col>
           <v-col cols="2" md="2" class="pa-0 ma-0 text-right">
-            <v-btn
-              color="info"
-              icon
-              @click="loadData()"
-            >
-              <v-icon>
-                  {{ icons.mdiReload }}
-                </v-icon>
-            </v-btn>
-          </v-col>
+            
+          </v-col> -->
         </v-card-title>
         
         <v-card-text class="mt-0 mb-0 pt-1 pb-1 ma-0 pa-0">
           <!-- Row 1 -->
           <v-col cols="12" md="12" class="ma-0 pa-0" >
             <vue-good-table
-              title="Công việc chăm con"
+              title="Logtimes"
               styleClass="vgt-table bordered"
-              :columns="colCongViec"
-              :rows="tblDataCongViec"
+              :columns="colTableWorklog"
+              :rows="tblDataWorklog"
               :paginate="true"
               :lineNumbers="true"
               :search-options="{
                 enabled: true,
                 placeholder: 'Search this table',
+              }"
+              :group-options="{
+                enabled: true,
+                headerPosition: 'top',
               }"
               @on-row-dblclick="onRowDoubleClick"
               max-height="700px"
@@ -48,7 +192,6 @@
                 </v-col>
           <!-- Row 3 -->
         </v-card-text>
-        <v-divider class="mx-4"></v-divider>
        
       </v-card>
     </v-col>
@@ -83,15 +226,10 @@ export default {
   data() {
     return {
       loadingInstance: null,
-      colCongViec: [
+      colTableWorklog: [
         {
-          label: 'id',
-          field: 'id',
-          filterable: true,
-        },
-        {
-          label: 'Mã CV',
-          field: 'ma_cv',
+          label: 'key',
+          field: 'key',
           filterable: true,
           filterOptions: {
             styleClass: 'class-filter', // class to be added to the parent th element
@@ -104,112 +242,116 @@ export default {
           },
         },
         {
-          label: 'Nội dung',
-          field: 'ten_cong_viec',
+          label: 'Assignee',
+          field: 'assignee',
           filterable: true,
           filterOptions: {
             styleClass: 'class-filter', // class to be added to the parent th element
               enabled: true, // enable filter for this column
-              placeholder: 'Nội dung', // placeholder for filter input
+              placeholder: 'Assignee', // placeholder for filter input
               filterValue: '',
               filterDropdownItems: [], // dropdown (with selected values) instead of text input
               // filterFn: this.columnFilterFn, //custom filter function that
               trigger: 'enter', //only trigger on enter not on keyup 
           },
         },
+        // {
+        //   label: 'Nội dung',
+        //   field: 'ten_cong_viec',
+        //   filterable: true,
+        //   filterOptions: {
+        //     styleClass: 'class-filter', // class to be added to the parent th element
+        //       enabled: true, // enable filter for this column
+        //       placeholder: 'Nội dung', // placeholder for filter input
+        //       filterValue: '',
+        //       filterDropdownItems: [], // dropdown (with selected values) instead of text input
+        //       // filterFn: this.columnFilterFn, //custom filter function that
+        //       trigger: 'enter', //only trigger on enter not on keyup 
+        //   },
+        // },
         {
-          label: 'Ngày thực hiện',
-          field: 'ngay_thuc_hien',
+          label: 'Eff. Date',
+          field: 'effortDate',
           filterable: false,
           type: 'date',
           filterOptions: {
             styleClass: 'class-filter', // class to be added to the parent th element
               enabled: true, // enable filter for this column
-              placeholder: 'Ngày', // placeholder for filter input
+              placeholder: 'Eff. Date', // placeholder for filter input
               filterValue: '',
               filterDropdownItems: [], // dropdown (with selected values) instead of text input
               // filterFn: this.columnFilterFn, //custom filter function that
               trigger: 'enter', //only trigger on enter not on keyup 
           },
           formatFn: function (value) {
-              return value != null ? moment(value).format(config.DATE_TIME_FM) : null
+              return value != null ? moment(value).format(config.DATE_FM) : null
           },
         },
         {
-          label: 'Giờ bắt đầu',
-          field: 'gio_bat_dau',
-          filterable: false,
-          type: 'date',
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Ngày', // placeholder for filter input
-              filterValue: '',
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
-          formatFn: function (value) {
-              return value != null ? moment(value).format(config.DATE_TIME_FM) : null
-          },
-         
-        },
-        {
-          label: 'Giờ kế tiếp',
-          field: 'gio_ke_tiep',
-          filterable: false,
-          type: 'date',
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Ngày', // placeholder for filter input
-              filterValue: '',
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
-          formatFn: function (value) {
-              return value != null ? moment(value).format(config.DATE_TIME_FM) : null
-          },
-        },
-        {
-          label: 'Thông tin thêm',
-          field: 'thong_tin_them',
-          filterable: false,
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Thông tin', // placeholder for filter input
-              filterValue: '',
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
-        },
-        {
-          label: 'Trạng thái',
-          field: 'status',
-          filterable: false,
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Trạng thái', // placeholder for filter input
-              filterValue: '',
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
-        },
-        {
-          label: 'Tổng thời gian',
-          field: 'working_time',
+          label: 'Effort',
+          field: 'actualEffort',
           type: 'number',
           filterable: true,
-          formatFn: this.formatPrice,
+          // formatFn: this.formatPrice,
           filterOptions: {
             styleClass: 'class-filter', // class to be added to the parent th element
               enabled: true, // enable filter for this column
-              placeholder: 'Số Tiền', // placeholder for filter input
+              placeholder: 'Effort', // placeholder for filter input
+              filterValue: '',
+              filterDropdownItems: [], // dropdown (with selected values) instead of text input
+              // filterFn: this.columnFilterFn, //custom filter function that
+              trigger: 'enter', //only trigger on enter not on keyup 
+          },
+          formatFn: function (value) {
+            return value != null ? value : null
+          },
+          headerField: this.sumEffort,
+        },
+        // {
+        //   label: 'Giờ bắt đầu',
+        //   field: 'gio_bat_dau',
+        //   filterable: false,
+        //   type: 'date',
+        //   filterOptions: {
+        //     styleClass: 'class-filter', // class to be added to the parent th element
+        //       enabled: true, // enable filter for this column
+        //       placeholder: 'Ngày', // placeholder for filter input
+        //       filterValue: '',
+        //       filterDropdownItems: [], // dropdown (with selected values) instead of text input
+        //       // filterFn: this.columnFilterFn, //custom filter function that
+        //       trigger: 'enter', //only trigger on enter not on keyup 
+        //   },
+        //   formatFn: function (value) {
+        //       return value != null ? moment(value).format(config.DATE_TIME_FM) : null
+        //   },
+         
+        // },
+        // {
+        //   label: 'Giờ kế tiếp',
+        //   field: 'gio_ke_tiep',
+        //   filterable: false,
+        //   type: 'date',
+        //   filterOptions: {
+        //     styleClass: 'class-filter', // class to be added to the parent th element
+        //       enabled: true, // enable filter for this column
+        //       placeholder: 'Ngày', // placeholder for filter input
+        //       filterValue: '',
+        //       filterDropdownItems: [], // dropdown (with selected values) instead of text input
+        //       // filterFn: this.columnFilterFn, //custom filter function that
+        //       trigger: 'enter', //only trigger on enter not on keyup 
+        //   },
+        //   formatFn: function (value) {
+        //       return value != null ? moment(value).format(config.DATE_TIME_FM) : null
+        //   },
+        // },
+        {
+          label: 'Comment',
+          field: 'comment',
+          filterable: true,
+          filterOptions: {
+            styleClass: 'class-filter', // class to be added to the parent th element
+              enabled: true, // enable filter for this column
+              placeholder: 'comment', // placeholder for filter input
               filterValue: '',
               filterDropdownItems: [], // dropdown (with selected values) instead of text input
               // filterFn: this.columnFilterFn, //custom filter function that
@@ -217,21 +359,39 @@ export default {
           },
         },
         {
-          label: 'Ghi chú',
-          field: 'ghi_chu',
-          filterable: false,
+          label: 'Subject',
+          field: 'ticketSubject',
+          filterable: true,
           filterOptions: {
             styleClass: 'class-filter', // class to be added to the parent th element
               enabled: true, // enable filter for this column
-              placeholder: 'Ghi chú', // placeholder for filter input
+              placeholder: 'Subject', // placeholder for filter input
               filterValue: '',
               filterDropdownItems: [], // dropdown (with selected values) instead of text input
               // filterFn: this.columnFilterFn, //custom filter function that
               trigger: 'enter', //only trigger on enter not on keyup 
           },
         },
+        
+        // {
+        //   label: 'Ghi chú',
+        //   field: 'ghi_chu',
+        //   filterable: false,
+        //   filterOptions: {
+        //     styleClass: 'class-filter', // class to be added to the parent th element
+        //       enabled: true, // enable filter for this column
+        //       placeholder: 'Ghi chú', // placeholder for filter input
+        //       filterValue: '',
+        //       filterDropdownItems: [], // dropdown (with selected values) instead of text input
+        //       // filterFn: this.columnFilterFn, //custom filter function that
+        //       trigger: 'enter', //only trigger on enter not on keyup 
+        //   },
+        // },
       ],
-      tblDataCongViec: [
+      tblDataWorklog: [
+        {
+          children: [],
+        }
       ],
       chamConTitle: '',
       chamConItem: {},
@@ -245,22 +405,163 @@ export default {
         mdiSleep,
         mdiReload
       },
+      workCount: 0,
+      strMemberTotal: 0,
+      strMemberTotalCLV: 0,
+      sKPICLV: 0.0,
+      sWloadPercent: 0,
+      strMemberEffort: "",
+      strMemberEffort: "",
+      isChangeHour: false,
+      totalHourWeek: 40,
+      efforJsonList: {
+          "jiraLink": "",
+          "userName": "nam.nguyenngoc",
+          "pwd": "qwer@123",
+          "jiraDev": "",
+          "from": new Date().toISOString().substr(0, 10),
+          "to": new Date().toISOString().substr(0, 10),
+          "month": 5,
+          "week": 10,
+          "year": 2021,
+          "NAM": {
+              "member": "Nam Nguyen Ngoc",
+              "account": "nam.nguyenngoc",
+              "jiraLog": [],
+              "jiraTicketByTimeH": [],
+              "total": {}
+          },
+          "NAM2": {
+              "member": "Nam Nguyen Ngoc OLD",
+              "account": "doudevnn",
+              "jiraLog": [],
+              "jiraTicketByTimeH": [],
+              "total": {}
+          },
+          "DUNG": {
+              "member": "Dung Cao",
+              "account": "203737",
+              "jiraLog": [],
+              "jiraTicketByTimeH": [],
+              "total": {}
+          },
+          "KHANH": {
+              "member": "Khanh Nguyen",
+              "account": "203728",
+              "jiraLog": [],
+              "jiraTicketByTimeH": [],
+              "total": {}
+          },
+          "TRANG": {
+              "member": "Trang Nguyen",
+              "account": "213960",
+              "jiraLog": [],
+              "jiraTicketByTimeH": [],
+              "total": {}
+          },
+          "THANH": {
+              "member": "Thanh Nguyen",
+              "account": "213979",
+              "jiraLog": [],
+              "jiraTicketByTimeH": [],
+              "total": {}
+          },
+          "clvMemberList": [
+              {
+                  "id": "nam.nguyenngoc",
+                  "email": "nam.nguyenngoc@cyberlogitec.com",
+                  "name": "Nguyen Ngoc Nam"
+              },
+              {
+                  "id": "203728",
+                  "email": "khanh.vn@cyberlogitec.com",
+                  "name": "Nguyen Van Khanh"
+              },
+              {
+                  "id": "213960",
+                  "email": "trang.ng@cyberlogitec.com",
+                  "name": "Nguyen Thi Thuy Trang"
+              },
+              {
+                  "id": "213979",
+                  "email": "thanh.nc@cyberlogitec.com",
+                  "name": "Nguyen Chau Thanh"
+              }
+          ],
+          "boardId": {
+              "id": 343,
+              "self": "https://pim.cyberlogitec.com/jira/rest/agile/1.0/board/343",
+              "name": "SML Team CLV",
+              "type": "kanban"
+          },
+          "team": "Smartlink",
+          "itemsMember": {},
+          "itemsProject": [
+              {
+                  "self": "https://pim.cyberlogitec.com/jira/rest/api/2/project/12115",
+                  "id": "12115",
+                  "key": "SLI",
+                  "name": "22_SmartLink_SmartAgent [Internal]",
+                  "projectTypeKey": "software",
+                  "avatarUrls": {
+                      "48x48": "https://pim.cyberlogitec.com/jira/secure/projectavatar?pid=12115&avatarId=10200",
+                      "24x24": "https://pim.cyberlogitec.com/jira/secure/projectavatar?size=small&pid=12115&avatarId=10200",
+                      "16x16": "https://pim.cyberlogitec.com/jira/secure/projectavatar?size=xsmall&pid=12115&avatarId=10200",
+                      "32x32": "https://pim.cyberlogitec.com/jira/secure/projectavatar?size=medium&pid=12115&avatarId=10200"
+                  },
+                  "projectCategory": {
+                      "self": "https://pim.cyberlogitec.com/jira/rest/api/2/projectCategory/10208",
+                      "id": "10208",
+                      "description": "",
+                      "name": "Marine (Int. Project)"
+                  }
+              },
+              {
+                  "self": "https://pim.cyberlogitec.com/jira/rest/api/2/project/10709",
+                  "id": "10709",
+                  "key": "SPKA",
+                  "name": "SMARTLINK [Internal]",
+                  "projectTypeKey": "software",
+                  "avatarUrls": {
+                      "48x48": "https://pim.cyberlogitec.com/jira/secure/projectavatar?pid=10709&avatarId=10200",
+                      "24x24": "https://pim.cyberlogitec.com/jira/secure/projectavatar?size=small&pid=10709&avatarId=10200",
+                      "16x16": "https://pim.cyberlogitec.com/jira/secure/projectavatar?size=xsmall&pid=10709&avatarId=10200",
+                      "32x32": "https://pim.cyberlogitec.com/jira/secure/projectavatar?size=medium&pid=10709&avatarId=10200"
+                  },
+                  "projectCategory": {
+                      "self": "https://pim.cyberlogitec.com/jira/rest/api/2/projectCategory/10214",
+                      "id": "10214",
+                      "description": "",
+                      "name": "Logistics (Smartlink)"
+                  }
+              }
+          ]
+      },
+      date: null,
+      trip: {
+        name: '',
+        location: null,
+        start: new Date().toISOString().substr(0, 10),
+        end: new Date().toISOString().substr(0, 10),
+      },
+      locations: ['Australia', 'Barbados', 'Chile', 'Denmark', 'Ecuador', 'France'],
     }
   },
   created() {
-   this.loadData();
-  },
-  computed: {
-     
-  }, // end method
-  mounted() {
     this.loadingInstance = this.$veLoading({
         target: document.querySelector("#loading-container"),
         // 等同于
         // target:"#loading-container"
         name: "wave",
     });
-    this.show();
+   this.loadData();
+  },
+  computed: {
+     
+  }, // end method
+  mounted() {
+    
+    // this.show();
   }, // end method
   destroyed() {
     this.loadingInstance.destroy();
@@ -279,13 +580,45 @@ export default {
 
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     },
-    async loadData(ticketList) {
-      if (!this.$refs.jrTicketLogTime.validate()) {
-        return;
+    workday_count(start, end) {
+      var first = start.clone().endOf("week"); // end of first week
+      var last = end.clone().startOf("week"); // start of last week
+      var days = (last.diff(first, "days") * 5) / 7; // this will always multiply of 7
+      var wfirst = first.day() - start.day(); // check first week
+      if (start.day() == 0) --wfirst; // -1 if start with sunday
+      var wlast = end.day() - last.day(); // check last week
+      if (end.day() == 6) --wlast; // -1 if end with saturday
+      var holidays = this.count_holiday(start, end);
+      return wfirst + Math.floor(days) + wlast - holidays; // get the total
+    }, //              ^ EDIT: if days count less than 7 so no decimal point
+    count_holiday(start, end){
+      let count = 0;
+      while (start <= end) {
+        console.log("start", start.format("YYYY-MM-DD"));
+        if(config.WORKING.holidays.find(({ holidayDate }) => holidayDate == start.format("YYYY-MM-DD"))){
+          count++;
+        }
+        start = start.add(1, "days");
+       
       }
+      return count;
+    },
+    sumEffort(rowObj) {
+    	console.log('sumEffort', rowObj);
+    	let sum = 0;
+      for (let i = 0; i < rowObj.children.length; i++) {
+        sum += parseFloat(rowObj.children[i].actualEffort);
+      }
+      return sum;
+    },
+    async loadData(ticketList) {
+      // if (!this.$refs.jrTicketLogTime.validate()) {
+      //   return;
+      // }
+      this.show();
       const seft = this; //Current
 
-      seft.workCount = 0;
+      seft.workCount = 0; 
       seft.strMemberTotalCLV= 0;
       seft.strMemberTotal = 1;
       seft.strMemberTotalCLV = 0,
@@ -293,38 +626,40 @@ export default {
       seft.sWloadPercent = 0,
       seft.strMemberEffort = "";
 
-      seft.isBtnDisable = true;
-      seft.overlay = true;
-      // seft.$refs.hotTableComponent.hotInstance.loadData([]);
-      this.efforJsonList.from =  this.date;
-      this.efforJsonList.to = this.date2;
-      // this.efforJsonList.itemsProject = this.itemsProject;
-      this.efforJsonList.team = this.team;
-      // this.projectsName = 'SmartLink [Internal]'
-      this.efforJsonList.itemsMember = this.member;
+      // seft.isBtnDisable = true;
+      // seft.overlay = true;
+      // // seft.$refs.hotTableComponent.hotInstance.loadData([]);
+      // this.efforJsonList.from =  this.date;
+      // this.efforJsonList.to = this.date2;
+      // // this.efforJsonList.itemsProject = this.itemsProject;
+      // this.efforJsonList.team = this.team;
+      // // this.projectsName = 'SmartLink [Internal]'
+      // this.efforJsonList.itemsMember = this.member;
 
-      //Count working day
+      // //Count working day
       let countWD = this.workday_count(moment(this.date), moment(this.date2));
-      this.workCount = countWD;
-      console.log("countWD",countWD);
+      // this.workCount = countWD;
+      // console.log("countWD",countWD);
 
-      if(seft.valueProject.key != undefined && seft.valueProject.key.length > 0){
-        this.efforJsonList.itemsProject = seft.valueProject.key;
+      // if(seft.valueProject.key != undefined && seft.valueProject.key.length > 0){
+      //   this.efforJsonList.itemsProject = seft.valueProject.key;
 
-      } else {
-        this.efforJsonList.itemsProject = this.itemsProject;
-      }
+      // } else {
+      //   this.efforJsonList.itemsProject = this.itemsProject;
+      // }
 
-      let url = `${config.JR_API_JIRA}/api/jiraWorklogs`;
+      let url = `${config.API_WORKING.JR_API_JIRA}/api/jiraWorklogs`;
+      this.efforJsonList.from = this.trip.start;
+      this.efforJsonList.to = this.trip.end;
       let parameter = this.efforJsonList;
 
-      if(ticketList != undefined){
-        this.efforJsonList.tickets = ticketList;
-      }
+      // if(ticketList != undefined){
+      //   this.efforJsonList.tickets = ticketList;
+      // }
 
       await axios
         .post(url, parameter)
-        .then(async function (response) {
+        .then(function (response) {
           // seft.hotSettings.data = response.data.data;
           // console.log('pimDATA', seft.pimDATA);
           // seft.pimDATA = response.data.data;
@@ -365,7 +700,7 @@ export default {
               
             ];
           let lsCLV = config.CLV_PIM_ACCOUNT.MEM_LIST;
-
+          console.log("lsCLV", data);
           if(data != undefined && data.length > 0){
             //Total
             let flagMember = "";
@@ -438,65 +773,50 @@ export default {
             if(seft.isChangeHour == true){
               hWeek = seft.totalHourWeek;
             }
-            seft.strMemberEffort = userTotal.map(mem => `${mem.name}:${mem.total}h - ${mem.total * config.blueprintConfig.pointaHour}p (${Math.round(((mem.total/parseInt(hWeek))*100))}%)`).join(', ');
+            seft.strMemberEffort = userTotal.map(mem => `${mem.name}:${mem.total}h - ${mem.total * config.WORKING.blueprintConfig.pointaHour}p (${Math.round(((mem.total/parseInt(hWeek))*100))}%)`).join(', ');
             // console.log("lsMemberNames", lsMemberNames.map(mem => `${mem.name}:${mem.total}`).join(', '));
             console.log("hWeek", hWeek);
             console.log("self.isChangeHour", self.isChangeHour);
-            self.wordloadData = data;
-            console.log("wordloadData", self.wordloadData);
+            // self.tblDataWorklog = data;
+            // console.log("wordloadData", self.tblDataWorklog);
             
-            // await seft.$refs.hotTableComponent.hotInstance.loadData(
-            //   data
-            // );
-
-            seft.tblDataWorklog = data;
-
-            // //set data to dialog
-            // // seft.sogDataItem = data;
-            //  seft.sogDataItem  = [];
-            // for(let i = 0; i < data.length; i ++){
-            //   let item = data[i];
-            //   let ob = {
-            //     title : item.ticketSubject,
-            //     month : item.effortDate,
-            //     issue :item.key,
-            //     projectName: 'SMARTLINK [Internal]',
-            //     worklog : item.actualEffort,
-            //     taskType : item.taskType,
-            //     new : 'N',
-            //     team : 'SML PF',
-            //     name : item.displayName,
-            //     employeeNumber : item.name,
-            //   }
-            //     // seft.sogDataItem.title = item.ticketSubject;
-            //     // seft.sogDataItem.month = item.effortDate;
-            //     // seft.sogDataItem.issue = item.ticketSubject;
-            //     // seft.sogDataItem.projectName = item.project;
-            //     // seft.sogDataItem.worklog = item.actualEffort;
-            //     // seft.sogDataItem.taskType = item.taskType;
-            //     // seft.sogDataItem.new = item.ticketSubject;
-            //     // seft.sogDataItem.team = item.ticketSubject;
-            //     // seft.sogDataItem.name = item.displayName;
-            //     // seft.sogDataItem.employeeNumber = item.name;
-            //     seft.sogDataItem.push(ob);
-            // };
-            // for(let i = 0; i < data.length; i++)
-            console.log("seft.sogDataItem ", seft.sogDataItem);
+            seft.tblDataWorklog = 
+            [ 
+              {
+                children: data,
+              }
+            ];
+            seft.close();
+            // console.log("seft.sogDataItem ", seft.sogDataItem);
 
                       
           }else{
-            
+            seft.tblDataWorklog = 
+            [ 
+              {
+                children: data,
+              }
+            ];
+            seft.close();
           }
-          seft.isBtnDisable = false;
-          seft.overlay = false;
+          // seft.isBtnDisable = false;
+          // seft.overlay = false;
+          console.log("seft.sogDataItem ", data);
 
+          // seft.tblDataWorklog = 
+          // [ 
+          //   {
+          //     children: data,
+          //   }
+          // ];
+          // seft.tblDataWorklog = data;
+          
           
           // seft.$refs.hotTableComponent.hotInstance.loadData(seft.pimDATA);
         }).catch((error) => {
             if( error.response ){
-                console.log(error.response.data); // => the response payload 
-                seft.isBtnDisable = false;
-                seft.overlay = false;
+              console.log(error.response.data); // => the response payload 
+              seft.close();
             }
         });
     },
@@ -562,5 +882,9 @@ export default {
   // @import './Bebidas.scss';
   .countdown {
     float: right;
+  }
+  .class-filter input[name='vgt-ky_chi'], .class-filter input[name='vgt-so_tien'] {
+    text-align: right;
+    color:#606266
   }
 </style>

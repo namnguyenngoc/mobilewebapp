@@ -52,7 +52,7 @@
     </v-app-bar>
 
     <v-main>
-      <div class="app-content-container boxed-container pa-1">
+      <div class="app-content-container pa-1">
         <slot></slot>
       </div>
     </v-main>
@@ -65,7 +65,7 @@
       height="56"
       class="px-0"
     >
-      <div class="boxed-container w-full">
+      <div class="w-full">
         <div class="mx-6 d-flex justify-space-between">
           <span>
             &copy; 2021 <a

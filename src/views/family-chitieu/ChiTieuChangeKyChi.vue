@@ -24,7 +24,20 @@
               </v-col>
               <v-col
                 cols="12"
-                sm="6"
+                sm="4"
+              >
+                <v-checkbox
+                  v-model="allKyChi"
+                  label="Tất cả"
+                  value="ALL"
+                  color="red"
+                  class="pa-0 ma-0 ml-3 mt-3"
+                  hide-details
+                />
+              </v-col>
+              <v-col
+                cols="12"
+                sm="4"
               >
                 <v-select
                   :items="this.items_ky_chi_list"
@@ -37,7 +50,7 @@
               </v-col>
               <v-col
                 cols="12"
-                sm="6"
+                sm="4"
               >
                 <v-autocomplete
                   :items="this.items_ky_chi_list"
@@ -115,6 +128,7 @@
       return {
         dialog: false,
         selectDateCurrent: "",
+        allKyChi: false,
         // itemData: null,
         // kyChiMoi: null,
         // title: '',

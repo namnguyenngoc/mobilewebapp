@@ -112,9 +112,9 @@ const routes = [
     component: () => import('@/views/family-chamcon/ChamConHeadlinesList.vue'),
   },
   {
-    path: '/family/chamcon-list',
-    name: 'chamcon-list',
-    component: () => import('@/views/family-chamcon/ChamConHeadlinesList.vue'),
+    path: '/family/chamcon-suckhoe-list',
+    name: 'chamcon-suckhoe-list',
+    component: () => import('@/views/family-chamcon/SucKhoeHeadlinesList.vue'),
   },
   {
     path: '/working/jira-logtime-list',

@@ -69,8 +69,48 @@ const config = {
     // title: '',
     // item: Object,
     DATE_TIME_FM: 'YYYY-MM-DD HH:mm:ss',
-    DATE_FM: 'YYYY-MM-DD'
-    
+    DATE_FM: 'YYYY-MM-DD',
+    CLV_PIM_ACCOUNT: {
+      COUNT_CONTRACT: 3,
+      SML_TEAM: ['163189', 'nam.nguyenngoc', '213960', '213979', '203728'],
+      MEM_LIST: [
+        {
+            id: 'nam.nguyenngoc',
+            email: 'nam.nguyenngoc@cyberlogitec.com',
+            isBackup: 'N',
+        },
+        // {
+        //     id: '203737',
+        //     email: 'dung.cao@cyberlogitec.com',
+        // },
+        {
+            id: '203728',
+            email: 'khanh.vn@cyberlogitec.com',
+            isBackup: 'N',
+        },
+        {
+            id: '213960',
+            email: 'trang.ng@cyberlogitec.com',
+            isBackup: 'N',
+        },
+        {
+          id: '213979',
+          email: 'thanh.nc@cyberlogitec.com',
+          isBackup: 'Y',
+        },
+      ]
+    },
+    WORKING: {
+      holidays:[
+        { holidayDate: "2021-09-02", description: "Quoc Khanh" },
+        { holidayDate: "2021-09-03", description: "Quoc Khanh" },
+        { holidayDate: "2022-01-03", description: "Tet Duong Lich" },
+      ],
+      blueprintConfig: {
+        pointaHour: 25,
+        pointaDay: 200
+      },
+    }
 }
 
 

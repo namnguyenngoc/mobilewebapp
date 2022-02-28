@@ -4,18 +4,132 @@
       <!-- Theo doi suc khoe -->
       <v-card>
         <v-card-title class="pt-5 pb-2 mr-0 pr-2">
-          <v-col cols="10" md="10" class="pa-0 ma-0">
-            Chi Tiêu List
+          <v-col cols="12" sm="12" md="11" class="pa-0 ma-0">
+            <v-expansion-panels>
+              <v-expansion-panel>
+                <v-expansion-panel-header v-slot="{ open }">
+                  <v-row>
+                    <v-col cols="12" md="12" sm="12">
+                      <h3> Chi tiêu </h3>
+                    </v-col>
+                    <v-col
+                      cols="12" md="12" 
+                      sm="12"
+                    >
+                      <v-row
+                      >
+                        <v-col cols="12" md="5" sm="6" >
+                          <v-menu
+                            ref="startMenu"
+                            :close-on-content-click="false"
+                            :return-value.sync="trip.start"
+                            offset-y
+                            min-width="290px"
+                          >
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-text-field
+                                v-model="trip.start"
+                                label="Start date"
+                                prepend-icon="mdi-calendar"
+                                readonly
+                                v-bind="attrs"
+                                v-on="on"
+                              ></v-text-field>
+                            </template>
+                            <v-date-picker
+                              v-model="date"
+                              no-title
+                              scrollable
+                            >
+                              <v-spacer></v-spacer>
+                              <v-btn
+                                text
+                                color="primary"
+                                @click="$refs.startMenu.isActive = false"
+                              >
+                                Cancel
+                              </v-btn>
+                              <v-btn
+                                text
+                                color="primary"
+                                @click="$refs.startMenu.save(date)"
+                              >
+                                OK
+                              </v-btn>
+                            </v-date-picker>
+                          </v-menu>
+                        </v-col>
+
+                        <v-col cols="12" md="5" sm="6">
+                          <v-menu
+                            ref="endMenu"
+                            :close-on-content-click="false"
+                            :return-value.sync="trip.end"
+                            offset-y
+                            min-width="290px"
+                          >
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-text-field
+                                v-model="trip.end"
+                                label="End date"
+                                prepend-icon="mdi-calendar"
+                                readonly
+                                v-bind="attrs"
+                                v-on="on"
+                              ></v-text-field>
+                            </template>
+                            <v-date-picker
+                              v-model="date"
+                              no-title
+                              scrollable
+                            >
+                              <v-spacer></v-spacer>
+                              <v-btn
+                                text
+                                color="primary"
+                                @click="$refs.endMenu.isActive = false"
+                              >
+                                Cancel
+                              </v-btn>
+                              <v-btn
+                                text
+                                color="primary"
+                                @click="$refs.endMenu.save(date)"
+                              >
+                                OK
+                              </v-btn>
+                            </v-date-picker>
+                          </v-menu>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <v-row>
+                    <v-col cols="12" sm="2" md="2" class="text-right">
+                    Test
+                    </v-col>
+                    <v-col cols="12" sm="1" md="1" class="ma-0 pb-0 pt-0">
+                    </v-col>
+                  </v-row>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
           </v-col>
-         <v-col cols="2" md="2" class="pa-0 ma-0 text-right">
+          
+          <v-col
+              cols="12" md="1" sm="12"
+            class="text--secondary pr-2"
+          >
             <v-btn
               color="info"
-              icon
               @click="loadChiTieu()"
             >
-              <v-icon>
-                {{ icons.mdiReload }}
-              </v-icon>
+              <!-- <v-icon>
+                  {{ icons.mdiReload }}
+              </v-icon> -->
+              Search
             </v-btn>
           </v-col>
         </v-card-title>
@@ -293,9 +407,24 @@ export default {
         mdiSleep,
         mdiReload
       },
+      date: null,
+      trip: {
+        name: '',
+        location: null,
+        start: moment().subtract(6, 'months').format(config.DATE_FM),
+        end: new Date().toISOString().substr(0, 10),
+      },
     }
   },
   created() {
+    //  let dateStartWeek2 = momentBiz(momentBiz(new Date('2021-06-09')).startOf('isoWeek').isoWeekday(2), "YYYY-MM-DD").businessSubtract(-7);
+    // let dateEndWeek = momentBiz(momentBiz(new Date()).startOf('isoWeek').isoWeekday(2), "YYYY-MM-DD").businessSubtract(-1);
+    // console.log("from", new Date(momentBiz(dateStartWeek2, 'YYYY-MM-DD')._d).toISOString().substr(0, 10));
+    // console.log("to", new Date(momentBiz(dateEndWeek, 'YYYY-MM-DD')._d).toISOString().substr(0, 10));
+
+    // this.trip.start = new Date(momentBiz(dateStartWeek2, 'YYYY-MM-DD')._d).toISOString().substr(0, 10);
+    // this.trip.end = new Date(momentBiz(dateEndWeek, 'YYYY-MM-DD')._d).toISOString().substr(0, 10);
+    
     this.loadingInstance = this.$veLoading({
         target: document.querySelector("#loading-container"),
         // 等同于
@@ -391,7 +520,7 @@ export default {
       ];
       kyChi = ['ALLINONE'];
       axios
-      .get(`${config.API_FAMILY}/api/chitieus/${JSON.stringify(kyChi)}/${this.allStatusChecked}/${this.includeGop}`)
+      .get(`${config.API_FAMILY}/api/chitieus/${JSON.stringify(kyChi)}/${this.allStatusChecked}/${this.includeGop}/${this.trip.start}/${this.trip.end}`)
       .then(response => {
         // seft.hotSettings.data = response.data.data;
         let data = response.data.data;

@@ -148,6 +148,19 @@ function utn(obj){
     return "";
   return obj;
 }
+
+function subStringEML(rootData, startStr, endStr, regex, regexReplace){
+  let str = "";
+  try {
+    if(regex == undefined || regex == null || regex == ""){
+      regex = "/\r?\n|\r/g";
+    }
+    str = rootData.slice(rootData.indexOf(startStr) + startStr.length, rootData.indexOf(endStr)).replace(eval(regex), regexReplace).trim();
+  } catch (error) {
+    str = error.message;
+  }
+  return str;
+}
 const common = {
   utn                 : utn,
   getDateSaoKeAPI: getDateSaoKeAPI,
@@ -155,6 +168,7 @@ const common = {
   getDateSaoKe:getDateSaoKe,
   getDateThanhToan:getDateThanhToan,
   getKyTinh: getKyTinh,
+  subStringEML: subStringEML,
 }
 
 module.exports = common;

@@ -148,8 +148,8 @@
               </v-btn>
             </v-col>
             <v-col cols="12" sm="12" md="12" class="pt-3 mt-5">
-              <h3 class="bold">Working days[{{this.workCount}}] CLV/Total:{{this.strMemberTotalCLV}}/{{this.strMemberTotal}} - KPI {{this.sKPICLV.toFixed(1)}}: ({{this.sWloadPercent.toFixed(2)}}%) </h3>
-              <span> {{this.strMemberEffort}} </span>
+              <h5 class="bold">Working days[{{this.workCount}}] CLV/Total:{{this.strMemberTotalCLV}}/{{this.strMemberTotal}} - KPI {{this.sKPICLV.toFixed(1)}}: ({{this.sWloadPercent.toFixed(2)}}%) </h5>
+              <h6> {{this.strMemberEffort}} </h6>
             </v-col>
           <!-- <v-col cols="10" md="10" class="pa-0 ma-0">
             jiraLogTimeList.vue
@@ -181,7 +181,20 @@
               max-height="700px"
               />
           </v-col>
-           <v-col cols="12">
+          <v-col cols="5" sm="12" md="12" class="mb-0 pb-0">
+            <v-switch
+              v-model="stackedMode"
+              label="Stacked Chart"
+              @change="loadChart(dataChart, userTotal)"
+            ></v-switch>
+          </v-col>
+          <v-col cols="5" sm="12" md="12" class="mb-0 pb-0">
+              <div id="chart">
+                <apexchart type="bar" height="350" 
+                :options="chartOptions" :series="series"></apexchart>
+              </div>
+          </v-col>
+          <v-col cols="12">
             <chamConDetail
               ref="chamConDetail"
               :title="chamConTitle"
@@ -189,7 +202,7 @@
               :v-model="chamConDetaillDialog"
               @refeshList="loadData()"
             />
-                </v-col>
+          </v-col>
           <!-- Row 3 -->
         </v-card-text>
        
@@ -202,6 +215,7 @@
 import axios from 'axios';
 import config from '../../config/config';
 import moment from "moment";
+import momentBiz from 'moment-business-days';
 import "vue-easytable/libs/theme-dark/index.css";
 import { VueGoodTable } from 'vue-good-table';
 import chamConDetail from "../family-chamcon/ChamConDetail";
@@ -221,7 +235,8 @@ export default {
   name: 'SucKhoe',
   components: {
     VueGoodTable,
-    chamConDetail
+    chamConDetail,
+    momentBiz
   },
   data() {
     return {
@@ -541,10 +556,114 @@ export default {
       trip: {
         name: '',
         location: null,
-        start: new Date().toISOString().substr(0, 10),
-        end: new Date().toISOString().substr(0, 10),
+        start: moment().subtract(1, 'days').format(config.DATE_FM),
+        end: moment().subtract(0, 'days').format(config.DATE_FM),
       },
       locations: ['Australia', 'Barbados', 'Chile', 'Denmark', 'Ecuador', 'France'],
+      series: [],
+      stackedMode: false,
+      chartOptions: {
+        ...this.chartOptions,
+        ...{
+        chart: {
+          // background: "#222",
+          // height: 400,
+          redrawOnParentResize: true,
+          stacked: true,
+          toolbar: {
+            show: true
+          },
+          // zoom: {
+          //   enabled: true
+          // },
+          type: "line"
+        },
+        // colors: ["red", "blue", "green"],
+        dataLabels: {
+          enabled: true,
+          // enabledOnSeries: [2],
+          // enabledOnSeries: [0,1,2],
+          // formatter: function(value, { seriesIndex, dataPointIndex, w}) {
+          //     let indices = w.config.series.map((item, i) => i);
+          //     console.log("seriesIndex", seriesIndex);
+          //     console.log("dataPointIndex", dataPointIndex);
+          //     console.log("w", w);
+          //     indices = indices.filter(i => !w.globals.collapsedSeriesIndices.includes(i) 
+          //       && _.get(w.config.series, `${i}.data.${dataPointIndex}`) > 0);
+          //     console.log("indices", indices);
+          //     if (seriesIndex == _.max(indices)){
+          //       const totalFm = (w.globals.stackedSeriesTotals[dataPointIndex] / 1).toFixed(0).replace(',', '.');
+          //       return totalFm.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+          //     }
+          //     return '';
+          //   },
+          
+        },
+        noData: {
+          align: "center",
+          text: "No data available at the moment",
+          verticalAlign: "middle"
+        },
+        legend: {
+          horizontalAlign: 'center',
+          position: 'bottom',
+          
+        },
+        plotOptions: {
+          bar: {
+            borderRadius: 8,
+            horizontal: false
+          }
+        },
+        stroke: {
+          width: [3,3,3,3],
+          curve: 'smooth',
+        },
+        // stroke: {
+        //   curve: 'smooth',
+        // },
+        title: {
+          text: "Logtime and KPI"
+        },
+        // theme: {
+        //   mode: "dark"
+        // },
+        xaxis: {
+          categories: [],
+          type: "category",
+         
+        },
+        yaxis: [
+          {
+            title: {
+              text: "Hours"
+            },
+            max: 24,
+            min: 0,
+          },
+          {
+            max: 24,
+            min: 0,
+          },
+          {
+            max: 24,
+            min: 0,
+          },
+          {
+            max: 100,
+            min: 0,
+            opposite: true,
+            title: {
+              text: "(%) Ratio"
+            }
+          }
+        ]
+        }
+      },
+      wordloadData: null,
+      dataChart: [],
+      userTotal: [],
     }
   },
   created() {
@@ -554,13 +673,27 @@ export default {
         // target:"#loading-container"
         name: "wave",
     });
-   this.loadData();
+    // this.loadChart();
+    
+    // let endDate =  moment(new Date());
+    // let dateList = this.getDaysBetweenDates(this.trip.start, this.trip.end);
+    // for(var i = 0; i < dateList.length;  i++){
+    //   this.chartOptions.labels.push(dateList[i]);
+    // }
+
+    this.loadData();
   },
   computed: {
      
   }, // end method
   mounted() {
-    
+    Array.prototype.sum = function (prop) {
+        var total = 0
+        for ( var i = 0, _len = this.length; i < _len; i++ ) {
+            total += this[i][prop]
+        }
+        return total
+    }
     // this.show();
   }, // end method
   destroyed() {
@@ -604,19 +737,156 @@ export default {
       return count;
     },
     sumEffort(rowObj) {
-    	console.log('sumEffort', rowObj);
+    	// console.log('sumEffort', rowObj);
     	let sum = 0;
       for (let i = 0; i < rowObj.children.length; i++) {
         sum += parseFloat(rowObj.children[i].actualEffort);
       }
       return sum;
     },
+    getDaysBetweenDates(startDate, endDate) {
+        var now = startDate.clone(), dates = [];
+  
+        while (now.isSameOrBefore(endDate)) {
+            if(momentBiz(now.format('YYYY-MM-DD'),'YYYY-MM-DD').isBusinessDay()){
+              dates.push(now.format('YYYY-MM-DD'));
+
+            }
+            now.add(1, 'days');
+        }
+        return dates;
+    },
+    chartChange(){
+      this.chartOptions.chart.stacked = true;
+      this.loadChart(this.dataChart, this.userTotal);
+    },
+    loadChart(dataChart, userTotal){
+      console.log('Load Chart');
+      console.log('Load Chart', dataChart);
+      this.dataChart = dataChart;
+      this.userTotal = userTotal;
+      let self = this;
+        // var endDate = moment('2021-05-31');
+        let lsMemberNames = [
+            {
+                id: 'nam.nguyenngoc',
+                name: 'Nam Nguyen Ngoc',
+                total: 0
+            },
+            {
+                id: '203737',
+                name: 'Dung Cao',
+                total: 0
+            },
+            {
+                id: '203728',
+                name: 'Khanh Nguyen',
+                total: 0
+            },
+            {
+                id: '213960',
+                name: 'Trang Nguyen',
+                total: 0
+            },
+            
+        ];
+        while (this.series.length) {
+          this.series.pop();
+        }
+        while (this.chartOptions.xaxis.categories.length) {
+          this.chartOptions.xaxis.categories.pop();
+        }
+        var startDate =  moment(this.trip.start);
+        let endDate =  moment(this.trip.end);
+        let dateList = this.getDaysBetweenDates(startDate, endDate);
+        let serWlogs = [];
+        let serKPI = [];
+        // let countWD = this.workday_count(moment(this.trip.start), moment(this.trip.end));
+        // console.log("data", seft.tblDataWorklog.children);
+        console.log("find", lsMemberNames.find( ({ id }) => id === '203728'));
+        console.log("dateList", dateList);
+        for(var i = 0; i < dateList.length;  i++){
+          // this.chartOptions.labels.push(dateList[i]);
+          this.chartOptions.xaxis.categories.push(dateList[i]);
+          // lsMemberNames.map(mem => `${mem.name}
+          let dataTotal = dataChart.filter(function (item) {
+            if (userTotal.find( ({ email }) => email === item.emailAddress) != undefined
+                  && item.effortDate === dateList[i]) return true
+          });
+          serWlogs.push(dataTotal.sum('actualEffort'));
+          
+          serKPI.push(Math.round((dataTotal.sum('actualEffort')/(config.CLV_PIM_ACCOUNT.COUNT_CONTRACT * 8))*100));
+          // console.log("dataTotal: " +dateList[i], dataTotal.sum('actualEffort'));
+        }
+
+        console.log("dateList", dateList);
+        console.log("dataChart", dataChart);
+
+        let serial2 = [];  
+        
+        //Data
+        if(userTotal != undefined && userTotal != null){
+          //  this.series.push( {
+          //   data: [2,3],
+          //     name: "Pending",
+          //     type: "column"
+          //   }),
+          //   this.series.push( {
+          //     data: [50, 90],
+          //     name: "Ratio",
+          //     type: "line"
+          //   });
+          for(var i = 0; i < userTotal.length; i ++){
+            let item = userTotal[i];
+
+            let effortLog = dataChart.filter(function (itemChart) {
+              if (item.email === itemChart.emailAddress)
+                    // && item.effortDate === dateList[i]
+                  return true
+            });
+            
+           console.log('effortLog',effortLog);
+            //array log by date
+            let arrLog = [];
+            for(var j = 0; j < dateList.length;  j++){
+              
+              let totalByMemberDate = effortLog.filter(function (item) {
+                if (item.effortDate == dateList[j]) return true
+              });
+              // item.displayName = item.assignee;
+              arrLog.push(totalByMemberDate.sum('actualEffort'));
+              
+             
+              // console.log('totalByMemberDate',totalByMemberDate);
+            }
+            //  console.log('effortLog',effortLog);
+           
+            this.series.push( {
+              data: arrLog,
+              name: effortLog[0].assignee,
+              type: "column"
+            });
+            
+
+          }
+          this.series.push({
+            data: serKPI,
+            name: 'KPI',
+            type:'line'
+          });
+          console.log('series',this.series);
+        }
+        
+       
+        console.log("chartOptions", this.chartOptions);
+        
+    },
     async loadData(ticketList) {
       // if (!this.$refs.jrTicketLogTime.validate()) {
       //   return;
       // }
       this.show();
-      const seft = this; //Current
+      let seft = this; //Current
 
       seft.workCount = 0; 
       seft.strMemberTotalCLV= 0;
@@ -630,14 +900,14 @@ export default {
       // seft.overlay = true;
       // // seft.$refs.hotTableComponent.hotInstance.loadData([]);
       // this.efforJsonList.from =  this.date;
-      // this.efforJsonList.to = this.date2;
+      // this.efforJsonList.to = this.trip.end;
       // // this.efforJsonList.itemsProject = this.itemsProject;
       // this.efforJsonList.team = this.team;
       // // this.projectsName = 'SmartLink [Internal]'
       // this.efforJsonList.itemsMember = this.member;
 
       // //Count working day
-      let countWD = this.workday_count(moment(this.date), moment(this.date2));
+      let countWD = this.workday_count(moment(this.trip.start), moment(this.trip.end));
       // this.workCount = countWD;
       // console.log("countWD",countWD);
 
@@ -659,46 +929,12 @@ export default {
 
       await axios
         .post(url, parameter)
-        .then(function (response) {
+        .then(async function (response) {
           // seft.hotSettings.data = response.data.data;
           // console.log('pimDATA', seft.pimDATA);
           // seft.pimDATA = response.data.data;
           //lstMember
           let data = response.data.data;
-          let lsMemberNames = [
-              {
-                  id: 'nam.nguyenngoc',
-                  name: 'Nam Nguyen Ngoc',
-                  total: 0
-              },
-              {
-                  id: 'doudevnn',
-                  name: 'Nam Nguyen Ngoc OLD',
-                  total: 0
-              },
-              // {
-              //     id: '203737',
-              //     name: 'Dung Cao',
-              //     total: 0
-              // },
-              {
-                  id: '203728',
-                  name: 'Khanh Nguyen',
-                  total: 0
-              },
-              {
-                  id: '213960',
-                  name: 'Trang Nguyen',
-                  total: 0
-              },
-              {
-                id: '213979',
-                email: 'thanh.nc@cyberlogitec.com',
-                name: 'Nguyen Chau Thanh',
-                total: 0
-              },
-              
-            ];
           let lsCLV = config.CLV_PIM_ACCOUNT.MEM_LIST;
           console.log("lsCLV", data);
           if(data != undefined && data.length > 0){
@@ -707,7 +943,7 @@ export default {
             let total;
             seft.strMemberTotalCLV = 0;
             seft.strMemberTotal = 0;
-            self.sKPICLV = 0;
+            seft.sKPICLV = 0;
             let emailSeen = new Set();
 
             //Get email
@@ -726,7 +962,7 @@ export default {
                   let user = userTotal.find( ({ email }) => email  === data[i].emailAddress);
                   if(user != undefined && user != null){
                     let memberContract = lsCLV.find( ({ email }) => email  === data[i].emailAddress);
-                    console.log('memberContract',memberContract);
+                    // console.log('memberContract',memberContract);
                     if(memberContract != undefined && memberContract != null && memberContract.isBackup == 'N'){
                       user.total += data[i].actualEffort;
                     }
@@ -755,7 +991,7 @@ export default {
               // }
               if(lsCLV.find( ({ email }) => email  === data[i].emailAddress)){
                 let memberContract = lsCLV.find( ({ email }) => email  === data[i].emailAddress);
-                console.log('memberContract',memberContract);
+                // console.log('memberContract',memberContract);
                 if(memberContract != undefined && memberContract != null && memberContract.isBackup == 'N'){
                   seft.strMemberTotalCLV += data[i].actualEffort; //Need to check
                 }
@@ -766,6 +1002,8 @@ export default {
 
             }
             console.log("userTotal", userTotal);
+            console.log("seft.strMemberTotalCLV", seft.strMemberTotalCLV);
+
             seft.sKPICLV = seft.strMemberTotalCLV/(countWD*8);
             seft.sWloadPercent = (seft.strMemberTotalCLV / (countWD * config.CLV_PIM_ACCOUNT.COUNT_CONTRACT * 8))*100;
             // console.log('KPICLV', self.sKPICLV.toFixed(1));
@@ -775,8 +1013,8 @@ export default {
             }
             seft.strMemberEffort = userTotal.map(mem => `${mem.name}:${mem.total}h - ${mem.total * config.WORKING.blueprintConfig.pointaHour}p (${Math.round(((mem.total/parseInt(hWeek))*100))}%)`).join(', ');
             // console.log("lsMemberNames", lsMemberNames.map(mem => `${mem.name}:${mem.total}`).join(', '));
-            console.log("hWeek", hWeek);
-            console.log("self.isChangeHour", self.isChangeHour);
+            // console.log("hWeek", hWeek);
+            // console.log("self.isChangeHour", self.isChangeHour);
             // self.tblDataWorklog = data;
             // console.log("wordloadData", self.tblDataWorklog);
             
@@ -786,6 +1024,8 @@ export default {
                 children: data,
               }
             ];
+
+            seft.loadChart(data, userTotal);
             seft.close();
             // console.log("seft.sogDataItem ", seft.sogDataItem);
 
@@ -802,7 +1042,7 @@ export default {
           // seft.isBtnDisable = false;
           // seft.overlay = false;
           console.log("seft.sogDataItem ", data);
-
+          
           // seft.tblDataWorklog = 
           // [ 
           //   {
@@ -813,12 +1053,14 @@ export default {
           
           
           // seft.$refs.hotTableComponent.hotInstance.loadData(seft.pimDATA);
+        
         }).catch((error) => {
             if( error.response ){
               console.log(error.response.data); // => the response payload 
-              seft.close();
+              
             }
-        });
+            seft.close();
+        })
     },
     show() {
         this.loadingInstance.show();

@@ -34,6 +34,7 @@
                                 readonly
                                 v-bind="attrs"
                                 v-on="on"
+                                hide-details
                               ></v-text-field>
                             </template>
                             <v-date-picker
@@ -76,6 +77,7 @@
                                 readonly
                                 v-bind="attrs"
                                 v-on="on"
+                                hide-details
                               ></v-text-field>
                             </template>
                             <v-date-picker
@@ -412,7 +414,8 @@ export default {
         name: '',
         location: null,
         start: moment().subtract(24, 'months').format(config.DATE_FM),
-        end: new Date().toISOString().substr(0, 10),
+        end: moment().subtract(-5, 'days').format(config.DATE_FM),
+        // new Date().toISOString().substr(0, 10),
       },
     }
   },

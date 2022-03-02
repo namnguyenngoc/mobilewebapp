@@ -29,7 +29,7 @@
           <v-col cols="12" md="12" class="pa-0 ma-0 text-right">
             <v-radio-group v-model="thong_tin_suc_khoe.chart_type_x" row>
               <v-radio label="Theo ngày" value="NGAY" hide-details @click="loadingChartSK()"></v-radio>
-              <v-radio label="Theo tháng" value="THANG" hide-details @click="sliderSK()"></v-radio>
+              <v-radio label="Theo tháng" value="THANG" hide-details @click="loadingChartSK()"></v-radio>
             </v-radio-group>
           </v-col>
         </v-card-title>
@@ -455,7 +455,7 @@
                           label="Tổng"
                           v-model="thong_tin_suc_khoe.can_nang_total"
                           type="number"
-                          suffix="gr"
+                          suffix="kg"
                           clearable
                           required
                           hide-details
@@ -469,7 +469,7 @@
                           label="Cân nặng của bố"
                           v-model="thong_tin_suc_khoe.can_nang_bo"
                           type="number"
-                          suffix="gr"
+                          suffix="kg"
                           clearable
                           required
                           hide-details
@@ -481,7 +481,7 @@
                           label="Cân nặng của con"
                           v-model="thong_tin_suc_khoe.can_nang"
                           type="number"
-                          suffix="gr"
+                          suffix="kg"
                           clearable
                           required
                           hide-details
@@ -910,6 +910,7 @@ export default {
         colors: ['#FF1654', '#247BA0'],
         stroke: {
           width: [2, 2],
+          curve: 'smooth',
         },
         plotOptions: {
           // bar: {
@@ -1193,7 +1194,7 @@ export default {
             opacity: 0.2
           },
           stroke: {
-            // curve: 'smooth'
+            curve: 'smooth'
           },
           title: {
             text: 'THEO DÕI SỨC KHỎE',
@@ -1793,7 +1794,7 @@ export default {
       && this.thong_tin_suc_khoe.can_nang_bo    != undefined
       && this.thong_tin_suc_khoe.can_nang_total != null
       && this.thong_tin_suc_khoe.can_nang_bo    != null){
-        can_nang_con = this.thong_tin_suc_khoe.can_nang_total - this.thong_tin_suc_khoe.can_nang_bo;
+        can_nang_con = (parseFloat(this.thong_tin_suc_khoe.can_nang_total) - parseFloat(this.thong_tin_suc_khoe.can_nang_bo)).toFixed(2);
       }
       this.thong_tin_suc_khoe.can_nang = can_nang_con;
     },
@@ -2012,7 +2013,7 @@ export default {
             data: can_nang_arr,
           });
           self.serialsSucKhoe.push({
-            name: 'Tỉ lệ tăng',
+            name: 'Tăng cân nặng',
             type: 'line',
             data: ti_le_tang_arr,
           });
@@ -2022,7 +2023,7 @@ export default {
           //   data: chieu_cao_arr,
           // });
           self.serialsSucKhoe.push({
-            name: 'Tỉ lệ tăng',
+            name: 'Tăng chiều cao',
             type: 'line',
             data: tang_chieu_cao,
           });

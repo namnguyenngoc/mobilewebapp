@@ -38,6 +38,7 @@
     "axios": "^0.23.0",
     "core-js": "^3.6.5",
     "moment": "^2.29.1",
+    "moment-business-days": "^1.2.0",
     "numeric-keyboard": "^0.7.0",
     "vue": "^2.6.11",
     "vue-apexcharts": "^1.6.2",

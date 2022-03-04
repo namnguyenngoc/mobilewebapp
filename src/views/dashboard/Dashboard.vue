@@ -9,6 +9,12 @@
     >
       <ChamConHeadlinesV2></ChamConHeadlinesV2>
     </v-col>
+    <v-col
+      cols="12"
+      md="7"
+    >
+      <ChiTieuHeadlines></ChiTieuHeadlines>
+    </v-col>
     <!-- <v-col
       cols="12"
       md="5"
@@ -21,28 +27,15 @@
 <script>
 // eslint-disable-next-line object-curly-newline
 import { mdiPoll, mdiLabelVariantOutline, mdiCurrencyUsd, mdiHelpCircleOutline } from '@mdi/js'
-import StatisticsCardVertical from '@/components/statistics-card/StatisticsCardVertical.vue'
 
-// demos
-import DashboardCardDepositAndWithdraw from './DashboardCardDepositAndWithdraw.vue'
-import DashboardCardSalesByCountries from './DashboardCardSalesByCountries.vue'
-import DpnHangShopeeHeadlines from '../kinhdoanh-shopee/DonHangShopeeHeadlines.vue'
-import SucKhoeHeadlines from '../family-suckhoe/SucKhoeHeadlines.vue';
-import SucKhoeVoMangThai from '../family-suckhoe/SucKhoeVoMangThai.vue';
-import ChamConHeadlines from '../family-chamcon/ChamConHeadlines.vue';
-import ChamCon from '../family-chamcon/ChamCon.vue';
 import ChamConHeadlinesV2 from '../family-chamcon/ChamConHeadlines-V2.vue';
+import ChiTieuHeadlines from '../family-chitieu/ChiTieuHeadlines.vue';
+
 
 export default {
   components: {
-    DashboardCardDepositAndWithdraw,
-    DashboardCardSalesByCountries,
-    DpnHangShopeeHeadlines,
-    SucKhoeHeadlines,
-    SucKhoeVoMangThai,
-    ChamCon,
-    ChamConHeadlines,
-    ChamConHeadlinesV2
+    ChamConHeadlinesV2,
+    ChiTieuHeadlines
   },
   setup() {
     const totalProfit = {

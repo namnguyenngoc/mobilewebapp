@@ -66,11 +66,12 @@
 
     <!-- CHART-->
     <v-col cols="12">
-      <ChiTieuDetail
-        ref="chitieuDetail"
+      <TraGopDetail
+        ref="traGopDetail"
         :title="chitieuTitle"
         :item="chitieuItem"
         :v-model="chiTieuDetailDialog"
+        @refeshList="loadData()"
       />
 
       <ChiTieuChangeKyChi
@@ -80,7 +81,7 @@
         :itemData="itemData"
         :kyChiMoi="kyChiMoi"
         :v-model="chiTieuChangeKyChiDialog"
-        @refeshList="loadChiTieu()"
+        @refeshList="loadData()"
       />
 
       <ChiTieuChangeStatus
@@ -90,7 +91,7 @@
         :itemData="itemDataStatus"
         :kyChiMoi="itemStatusMoi"
         :v-model="chiTieuChangeStatusDialog"
-        @refeshList="loadChiTieu()"
+        @refeshList="loadData()"
       />
       
     </v-col>
@@ -106,7 +107,7 @@ import { VueGoodTable } from 'vue-good-table';
 
 import { mdiMinus, mdiOneUp, mdiPlus, mdiDeleteOutline, mdiCircleEditOutline, mdiSleep, mdiConsoleNetworkOutline } from '@mdi/js'
 import { reactive } from '@vue/composition-api'
-import ChiTieuDetail from "./ChiTieuDetail";
+import TraGopDetail from "./TraGopDetail";
 import ChiTieuChangeKyChi from "./ChiTieuChangeKyChi";
 import ChiTieuChangeStatus from "./ChiTieuChangeStatus";
 
@@ -114,7 +115,7 @@ export default {
   name: 'ChiTieuGiaDinh',
   components: {
     VueGoodTable,
-    ChiTieuDetail,
+    TraGopDetail,
     ChiTieuChangeKyChi,
     ChiTieuChangeStatus
   },
@@ -290,7 +291,7 @@ export default {
     }
   },
   async created() {
-    await this.loadChiTieu();
+    await this.loadData();
      
   },
   mounted() {
@@ -343,8 +344,13 @@ export default {
       // indicates selected or not
       // params.event - click event
       console.log('row', params.row);
+      let item = params.row;
+      this.chitieuTitle = item.san_pham;
+      this.chitieuItem = item;
+      this.$refs.traGopDetail.dialog = true;
+
     },
-    async loadChiTieu(){
+    async loadData(){
       let self = this;
       self.tblTraGop = 
           [ 
@@ -416,7 +422,7 @@ export default {
       this.chitieuTitle = title;
       this.chitieuItem = item;
       console.log("item", item);
-      this.$refs.chitieuDetail.dialog = true;
+      this.$refs.traGopDetail.dialog = true;
     },
     chiTieuChangeKyChi(title, item, itemData, kyChiMoi) {
       // this.$refs.chiTieuTotal.dialog = true;

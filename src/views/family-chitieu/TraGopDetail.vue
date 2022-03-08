@@ -176,7 +176,7 @@
         const seft = this;
         console.log('this.item',seft.item);
         await axios
-        .post(config.API_FAMILY + '/api/updateChiTieu', seft.item)
+        .post(config.API_FAMILY + '/api/updateTraGopFull', seft.item)
         .then(function (response) {
           console.log('succuess')
           seft.dialog = false;

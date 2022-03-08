@@ -241,8 +241,16 @@ export default {
             },
           },
           yaxis: {
-            title: {
-              text: undefined,
+          //  title: {
+          //     text: 'Trọng lương (gr)',
+          //     style: {
+          //       color: '#00E396',
+          //     },
+          //   },
+            labels: {
+              style: {
+                colors: '#FF0000',
+              },
             },
           },
           tooltip: {
@@ -255,7 +263,9 @@ export default {
           
           fill: {
             opacity: 1,
-            // colors: ['#4caf50', '#E91E63']
+            style:{
+              // colors: ['#4caf50', '#E91E63']
+            }
           },
           legend: {
             position: 'top',
@@ -263,28 +273,41 @@ export default {
             offsetX: 40,
           },
           dataLabels: {
-            enabled: true,
-            textAnchor: 'middle',
-            enabledOnSeries: [0,1,2,3],
-            formatter: function(value, { seriesIndex, dataPointIndex, w}) {
-              let indices = w.config.series.map((item, i) => i);
-              indices = indices.filter(i => !w.globals.collapsedSeriesIndices.includes(i) 
-                && _.get(w.config.series, `${i}.data.${dataPointIndex}`) > 0);
-              console.log("indices", indices);
-              const totalFm = (w.globals.stackedSeriesTotals[dataPointIndex] / 1).toFixed(0).replace(',', '.');
-              if (seriesIndex == _.max(indices)){
-                return Math.round((value / totalFm)*100) + "%";
+            // enabled: true,
+            // textAnchor: 'middle',
+            // enabledOnSeries: [0,1,2,3],
+            // style: {
+            //   colors: ['#ff0000',"#0000ff"]
+            // },
+            // // formatter: function(value, { seriesIndex, dataPointIndex, w}) {
+            // //   let indices = w.config.series.map((item, i) => i);
+            // //   indices = indices.filter(i => !w.globals.collapsedSeriesIndices.includes(i) 
+            // //     && _.get(w.config.series, `${i}.data.${dataPointIndex}`) > 0);
+            // //   console.log("indices", indices);
+            // //   const totalFm = (w.globals.stackedSeriesTotals[dataPointIndex] / 1).toFixed(0).replace(',', '.');
+            // //   if (seriesIndex == _.max(indices)){
+            // //     return Math.round((value / totalFm)*100) + "%";
 
-              }
-              return value;
-            },
-            // offsetY: -20,
-            style: {
-              fontSize: '12px',
-              colors: ['#000000'],
-            },
+            // //   }
+            // //   return value;
+            // // },
+            // // offsetY: -20,
+            // style: {
+            //   fontSize: '12px',
+            //   colors: ['#000000'],
+            // },
             
           },
+          // theme: {
+          //   mode: 'dark', 
+          //   palette: 'palette1', 
+          //   monochrome: {
+          //       enabled: false,
+          //       color: '#255aee',
+          //       shadeTo: 'light',
+          //       shadeIntensity: 0.65
+          //   },
+          // }
         }
       },
       serialsTraGop:[],

@@ -48,7 +48,7 @@
                   <v-btn
                     v-if="(props.formattedRow[props.column.field] == undefined || props.formattedRow[props.column.field] == null) && props.formattedRow['trang_thai'] != 'KT' "
                     color="success light-1"
-                    @click="save()"
+                    @click="processChiTieuGop(props)"
                   >
                    Process
                   </v-btn>
@@ -465,6 +465,25 @@ export default {
       }
       // this.chiTieuDetailDialog = true;
     },
+
+    async processChiTieuGop(props){
+      console.log("addGopChiTieu", props);
+      let item = props.row;
+       let traGop = {
+        id:item.id,
+      }
+      const self = this;
+      await axios
+        .post(config.API_FAMILY + '/api/insertJsonChiTieu', traGop)
+        .then(function (response) {
+          // seft.dialog = false
+          // console.log('Valid store ok')
+          console.log("Gops", response.data.data);
+          // self.chiTieuModel = []
+          // seft.$emit('refeshList')
+          self.loadData();
+        })
+    }
 
     
     

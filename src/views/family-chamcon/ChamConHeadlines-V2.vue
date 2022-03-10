@@ -26,11 +26,36 @@
               </template>
             </v-slider>
           </v-col>
-          <v-col cols="12" md="12" class="pa-0 ma-0 text-right">
+          <!-- <v-col cols="12" md="12" class="pa-0 ma-0 text-right">
             <v-radio-group v-model="thong_tin_suc_khoe.chart_type_x" row>
               <v-radio label="Theo ngày" value="NGAY" hide-details @click="loadingChartSK()"></v-radio>
               <v-radio label="Theo tháng" value="THANG" hide-details @click="loadingChartSK()"></v-radio>
             </v-radio-group>
+          </v-col> -->
+          <v-col cols="12" md="4" sm="4" class="pt-0 pb-0 mt-0 mb-0 text-right">
+            <v-select
+              v-model="chartOptionSelect"
+              :items="chartOptionItems"
+              item-text="name"
+              item-value="code"
+              label="Hiển thị chart"
+              return-object
+              @change="loadingChartSK()"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" md="8" sm="8" class="pt-0 pb-0 mt-0 mb-0 text-right">
+            <v-select
+              v-model="chartSKColSelect"
+              :items="chartSKItems"
+              attach
+              chips
+              item-text="name"
+              item-value="code"
+              label="Cột trên chart"
+              multiple
+              return-object
+              @change="loadingChartSK()"
+            ></v-select>
           </v-col>
         </v-card-title>
         <v-divider class="mx-4"></v-divider>
@@ -333,11 +358,11 @@
     </v-row>
     
     <!-- NGỦ-->
-    <v-col cols="12" md="12" class="pa-2">
+    <v-col cols="12" md="12" class="pa-2" v-show="false">
       <v-card>
         <v-card-title class="pt-5 pb-2">
-          <v-col cols="5" md="5" class="pb-0 mb-0"> Ngủ </v-col>
-          <v-col cols="7" md="7" class="pa-0 ma-0 text-right">
+          <v-col cols="5" md="5" class="pb-0 mb-0" v-show="false"> Ngủ </v-col>
+          <v-col cols="7" md="7" class="pa-0 ma-0 text-right" v-show="false">
             <circular-count-down-timer
               :circles="nguCountDown.circles"
               :interval="nguCountDown.interval"
@@ -363,7 +388,7 @@
         <v-divider class="mx-4"></v-divider>
         <v-card-text class="mt-0 mb-0 pt-3 pb-1">
           <!-- Row 1 -->
-          <v-row class="ml-2 mr-2">
+          <v-row class="ml-2 mr-2" v-show="false">
             <v-col cols="3" md="3" class="pb-0 mb-0 ml-0 mr-0 pl-0 pr-0">
               <v-checkbox
                 v-model="ngu_model.isEditTimeNgu"
@@ -568,8 +593,8 @@
           </v-row>
           <!-- End -->
         </v-card-text>
-        <v-divider class="mx-4"></v-divider>
-        <v-card-actions>
+        <v-divider class="mx-4" v-show="false"></v-divider>
+        <v-card-actions v-show="false">
           <v-row class="pl-2 float-end">
             <v-spacer></v-spacer>
             <v-btn color="info" @click="insert('NGU', 'N')" :disabled="!isNgu" class="mr-1" small>
@@ -1176,11 +1201,13 @@ export default {
           chart: {
             height: 150,
             width: '90%',
-            type: 'bar',
+            type: 'line',
             stacked: false,
           },
           dataLabels: {
             enabled: true,
+            position: 'top',
+            textAnchor: 'top',
             style: {
                 colors: ['#ff0000',"#0000ff"]
               },
@@ -1203,7 +1230,10 @@ export default {
             colors: "#FFFFFF"
           },
           xaxis: {
+            type: 'category',
             categories: [],
+            tickAmount: undefined,
+            tickPlacement: 'between',
           },
           yaxis: [
             {
@@ -1337,6 +1367,40 @@ export default {
         'error'
       ],
       menuWC: false,
+      chartSKColSelect: [
+        {
+          code: 'CN',
+          name: 'Cân nặng'
+        }
+      ],
+      chartSKItems:[
+        {
+          code: 'CN',
+          name: 'Cân nặng'
+        },
+        {
+          code: 'TL_CN',
+          name: 'Tăng cân nặng'
+        },
+        {
+          code: 'TL_CC',
+          name: 'Tăng chiều cao'
+        }
+      ],
+      chartOptionSelect:{
+          code: 'NGAY',
+          name: 'Ngày'
+        },
+      chartOptionItems: [
+        {
+          code: 'NGAY',
+          name: 'Ngày'
+        },
+        {
+          code: 'THANG',
+          name: 'Tháng'
+        }
+      ],
     }
   },
   async created() {
@@ -2033,7 +2097,7 @@ export default {
       let myArray = [];
       let categories  = [];
       await axios
-        .get(`${config.API_URL}/selectChartSucKhoe/${self.sliderSK}/${self.thong_tin_suc_khoe.chart_type_x}`)
+        .get(`${config.API_URL}/selectChartSucKhoe/${self.sliderSK}/${self.chartOptionSelect.code}`)
         .then(async function (response){
           myArray = response.data.data;
           let x_date = new Set();
@@ -2050,26 +2114,35 @@ export default {
             categories: categories,
           },})
 
-          self.serialsSucKhoe.push({
-            name: 'Cân nặng',
-            type: 'bar',
-            data: can_nang_arr,
-          });
-          self.serialsSucKhoe.push({
-            name: 'Tăng cân nặng',
-            type: 'line',
-            data: ti_le_tang_arr,
-          });
+          let f_cn = self.chartSKColSelect.find(({code}) => code == 'CN');
+          let TL_CN = self.chartSKColSelect.find(({code}) => code == 'TL_CN');
+          let TL_CC = self.chartSKColSelect.find(({code}) => code == 'TL_CC');
+          if(f_cn != undefined && f_cn != null){
+            self.serialsSucKhoe.push({
+              name: 'Cân nặng',
+              type: 'line',
+              data: can_nang_arr,
+            });
+          }
+          if(TL_CN != undefined && TL_CN != null){
+            self.serialsSucKhoe.push({
+              name: 'Tăng cân nặng',
+              type: 'line',
+              data: ti_le_tang_arr,
+            });
+          }
           // self.serialsSucKhoe.push({
           //   name: 'Chiều Cao',
           //   type: 'bar',
           //   data: chieu_cao_arr,
           // });
-          self.serialsSucKhoe.push({
-            name: 'Tăng chiều cao',
-            type: 'line',
-            data: tang_chieu_cao,
-          });
+          if(TL_CC != undefined && TL_CC != null){
+            self.serialsSucKhoe.push({
+              name: 'Tăng chiều cao',
+              type: 'line',
+              data: tang_chieu_cao,
+            });
+          }
 
           console.log('self.serialsSucKhoe', self.serialsSucKhoe);
           console.log('categories', categories); 

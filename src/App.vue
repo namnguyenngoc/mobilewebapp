@@ -47,8 +47,7 @@ export default {
         }
         console.log("authenObj", authenObj);
         console.log("jiraAccount", jiraAccount);
-        if(authenObj == undefined || authenObj == null || authenObj.authen == undefined || authenObj.authen == null
-        || authenObj.authen.authen == undefined || authenObj.authen.authen == null){
+        if(authenObj == undefined || authenObj == null || authenObj.authen == undefined || authenObj.authen == null){
           
           this.$router.push({ name: 'pages-login' });
         }

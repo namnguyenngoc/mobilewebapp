@@ -127,6 +127,11 @@
         :to="{ name: 'chamcon-suckhoe-list' }"
         :icon="icons.mdiHeart"
       ></nav-menu-link>
+      <nav-menu-link
+        title="Tiêm chủng"
+        :to="{ name: 'tiemchung-list' }"
+        :icon="icons.mdiHospitalBox"
+      ></nav-menu-link>
       </nav-menu-group>
       <nav-menu-section-title title="CÔNG VIỆC"></nav-menu-section-title>
       <nav-menu-group
@@ -187,7 +192,8 @@ import {
   mdiHelp,
   mdiHandHeart,
   mdiViewDashboard,
-  mdiCash
+  mdiCash,
+  mdiHospitalBox
 } from '@mdi/js';
 import NavMenuSectionTitle from './components/NavMenuSectionTitle.vue';
 import NavMenuGroup from './components/NavMenuGroup.vue';
@@ -220,7 +226,8 @@ export default {
         mdiHelp,
         mdiHandHeart,
         mdiViewDashboard,
-        mdiCash
+        mdiCash,
+        mdiHospitalBox
       },
     };
   },

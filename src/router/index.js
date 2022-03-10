@@ -117,6 +117,11 @@ const routes = [
     component: () => import('@/views/family-chamcon/SucKhoeHeadlinesList.vue'),
   },
   {
+    path: '/family/tiemchung-list',
+    name: 'tiemchung-list',
+    component: () => import('@/views/family-chamcon/TiemChungList.vue'),
+  },
+  {
     path: '/working/jira-logtime-list',
     name: 'jira-logtime-list',
     component: () => import('@/views/workings/jiraLogTimeList.vue'),

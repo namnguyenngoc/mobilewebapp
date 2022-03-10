@@ -30,7 +30,7 @@
             Save
           </v-btn>
           <v-btn
-            color="danger darken-1"
+            color="error"
             text
             @click="deleteChiTieu()"
           >
@@ -164,6 +164,10 @@
           {
             code: 'ngay_thanh_toan',
             text: 'Ngày thanh toán'
+          },
+          {
+            code: 'create_date',
+            text: 'Ngày tạo'
           },
 
         ],

@@ -131,6 +131,11 @@ const routes = [
     name: 'donhangshopee',
     component: () => import('@/views/kinhdoanh-shopee/DonHangShopee.vue'),
   },
+  {
+    path: '/working/jira-logtime-sog',
+    name: 'jira-logtime-sog',
+    component: () => import('@/views/workings/jiraLogtime_SOG.vue'),
+  },
 ];
 
 const router = new VueRouter({

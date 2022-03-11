@@ -9,7 +9,16 @@
                 <v-expansion-panel-header v-slot="{ open }">
                   <v-row no-gutters>
                     <v-col cols="12" md="2" sm="12">
-                    Worklog
+                      <v-btn
+                        color="warning"
+                        dark
+                        v-bind="attrs"
+                        class="rounded-pill"
+                        v-on="on"
+                        @click="openSOGSheet()"
+                      >
+                        Worklog SOG
+                      </v-btn>
                     </v-col>
                     <v-col
                       cols="12" md="9" 
@@ -1101,6 +1110,51 @@ export default {
       }
 //  moment.tz(new Date(), tzString).format("YYYY-MM-DD HH:mm:ss"),
       this.$refs.chamConDetail.dialog = true;
+    },
+    openSOGSheet(){
+      let data = this.tblDataWorklog[0].children;
+
+      //set data to dialog
+      // seft.sogDataItem = data;
+      this.sogDataItem  = [];
+      for(let i = 0; i < data.length; i ++){
+        let item = data[i];
+        let ob = {
+          title : item.ticketSubject,
+          month : item.effortDate,
+          issue :item.key,
+          projectName: 'SMARTLINK [Internal]',
+          worklog : item.actualEffort,
+          taskType : item.taskType,
+          new : 'N',
+          team : 'SML PF',
+          name : item.displayName,
+          employeeNumber : item.name,
+        }
+          // seft.sogDataItem.title = item.ticketSubject;
+          // seft.sogDataItem.month = item.effortDate;
+          // seft.sogDataItem.issue = item.ticketSubject;
+          // seft.sogDataItem.projectName = item.project;
+          // seft.sogDataItem.worklog = item.actualEffort;
+          // seft.sogDataItem.taskType = item.taskType;
+          // seft.sogDataItem.new = item.ticketSubject;
+          // seft.sogDataItem.team = item.ticketSubject;
+          // seft.sogDataItem.name = item.displayName;
+          // seft.sogDataItem.employeeNumber = item.name;
+          this.sogDataItem.push(ob);
+      };
+      // for(let i = 0; i < data.length; i++)
+      console.log("seft.sogDataItem ", this.sogDataItem);
+      // this.$refs.sogWorkLog.tblDataWorklog = this.sogDataItem;
+      this.$router.push({ 
+          path: "/working/jira-logtime-sog", 
+          query: {
+              tblDataWorklog: this.sogDataItem 
+            } 
+        });
+      // window.open(route.href);
+      // this.$router.push({ name: 'Jira Logtime SOG' });
+      // this.dialog = true;
     }
   },
 };

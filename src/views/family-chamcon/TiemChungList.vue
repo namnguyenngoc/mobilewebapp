@@ -177,7 +177,7 @@ export default {
         },
         {
           label: 'Ngày tiêm',
-          field: 'ngay_thuc_hien',
+          field: 'gio_bat_dau',
           filterable: false,
           type: 'date',
           filterOptions: {

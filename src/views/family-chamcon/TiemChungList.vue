@@ -42,21 +42,44 @@
                 enabled: true,
                 placeholder: 'Search this table',
               }"
-              @on-row-dblclick="onRowDoubleClick"
               max-height="700px"
             >
             <template slot="table-row" slot-scope="props">
               <div v-if="props.column.field == 'id'">
                 <v-btn
+                  :disabled="props.formattedRow['status'] !== null"
                   color="info"
                   icon
                   small
                   class="d-inline"
                 >
                   <v-icon dark>
-                    {{icons.mdiReload}}
+                    {{icons.mdiPencil}}
                   </v-icon>
                 </v-btn>
+                <v-btn
+                  :color="props.formattedRow['status'] == null ? 'error': ''"
+                  icon
+                  small
+                  class="d-inline"
+                  :disabled="props.formattedRow['status'] !== null"
+                  @click="update(props, 'TC', props.formattedRow['status'])"
+                >
+                  <v-icon>
+                    {{props.formattedRow['status'] == null ? icons.mdiCheckAll : icons.mdiCheck}}
+                  </v-icon>
+                </v-btn>
+                <v-btn
+                  color="error"
+                  icon
+                  small
+                  class="d-inline"
+                >
+                  <v-icon>
+                    {{icons.mdiTrashCan}}
+                  </v-icon>
+                </v-btn>
+                
               </div>
             </template>
             </vue-good-table>
@@ -106,6 +129,10 @@ import {
   mdiCircleEditOutline,
   mdiSleep,
   mdiReload,
+  mdiCheckAll,
+  mdiCheck,
+  mdiPencil,
+  mdiTrashCan
 } from '@mdi/js';
 import { reactive } from '@vue/composition-api';
 
@@ -120,11 +147,6 @@ export default {
     return {
       loadingInstance: null,
       colCongViec: [
-        {
-          label: 'id',
-          field: 'id',
-          filterable: true,
-        },
         // {
         //   label: 'Mã CV',
         //   field: 'ma_cv',
@@ -173,7 +195,7 @@ export default {
         },
         {
           label: 'Mũi tiếp theo',
-          field: 'gio_bat_dau',
+          field: 'gio_ke_tiep',
           filterable: false,
           type: 'date',
           filterOptions: {
@@ -218,6 +240,11 @@ export default {
               trigger: 'enter', //only trigger on enter not on keyup 
           },
         },
+        {
+          label: 'Action',
+          field: 'id',
+          filterable: true,
+        },
         
       ],
       tblDataCongViec: [
@@ -234,6 +261,10 @@ export default {
         mdiCircleEditOutline,
         mdiSleep,
         mdiReload,
+        mdiCheckAll,
+        mdiCheck,
+        mdiPencil,
+        mdiTrashCan
       },
     }
   },
@@ -280,6 +311,26 @@ export default {
         self.close();
       });
     },
+
+    async update(item, maCv, currentStatus){
+      if(item.row.status !== '' && item.row.status == 'DA TIEM'){
+        return;
+      }
+      let self = this;
+      let chamsocModal = {
+        id : item.row.id,
+        ma_cv : maCv,
+        status: 'DA TIEM',
+        working_time: "0"
+      }
+      await axios
+        .post(config.API_URL + '/updateChamCon', chamsocModal)
+        .then(async function (response) {
+        
+         self.loadData();
+        })
+    },
+
     show() {
         this.loadingInstance.show();
     },
@@ -345,5 +396,9 @@ export default {
   // @import './Bebidas.scss';
   .countdown {
     float: right;
+  }
+
+  .theme--dark.v-btn.v-btn--disabled .v-icon, .theme--dark.v-btn.v-btn--disabled .v-btn__loading{
+    color: #cccccc !important
   }
 </style>

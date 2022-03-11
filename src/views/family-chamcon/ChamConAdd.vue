@@ -35,7 +35,7 @@
                   hide-details
               ></v-text-field>
             </v-col>
-            <v-col cols="12" md="12" sm="12">
+            <v-col cols="12" md="6" sm="6">
               <v-menu
                 ref="ngayTiemMenu"
                 :close-on-content-click="false"
@@ -76,7 +76,7 @@
                 </v-date-picker>
               </v-menu>
             </v-col>
-            <v-col cols="12" md="12" sm="12">
+            <v-col cols="12" md="6" sm="6">
               <v-menu
                 ref="ngayTiemTiepTheoMenu"
                 :close-on-content-click="false"
@@ -129,6 +129,30 @@
               <v-text-field
                   label="Tên mũi tiêm"
                   v-model="thong_tin_suc_khoe.ten_cv"
+                  clearable
+                  hide-details
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" sm="12" md="12" class="mb-0 pb-0">
+              <v-text-field
+                  label="Nước SX"
+                  v-model="thong_tin_suc_khoe.thong_tin_them.nuoc_sx"
+                  clearable
+                  hide-details
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" sm="12" md="12" class="mb-0 pb-0">
+              <v-text-field
+                  label="Số liều"
+                  v-model="thong_tin_suc_khoe.thong_tin_them.so_lieu"
+                  clearable
+                  hide-details
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" sm="12" md="12" class="mb-0 pb-0">
+              <v-text-field
+                  label="Công dụng"
+                  v-model="thong_tin_suc_khoe.thong_tin_them.phong_benh"
                   clearable
                   hide-details
               ></v-text-field>
@@ -274,7 +298,12 @@
           chart_type_x: 'NGAY',
           ngay_tiem: moment().subtract(0, 'days').format(config.DATE_FM),
           ngay_tiep_theo: moment().subtract(0, 'days').format(config.DATE_FM),
-          ten_cv: ''
+          ten_cv: '',
+          thong_tin_them: {
+            phong_benh: '',
+            nuoc_sx: '',
+            so_lieu: 1
+          }
 
         },
         menu2: false,
@@ -296,11 +325,11 @@
         let modal = {
             ma_cv: 'TC',
             gio_bat_dau: this.thong_tin_suc_khoe.ngay_tiem,
-            gio_ke_tiep: this.thong_tin_suc_khoe.ngay_tiem,
+            gio_ke_tiep: this.thong_tin_suc_khoe.ngay_tiep_theo,
             ghi_chu: this.thong_tin_suc_khoe.stt_mui_tiem,
             ten_cv: this.thong_tin_suc_khoe.ten_cv,
             the_tich_sua: 0,
-            // thong_tin_them: thong_tin_them,
+            thong_tin_them: this.thong_tin_suc_khoe.thong_tin_them,
           }
           await axios.post(config.API_URL + '/insertChamCon', modal)
             .then(async function (response) {

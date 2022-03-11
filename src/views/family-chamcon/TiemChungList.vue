@@ -248,6 +248,7 @@ export default {
         {
           label: 'Action',
           field: 'id',
+          width: '120px',
           filterable: true,
         },
         
@@ -406,4 +407,21 @@ export default {
   .theme--dark.v-btn.v-btn--disabled .v-icon, .theme--dark.v-btn.v-btn--disabled .v-btn__loading{
     color: #cccccc !important
   }
+  pre {
+    width: 10em;
+    height: 1em;
+    overflow: hidden;
+    white-space: pre;
+    text-overflow: ellipsis;
+    background-color: lightgreen;
+    border-radius: 8px;
+    border: 2px solid #6c6;
+    transition: width 1s ease;
+  }
+  pre:hover {
+      width: 100%;
+      height: auto;
+      overflow: auto;
+      text-overflow: clip;
+  } 
 </style>

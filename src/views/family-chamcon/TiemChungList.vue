@@ -81,6 +81,11 @@
                 </v-btn>
                 
               </div>
+              <div v-else-if="props.column.field == 'thong_tin_them'">
+                <pre>
+                  {{ JSON.parse(props.formattedRow['thong_tin_them']) }}
+                </pre>
+              </div>
             </template>
             </vue-good-table>
           </v-col>
@@ -190,7 +195,7 @@ export default {
               trigger: 'enter', //only trigger on enter not on keyup 
           },
           formatFn: function (value) {
-              return value != null ? moment(value).format(config.DATE_TIME_FM) : null
+              return value != null ? moment(value).format(config.DATE_FM) : null
           },
         },
         {
@@ -208,7 +213,7 @@ export default {
               trigger: 'enter', //only trigger on enter not on keyup 
           },
           formatFn: function (value) {
-              return value != null ? moment(value).format(config.DATE_TIME_FM) : null
+              return value != null ? moment(value).format(config.DATE_FM) : null
           },
          
         },

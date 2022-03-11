@@ -125,23 +125,23 @@ export default {
           field: 'id',
           filterable: true,
         },
-        {
-          label: 'Mã CV',
-          field: 'ma_cv',
-          filterable: true,
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Mã CV', // placeholder for filter input
-              filterValue: '',
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
-        },
+        // {
+        //   label: 'Mã CV',
+        //   field: 'ma_cv',
+        //   filterable: true,
+        //   filterOptions: {
+        //     styleClass: 'class-filter', // class to be added to the parent th element
+        //       enabled: true, // enable filter for this column
+        //       placeholder: 'Mã CV', // placeholder for filter input
+        //       filterValue: '',
+        //       filterDropdownItems: [], // dropdown (with selected values) instead of text input
+        //       // filterFn: this.columnFilterFn, //custom filter function that
+        //       trigger: 'enter', //only trigger on enter not on keyup 
+        //   },
+        // },
         {
           label: 'Tên mũi tiêm',
-          field: 'ghi_chu',
+          field: 'ten_cv',
           filterable: true,
           filterOptions: {
             styleClass: 'class-filter', // class to be added to the parent th element

@@ -76,9 +76,50 @@
                 </v-date-picker>
               </v-menu>
             </v-col>
+            <v-col cols="12" md="12" sm="12">
+              <v-menu
+                ref="ngayTiemTiepTheoMenu"
+                :close-on-content-click="false"
+                :return-value.sync="thong_tin_suc_khoe.ngay_tiep_theo"
+                offset-y
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="thong_tin_suc_khoe.ngay_tiep_theo"
+                    label="Mũi tiếp theo"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="thong_tin_suc_khoe.ngay_tiep_theo"
+                  no-title
+                  scrollable
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.ngayTiemTiepTheoMenu.isActive = false"
+                  >
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.ngayTiemTiepTheoMenu.save(thong_tin_suc_khoe.ngay_tiep_theo)"
+                  >
+                    OK
+                  </v-btn>
+                </v-date-picker>
+              </v-menu>
+            </v-col>
             <v-col cols="12" sm="12" md="12" class="mb-0 pb-0">
               <v-text-field
-                  label="Mũi tiên thứ"
+                  label="Mũi tiêm thứ"
                   v-model="thong_tin_suc_khoe.stt_mui_tiem"
                   clearable
                   hide-details
@@ -87,7 +128,7 @@
             <v-col cols="12" sm="12" md="12" class="mb-0 pb-0">
               <v-text-field
                   label="Tên mũi tiêm"
-                  v-model="thong_tin_suc_khoe.ten_mui_tiem"
+                  v-model="thong_tin_suc_khoe.ten_cv"
                   clearable
                   hide-details
               ></v-text-field>
@@ -232,6 +273,8 @@
           valid: true,
           chart_type_x: 'NGAY',
           ngay_tiem: moment().subtract(0, 'days').format(config.DATE_FM),
+          ngay_tiep_theo: moment().subtract(0, 'days').format(config.DATE_FM),
+          ten_cv: ''
 
         },
         menu2: false,
@@ -254,7 +297,8 @@
             ma_cv: 'TC',
             gio_bat_dau: this.thong_tin_suc_khoe.ngay_tiem,
             gio_ke_tiep: this.thong_tin_suc_khoe.ngay_tiem,
-            ghi_chu: this.thong_tin_suc_khoe.ten_mui_tiem,
+            ghi_chu: this.thong_tin_suc_khoe.stt_mui_tiem,
+            ten_cv: this.thong_tin_suc_khoe.ten_cv,
             the_tich_sua: 0,
             // thong_tin_them: thong_tin_them,
           }

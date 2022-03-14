@@ -2182,48 +2182,51 @@ export default {
     },
 
     async showChartWC(){
-      let self = this;
-      this.$refs.chartComponent.seriesTotal = [];
-      let param = {
-        ma_cv: 'WC',
-        ho_ten: 'NGUYEN DANG KHOI',
-        limit: 10,
-      }
-      await axios
-        .post(`${config.API_URL}/selectKhoangThoiGianTheoCongViec`, param)
-        .then(async function (response){
-          console.log('reponse', response);
-          let arr = response.data.data;
-          let dataChart = []  ;
-          let categories = [];
-          for(let i = 0; i < arr.length; i++){
+    //   const self = this;
+    //   this.$refs.chartComponent.seriesTotal = [];
+    //   let param = {
+    //     ma_cv: 'WC',
+    //     ho_ten: 'NGUYEN DANG KHOI',
+    //     limit: 10,
+    //   }
+    //   await axios
+    //     .post(`${config.API_URL}/selectKhoangThoiGianTheoCongViec`, param)
+    //     .then(async function (response){
+    //       console.log('reponse', response);
+    //       let arr = response.data.data;
+    //       let dataChart = []  ;
+    //       let categories = [];
+    //       for(let i = 0; i < arr.length; i++){
             
-            dataChart.push(Math.round(arr[i].thoi_gian_cho_hour));
-            // dataChart.push(arr[i].thoi_gian_cho);
-            // categories.push(arr[i].ngay_thuc_hien);
-            self.$refs.chartComponent.chartTotalOptions.xaxis.categories.push(arr[i].ngay_thuc_hien);
-          }
+    //         dataChart.push(Math.round(arr[i].thoi_gian_cho_hour));
+    //         // dataChart.push(arr[i].thoi_gian_cho);
+    //         // categories.push(arr[i].ngay_thuc_hien);
+    //         self.$refs.chartComponent.chartTotalOptions.xaxis.categories.push(arr[i].ngay_thuc_hien);
+    //       }
           
           
-          self.$refs.chartComponent.seriesTotal.push({
-            name: 'GIO',
-            type: 'line',
-            data: dataChart,
-            enabled:true,
-          });
-          console.log('dataChart', dataChart);
-          self.$refs.chartComponent.dialog = true;
-          // self.$refs.chartComponent.totalChart.xaxis.categories.push(100);
-          // this.$refs.chartComponent.dialog = true;
-          // self.$refs.chartComponent.open(
-          // "Chart thống kê wc của con",
-          // "Are you sure you want to delete this record?",
-          //   data,
-          //   categories
-     });
+    //       self.$refs.chartComponent.seriesTotal.push({
+    //         name: 'GIO',
+    //         type: 'line',
+    //         data: dataChart,
+    //         enabled:true,
+    //       });
+    //       console.log('dataChart', dataChart);
+    //       if(dataChart.length > 0){
+    //         self.$refs.chartComponent.dialog = true;
+
+    //       }
+    //       // self.$refs.chartComponent.totalChart.xaxis.categories.push(100);
+    //       // this.$refs.chartComponent.dialog = true;
+    //       // self.$refs.chartComponent.open(
+    //       // "Chart thống kê wc của con",
+    //       // "Are you sure you want to delete this record?",
+    //       //   data,
+    //       //   categories
+    //  });
 
       
-
+      this.$refs.chartComponent.dialog = true;
       // let data = [
       //   {
       //     name: 'GIO',

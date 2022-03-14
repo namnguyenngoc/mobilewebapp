@@ -1,6 +1,8 @@
 <template>
   <v-dialog 
         v-model="dialog" 
+        fullscreen
+        hide-overlay
         :max-width="options.width" 
         :style="{ zIndex: options.zIndex }" @keydown.esc="cancel">
     <v-card>
@@ -11,6 +13,24 @@
       </v-toolbar>
       <v-card-text>
         <v-container class="pt-0 pb-0 mb-0 v-scroll">
+          <v-col cols="12" md="12" class="ma-0 text-right pt-4 pb-0 mb-0">
+            <v-slider
+              inverse-label
+              label="Số ngày hiển thị"
+              v-model="slider"
+              :thumb-size="24"
+              thumb-label="always"
+              max="15"
+              min="1"
+              class="pt-0 pb-0 mb-0"
+              hide-details
+              @change="showChartWC()"
+            >
+              <template v-slot:thumb-label="{ value }">
+                {{ value }}
+              </template>
+            </v-slider>
+          </v-col>
           <apexchart type="line" :options="chartTotalOptions" :series="seriesTotal" ref="totalChart" ></apexchart>
         </v-container>
       </v-card-text>
@@ -23,6 +43,8 @@
 </template>
 
 <script>
+import config from '../config/config'
+import axios from 'axios'
 export default {
   layout: 'chartComponent',
   components: {},
@@ -38,7 +60,7 @@ export default {
       },
       title: {
         type: String,
-        default:'Chart'
+        default:'Chart theo dõi WC'
       },
       message: {
         type: String,
@@ -64,6 +86,7 @@ export default {
     },
     data () {
       return {
+        slider: 5,
         seriesTotal: [],
         chartTotalOptions: {
           ...this.chartTotalOptions,
@@ -101,12 +124,12 @@ export default {
                         colors: '#FF0000',
                       },
                     },
-                    title: {
-                      text: 'Thời gian (giờ)',
-                      style: {
-                        color: '#00E396',
-                      },
-                    },
+                    // title: {
+                    //   text: 'Thời gian (giờ)',
+                    //   style: {
+                    //     color: '#00E396',
+                    //   },
+                    // },
                     tooltip: {
                       enabled: true,
                     },
@@ -138,36 +161,55 @@ export default {
     },
     mounted() {
       // this.reload();
+      this.showChartWC();
     },
+
     computed: {
       propsChartComponent: function(item) {
         return item;
       }
     },
+    created() {
+      // this.reload();
+      this.showChartWC();
+    },
+
     methods: {
-      // open(title, message, data, chartTotalOptions, options) {
-      //   this.title = title;
-      //   this.message = message;
-      //   this.seriesTotal = data;
-      //    this.dialog = true;
-      //   // this.chartTotalOptions = chartTotalOptions;
-      //   this.options = Object.assign(this.options, options);
-      //   return new Promise((resolve, reject) => {
-      //     this.resolve = resolve;
-      //     this.reject = reject;
-      //   });
-      // },
-      // agree() {
-      //   this.resolve(true);
-      //   this.dialog = false;
-      // },
-      // cancel() {
-      //   this.resolve(false);
-      //   this.dialog = false;
-      // },
-      // reload(){
-      //   this.seriesTotal = [];
-      // }
+      async showChartWC(){
+        const self = this;
+        this.seriesTotal = [];
+        let param = {
+          ma_cv: 'WC',
+          ho_ten: 'NGUYEN DANG KHOI',
+          limit: this.slider,
+        }
+        await axios
+          .post(`${config.API_URL}/selectKhoangThoiGianTheoCongViec`, param)
+          .then(function (response){
+            console.log('reponse', response);
+            let arr = response.data.data;
+            let dataChart = []  ;
+            let categories = [];
+            for(let i = 0; i < arr.length; i++){
+              
+              dataChart.push(Math.round(arr[i].thoi_gian_cho_hour));
+              // dataChart.push(arr[i].thoi_gian_cho);
+              // categories.push(arr[i].ngay_thuc_hien);
+              self.chartTotalOptions.xaxis.categories.push(arr[i].ngay_thuc_hien);
+            }
+            
+            
+            self.seriesTotal.push({
+              name: 'GIO',
+              type: 'line',
+              data: dataChart,
+              enabled:true,
+            });
+            console.log('dataChart', dataChart);
+            
+      });
+      this.$forceUpdate();
+    }
   }
 }
 </script>

@@ -21,23 +21,7 @@
             x
           </v-icon>
         </v-card-title>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="save()"
-          >
-            Save
-          </v-btn>
-          <v-btn
-            color="danger darken-1"
-            text
-            @click="deleteTragop()"
-          >
-            Delete
-          </v-btn>
-        </v-card-actions>
+        
         <v-divider />
 
         <v-card-text>
@@ -68,9 +52,29 @@
                 class="mb-2"
               ></v-textarea> -->
             </v-col>
+            <v-col cols="12">
+              <DialogConfirm ref="dialogConfirm" />
+            </v-col>
             
           </v-container>
         </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="save()"
+          >
+            Save
+          </v-btn>
+          <v-btn
+            color="error darken-1"
+            text
+            @click="confirmDelete()"
+          >
+            Delete
+          </v-btn>
+        </v-card-actions>
         
       </v-form>
     </v-card>
@@ -80,11 +84,14 @@
 <script>
   import axios from 'axios'
   import config from '../../config/config.js'
+  import DialogConfirm from '../../components/DialogConfirm.vue'
 
   export default {
     layout: 'tragopDetail',
     // inheritAttrs: false,
-    components: {},
+    components: {
+      DialogConfirm
+    },
     props: {
       title: {
         type: String,
@@ -186,18 +193,40 @@
           console.log(error)
         })
       },
+      async confirmDelete () {
+        //  this.$refs.dialogConfirm.dialog = true
+        if (
+          await this.$refs.dialogConfirm.open(
+            "Confirm",
+            "Are you sure you want to delete this record?"
+          )
+        ){
+          this.deleteTragop()
+        }
+        // const seft = this;
+        // await axios
+        //   .post(config.API_FAMILY + '/api/deleteChiTieu', this.item)
+        //   .then(function (response) {
+        //     console.log('succuess')
+        //     seft.dialog = false;
+        //     seft.$emit('refeshList');
+        //   })
+        //   .catch(error => {
+        //     console.log(error)
+        //   })
+      },
       async deleteTragop () {
-      const seft = this;
-      await axios
-        .post(config.API_FAMILY + '/api/deleteTragop', this.item)
-        .then(function (response) {
-          console.log('succuess')
-          seft.dialog = false;
-          seft.$emit('refeshList');
-        })
-        .catch(error => {
-          console.log(error)
-        })
+        const seft = this;
+        await axios
+          .post(config.API_FAMILY + '/api/deleteTragop', this.item)
+          .then(function (response) {
+            console.log('succuess')
+            seft.dialog = false;
+            seft.$emit('refeshList');
+          })
+          .catch(error => {
+            console.log(error)
+          })
       },
     }, // end created
   } // End exxport default

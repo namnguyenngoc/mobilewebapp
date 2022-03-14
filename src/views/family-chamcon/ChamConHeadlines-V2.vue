@@ -112,7 +112,18 @@
               :label-position="tibinhCountDown.labelPosition"
             />
           </v-col>
-          <v-col cols="3" md="3" class="pb-0 mb-0"> WC </v-col>
+          <v-col cols="3" md="3" class="pb-0 mb-0"> 
+            <v-btn
+            color="blue darken-1"
+            text
+            class="text-left"
+            @click="showChartWC()"
+          >
+            WC
+          </v-btn>
+             
+             
+          </v-col>
           <v-col cols="9" md="9" class="pa-0 ma-0">
             <circular-count-down-timer
               :circles="wcCountDown.circles"
@@ -130,6 +141,7 @@
               :value-font-size="wcCountDown.valueFontSize"
               :label-font-size="wcCountDown.labelFontSize"
               :label-position="wcCountDown.labelPosition"
+             
             />
         </v-col>
         </v-card-title>
@@ -655,6 +667,10 @@
         </v-card-text>
       </v-card>
     </v-col>
+    <v-col cols="12">
+      <ChartComponent ref="chartComponent" />
+
+    </v-col>
   </v-row>
   
 </template>
@@ -662,13 +678,17 @@
 import axios from 'axios'
 import config from '../../config/config'
 import moment from 'moment'
+import ChartComponent from '../../components/ChartComponent.vue'
+
 
 import { mdiMinus, mdiOneUp, mdiPlus, mdiDeleteOutline, mdiCircleEditOutline, mdiSleep, mdiConsoleNetworkOutline } from '@mdi/js'
 import { reactive } from '@vue/composition-api'
 
 export default {
   name: 'SucKhoe',
-  components: {},
+  components: {
+    ChartComponent
+  },
   data() {
     return {
       // satisfactionEmojis: [1,2,3],
@@ -2160,6 +2180,73 @@ export default {
       console.log('changeSlider', this.sliderSK)
       await this.loadingChartSK()
     },
+
+    async showChartWC(){
+      let self = this;
+      this.$refs.chartComponent.seriesTotal = [];
+      let param = {
+        ma_cv: 'WC',
+        ho_ten: 'NGUYEN DANG KHOI',
+        limit: 3,
+      }
+      await axios
+        .post(`${config.API_URL}/selectKhoangThoiGianTheoCongViec`, param)
+        .then(async function (response){
+          console.log('reponse', response);
+          let arr = response.data.data;
+          let dataChart = []  ;
+          let categories = [];
+          for(let i = 0; i < arr.length; i++){
+            
+            dataChart.push(Math.round(arr[i].thoi_gian_cho_hour));
+            // dataChart.push(arr[i].thoi_gian_cho);
+            // categories.push(arr[i].ngay_thuc_hien);
+            self.$refs.chartComponent.chartTotalOptions.xaxis.categories.push(arr[i].ngay_thuc_hien);
+          }
+          
+          
+          self.$refs.chartComponent.seriesTotal.push({
+            name: 'GIO',
+            type: 'line',
+            data: dataChart,
+            enabled:true,
+          });
+        console.log('dataChart', dataChart);
+        self.$refs.chartComponent.dialog = true;
+          // self.$refs.chartComponent.totalChart.xaxis.categories.push(100);
+          // this.$refs.chartComponent.dialog = true;
+          // self.$refs.chartComponent.open(
+          // "Chart thống kê wc của con",
+          // "Are you sure you want to delete this record?",
+          //   data,
+          //   categories
+     });
+
+      
+
+      // let data = [
+      //   {
+      //     name: 'GIO',
+      //     type: 'column',
+      //     data: [30, 610, 570, 650, 480, 380],
+      //     enabled:false,
+      //   },
+      // ];
+
+      // let chartTotalOptions = {
+        
+      // }
+
+      
+      // if (
+      //     await this.$refs.chartComponent.open(
+      //       "Chart thống kê wc của con",
+      //       "Are you sure you want to delete this record?"
+      //     )
+      //   ){
+      //    console.log('Refse');
+      //   }
+    }
     
   },
 }

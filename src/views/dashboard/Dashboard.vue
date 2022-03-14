@@ -5,13 +5,12 @@
     </v-col> -->
     <v-col
       cols="12"
-      md="7"
     >
       <ChamConHeadlinesV2></ChamConHeadlinesV2>
     </v-col>
     <v-col
       cols="12"
-      md="7"
+      class="ma-0 pa-0"
     >
       <ChiTieuHeadlines></ChiTieuHeadlines>
     </v-col>

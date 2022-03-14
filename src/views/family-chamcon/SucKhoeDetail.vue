@@ -6,38 +6,29 @@
   >
     <v-card>
       <v-form ref="form">
-        <v-card-title class="text-right info pa-1">
-          <h4
-            class="pa-2"
-            style="color: #ffffff"
-          >
-            Chi tiết sức khỏe
-          </h4>
-          <v-icon
-            right
-            style="font-weight:bold; color: #ff0000"
-            @click="dialog = false"
-          >
-            x
-          </v-icon>
+        <v-card-title class="info pa-1">
+          <v-col cols="10" class="ma-0 pa-0">
+            <h4
+              class="pa-2 md-10"
+              cols="10"
+              style="color: #ffffff"
+            >
+              Chi tiết sức khỏe
+            </h4>
+          </v-col>
+          <v-col cols="2" class="ma-0 pa-0 text-right pr-4">
+            <v-icon
+              right
+              cols="2"
+              style="font-weight:bold; color: #ff0000"
+              class="text-right"
+              @click="dialog = false"
+            >
+              x
+            </v-icon>
+          </v-col>
         </v-card-title>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="save()"
-          >
-            Save
-          </v-btn>
-          <v-btn
-            color="danger darken-1"
-            text
-            @click="deleteChiTieu()"
-          >
-            Delete
-          </v-btn>
-        </v-card-actions>
+        
         <v-divider />
 
         <v-card-text>
@@ -133,10 +124,36 @@
                   class="mb-2"
                 ></v-textarea>
               </v-col>
+              <v-col cols="12">
+                <DialogConfirm ref="dialogConfirm" />
+              </v-col>
             </v-row>
             
           </v-container>
         </v-card-text>
+        <v-card-actions>
+          <v-btn
+            color="darken-1"
+            @click="save('NEW')"
+          >
+            Save New
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="save()"
+          >
+            Save
+          </v-btn>
+          <v-btn
+            color="error darken-1"
+            text
+            @click="confirmDelete()"
+          >
+            Delete
+          </v-btn>
+        </v-card-actions>
         
       </v-form>
     </v-card>
@@ -146,11 +163,16 @@
 <script>
   import axios from 'axios'
   import config from '../../config/config.js'
+  import DialogConfirm from '../../components/DialogConfirm.vue'
+  import moment from 'moment'
+
 
   export default {
     layout: 'suckhoeDetail',
     // inheritAttrs: false,
-    components: {},
+    components: {
+      DialogConfirm
+    },
     props: {
       title: {
         type: String,
@@ -184,7 +206,7 @@
           },
           {
             code: 'can_nang',
-            text: 'Cân nặng(gram)',
+            text: 'Cân nặng(kg)',
             order: 1,
             type: 'number',
           },
@@ -271,11 +293,22 @@
     }, // end method
     created () {}, // end data
     methods: {
-      async save(){
+      async save(option){
         const seft = this;
         console.log('this.item',seft.item);
+        let url = config.API_FAMILY + '/appsuckhoe/updateSucKhoe';
+        if('NEW' == option){
+          url = config.API_FAMILY + '/appsuckhoe/insertSucKhoe';
+          this.item.muc_tieu = '8';
+          this.item.muc_dich = 'KTSKDK';
+          this.item.spo2 = 0;
+          this.item.ngay_bat_dau = moment().format('YYYY-MM-DD HH:mm');
+        }
+        let newItem = this.item;
+
+        newItem.can_nang = this.item.can_nang * 1000;
         await axios
-        .post(config.API_FAMILY + '/appsuckhoe/updateSucKhoe', seft.item)
+        .post(url, newItem)
         .then(function (response) {
           console.log('succuess')
           seft.dialog = false;
@@ -285,18 +318,29 @@
           console.log(error)
         })
       },
-      async deleteChiTieu () {
-      const seft = this;
-      await axios
-        .post(config.API_FAMILY + '/appsuckhoe/deleteSucKhoe', this.item)
-        .then(function (response) {
-          console.log('succuess')
-          seft.dialog = false;
-          seft.$emit('refeshList');
-        })
-        .catch(error => {
-          console.log(error)
-        })
+      async confirmDelete () {
+        //  this.$refs.dialogConfirm.dialog = true
+        if (
+          await this.$refs.dialogConfirm.open(
+            "Confirm",
+            "Are you sure you want to delete this record?"
+          )
+        ){
+          this.deleteItem()
+        }
+      },
+      async deleteItem () {
+        const seft = this;
+        await axios
+          .post(config.API_FAMILY + '/appsuckhoe/deleteSucKhoe', this.item)
+          .then(function (response) {
+            console.log('succuess')
+            seft.dialog = false;
+            seft.$emit('refeshList');
+          })
+          .catch(error => {
+            console.log(error)
+          })
       },
     }, // end created
   } // End exxport default

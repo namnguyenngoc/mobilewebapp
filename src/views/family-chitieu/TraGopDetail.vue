@@ -11,7 +11,7 @@
             class="pa-2"
             style="color: #ffffff"
           >
-            Trả góp {{title.slice(0,100)}}
+            Trả góp {{title.slice(0,50)}}
           </h4>
           <v-icon
             right

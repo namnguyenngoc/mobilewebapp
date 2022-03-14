@@ -121,7 +121,7 @@ export default {
           },
         },
         {
-          label: 'Cân nặng',
+          label: 'Cân nặng (kg)',
           field: 'can_nang',
           filterable: false,
           type: 'number',
@@ -140,7 +140,7 @@ export default {
           
         },
         {
-          label: 'Chiều cao',
+          label: 'Chiều cao (cm)',
           field: 'chieu_cao',
           filterable: false,
           type: 'number',
@@ -154,7 +154,7 @@ export default {
               trigger: 'enter', //only trigger on enter not on keyup 
           },
           formatFn: function (value) {
-            return value != null ? `${value / 100} cm` : null
+            return value != null ? `${value} cm` : null
           },
         },
         // {
@@ -313,7 +313,7 @@ export default {
         ho_ten: params.row.ho_ten,
         nam_sinh: params.row.nam_sinh,
         ngay_thuc_hien:  moment(params.row.ngay_thuc_hien).format(config.DATE_TIME_FM),
-        can_nang: params.row.can_nang,
+        can_nang: params.row.can_nang / 1000,
         chieu_cao: params.row.chieu_cao,
       }
 //  moment.tz(new Date(), tzString).format("YYYY-MM-DD HH:mm:ss"),

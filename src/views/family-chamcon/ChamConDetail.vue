@@ -6,38 +6,29 @@
   >
     <v-card>
       <v-form ref="form">
-        <v-card-title class="text-right info pa-1">
-          <h4
-            class="pa-2"
-            style="color: #ffffff"
-          >
-            Chi tiết {{title.slice(0,100)}}
-          </h4>
-          <v-icon
-            right
-            style="font-weight:bold; color: #ff0000"
-            @click="dialog = false"
-          >
-            x
-          </v-icon>
+        <v-card-title class="info pa-1">
+          <v-col cols="10" class="ma-0 pa-0">
+            <h4
+              class="pa-2 md-10"
+              cols="10"
+              style="color: #ffffff"
+            >
+              Chi tiết
+            </h4>
+          </v-col>
+          <v-col cols="2" class="ma-0 pa-0 text-right pr-4">
+            <v-icon
+              right
+              cols="2"
+              style="font-weight:bold; color: #ff0000"
+              class="text-right"
+              @click="dialog = false"
+            >
+              x
+            </v-icon>
+          </v-col>
         </v-card-title>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="save()"
-          >
-            Save
-          </v-btn>
-          <v-btn
-            color="danger darken-1"
-            text
-            @click="deleteChiTieu()"
-          >
-            Delete
-          </v-btn>
-        </v-card-actions>
+        
         <v-divider />
 
         <v-card-text>
@@ -133,10 +124,37 @@
                   class="mb-2"
                 ></v-textarea>
               </v-col>
+              <v-col cols="12">
+                <DialogConfirm ref="dialogConfirm" />
+              </v-col>
             </v-row>
             
           </v-container>
         </v-card-text>
+        <v-card-actions>
+          <v-btn
+            color="darken-1"
+            text
+            @click="save('NEW')"
+          >
+            Save New
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="save()"
+          >
+            Save
+          </v-btn>
+          <v-btn
+            color="error darken-1"
+            text
+            @click="confirmDelete()"
+          >
+            Delete
+          </v-btn>
+        </v-card-actions>
         
       </v-form>
     </v-card>
@@ -146,11 +164,14 @@
 <script>
   import axios from 'axios'
   import config from '../../config/config.js'
+  import DialogConfirm from '../../components/DialogConfirm.vue'
 
   export default {
     layout: 'chamConDetail',
     // inheritAttrs: false,
-    components: {},
+    components: {
+      DialogConfirm
+    },
     props: {
       title: {
         type: String,
@@ -261,11 +282,18 @@
     }, // end method
     created () {}, // end data
     methods: {
-      async save(){
+      async save(option){
         const seft = this;
         console.log('this.item',seft.item);
+        let new_item = this.item;
+        let url = config.API_FAMILY + '/appsuckhoe/updateChamConFull';
+        if('NEW' == option){
+           url = config.API_FAMILY + '/appsuckhoe/insertChamCon';
+        }
+
+        new_item.ten_cv = this.item.ten_cong_viec;
         await axios
-        .post(config.API_FAMILY + '/appsuckhoe/updateChamConFull', seft.item)
+        .post(url, new_item)
         .then(function (response) {
           console.log('succuess')
           seft.dialog = false;
@@ -275,7 +303,18 @@
           console.log(error)
         })
       },
-      async deleteChiTieu () {
+      async confirmDelete () {
+        //  this.$refs.dialogConfirm.dialog = true
+        if (
+          await this.$refs.dialogConfirm.open(
+            "Confirm",
+            "Are you sure you want to delete this record?"
+          )
+        ){
+          this.deleteItem()
+        }
+      },
+      async deleteItem () {
       const seft = this;
       await axios
         .post(config.API_FAMILY + '/appsuckhoe/deleteChamCon', this.item)

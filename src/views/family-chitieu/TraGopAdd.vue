@@ -14,19 +14,27 @@
           lazy-validation
         >
         <v-card-title class="text-left info pa-1">
+          <v-col cols="10" class="ma-0 pa-0">
             <h4
-              class="pa-2"
+              class="pa-2 md-10"
+              cols="10"
               style="color: #ffffff"
             >
-              {{title}}
+              {{title.slice(0,10)}}
             </h4>
+          </v-col>
+          <v-col cols="2" class="ma-0 pa-0 text-right pr-4">
             <v-icon
               right
-              style="color: #ffffff"
-              @click.native="dialog = false"
+              cols="2"
+              style="font-weight:bold; color: #ff0000"
+              class="text-right"
+              @click="dialog = false"
             >
               x
             </v-icon>
+          </v-col>
+
           </v-card-title>
 
           <v-divider />

@@ -5,20 +5,27 @@
   >
     <v-card>
       <v-form ref="form">
-        <v-card-title class="text-right info pa-1">
-          <h4
-            class="pa-2"
-            style="color: #ffffff"
-          >
-            Chi tiết {{title.slice(0,100)}}
-          </h4>
-          <v-icon
-            right
-            style="font-weight:bold; color: #ff0000"
-            @click="dialog = false"
-          >
-            x
-          </v-icon>
+        <v-card-title class="info pa-1">
+          <v-col cols="10" class="ma-0 pa-0">
+            <h4
+              class="pa-2 md-10"
+              cols="10"
+              style="color: #ffffff"
+            >
+              Chi tiết {{title.slice(0,100)}}
+            </h4>
+          </v-col>
+          <v-col cols="2" class="ma-0 pa-0 text-right pr-4">
+            <v-icon
+              right
+              cols="2"
+              style="font-weight:bold; color: #ff0000"
+              class="text-right"
+              @click="dialog = false"
+            >
+              x
+            </v-icon>
+          </v-col>
         </v-card-title>
         
         <v-divider />

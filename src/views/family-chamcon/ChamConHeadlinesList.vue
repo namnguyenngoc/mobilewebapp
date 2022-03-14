@@ -105,7 +105,7 @@ export default {
         },
         {
           label: 'Nội dung',
-          field: 'ten_cong_viec',
+          field: 'ten_cv',
           filterable: true,
           filterOptions: {
             styleClass: 'class-filter', // class to be added to the parent th element
@@ -311,9 +311,9 @@ export default {
         nam_sinh: params.row.nam_sinh,
         ma_cv: params.row.ma_cv,
         ghi_chu: params.row.ghi_chu,
-        ngay_thuc_hien:  moment(params.row.ngay_thuc_hien).format(config.DATE_TIME_FM),
-        gio_bat_dau:  moment(params.row.gio_bat_dau).format(config.DATE_TIME_FM),
-        gio_ke_tiep:  moment(params.row.gio_ke_tiep).format(config.DATE_TIME_FM),
+        ngay_thuc_hien:  moment(params.row.ngay_thuc_hien).format(config.DATE_TIME_FULL_FM),
+        gio_bat_dau:  moment(params.row.gio_bat_dau).format(config.DATE_TIME_FULL_FM),
+        gio_ke_tiep:  moment(params.row.gio_ke_tiep).format(config.DATE_TIME_FULL_FM),
         thong_tin_them: params.row.thong_tin_them,
         status: params.row.status,
         working_time: params.row.working_time,

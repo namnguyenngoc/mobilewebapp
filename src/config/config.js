@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 
- const API_URL = 'http://anvatchibeo.ddns.net'; //  platform server
+const API_URL = 'http://anvatchibeo.ddns.net'; //  platform server
 
 // Only developing application connect to local ip ,another applications connect to developement server ip.
 const config = {
@@ -69,6 +69,7 @@ const config = {
     // title: '',
     // item: Object,
     DATE_TIME_FM: 'YYYY-MM-DD HH:mm:ss',
+    DATE_TIME_FULL_FM: 'YYYY-MM-DD HH:mm:ss.SSS',
     DATE_FM: 'YYYY-MM-DD',
     CLV_PIM_ACCOUNT: {
       COUNT_CONTRACT: 3,

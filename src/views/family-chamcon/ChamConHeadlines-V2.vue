@@ -2187,7 +2187,7 @@ export default {
       let param = {
         ma_cv: 'WC',
         ho_ten: 'NGUYEN DANG KHOI',
-        limit: 3,
+        limit: 10,
       }
       await axios
         .post(`${config.API_URL}/selectKhoangThoiGianTheoCongViec`, param)
@@ -2211,8 +2211,8 @@ export default {
             data: dataChart,
             enabled:true,
           });
-        console.log('dataChart', dataChart);
-        self.$refs.chartComponent.dialog = true;
+          console.log('dataChart', dataChart);
+          self.$refs.chartComponent.dialog = true;
           // self.$refs.chartComponent.totalChart.xaxis.categories.push(100);
           // this.$refs.chartComponent.dialog = true;
           // self.$refs.chartComponent.open(

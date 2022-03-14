@@ -38,7 +38,7 @@ export default {
       },
       title: {
         type: String,
-        default:'Bạn có chắc chắn xóa không?'
+        default:'Chart'
       },
       message: {
         type: String,

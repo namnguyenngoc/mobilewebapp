@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-const API_URL = 'http://anvatchibeo.ddns.net'; //  platform server
+const API_URL = 'http://ec2-3-85-219-4.compute-1.amazonaws.com'; //  platform server
 
 // Only developing application connect to local ip ,another applications connect to developement server ip.
 const config = {

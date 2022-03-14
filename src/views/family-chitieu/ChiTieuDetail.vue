@@ -20,23 +20,7 @@
             x
           </v-icon>
         </v-card-title>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="save()"
-          >
-            Save
-          </v-btn>
-          <v-btn
-            color="error"
-            text
-            @click="confirmDelete()"
-          >
-            Delete
-          </v-btn>
-        </v-card-actions>
+        
         <v-divider />
 
         <v-card-text>
@@ -51,6 +35,7 @@
                 :value="value"
                 v-model="item[key]"
                 hide-details
+                clearable
                 class="mb-2"
               ></v-text-field>
             </v-col>
@@ -79,6 +64,7 @@
                 :value="value"
                 v-model="item[key]"
                 hide-details
+                clearable
                 class="mb-2"
               ></v-text-field>
             </v-col>
@@ -87,7 +73,30 @@
             </v-col>
           </v-container>
         </v-card-text>
-    
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="save('NEW')"
+          >
+            Save New
+          </v-btn>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="save()"
+          >
+            Save
+          </v-btn>
+          <v-btn
+            color="error"
+            text
+            @click="confirmDelete()"
+          >
+            Delete
+          </v-btn>
+        </v-card-actions>
       </v-form>
     </v-card>
   </v-dialog>
@@ -195,19 +204,32 @@
     }, // end method
     created () {}, // end data
     methods: {
-      async save(){
+      async save(option){
         const seft = this;
         console.log('this.item',seft.item);
-        await axios
-        .post(config.API_FAMILY + '/api/updateChiTieu', seft.item)
-        .then(function (response) {
-          console.log('succuess')
-          seft.dialog = false;
-          seft.$emit('refeshList');
-        })
-        .catch(error => {
-          console.log(error)
-        })
+        let url = config.API_FAMILY + '/api/updateChiTieu';
+        if('NEW' == option){
+          url = config.API_FAMILY + '/api/insertChiTieu';
+          const bank = seft.item.bank_code;
+          seft.item.bank_code = {
+            code: bank,
+            name: bank
+          }
+          
+        }
+
+        if(url != null){
+          await axios
+          .post(url, seft.item)
+          .then(function (response) {
+            console.log('succuess')
+            seft.dialog = false;
+            seft.$emit('refeshList');
+          })
+          .catch(error => {
+            console.log(error)
+          })
+        }
       },
       async confirmDelete () {
         //  this.$refs.dialogConfirm.dialog = true

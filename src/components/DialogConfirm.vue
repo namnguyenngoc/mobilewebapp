@@ -26,7 +26,7 @@ export default {
       options: {
         type: Object,
         default: () => ({
-          color: "lighten-3",
+          color: "error",
           width: 400,
           zIndex: 200,
           noconfirm: false

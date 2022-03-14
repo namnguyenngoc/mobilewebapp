@@ -32,7 +32,7 @@
           <v-btn
             color="error"
             text
-            @click="deleteChiTieu()"
+            @click="confirmDelete()"
           >
             Delete
           </v-btn>
@@ -82,9 +82,12 @@
                 class="mb-2"
               ></v-text-field>
             </v-col>
+            <v-col cols="12">
+              <DialogConfirm ref="dialogConfirm" />
+            </v-col>
           </v-container>
         </v-card-text>
-        
+    
       </v-form>
     </v-card>
   </v-dialog>
@@ -93,11 +96,14 @@
 <script>
   import axios from 'axios'
   import config from '../../config/config.js'
+  import DialogConfirm from '../../components/DialogConfirm.vue'
 
   export default {
     layout: 'chitieuDetail',
     // inheritAttrs: false,
-    components: {},
+    components: {
+      DialogConfirm
+    },
     props: {
       title: {
         type: String,
@@ -203,19 +209,42 @@
           console.log(error)
         })
       },
-      async deleteChiTieu () {
-      const seft = this;
-      await axios
-        .post(config.API_FAMILY + '/api/deleteChiTieu', this.item)
-        .then(function (response) {
-          console.log('succuess')
-          seft.dialog = false;
-          seft.$emit('refeshList');
-        })
-        .catch(error => {
-          console.log(error)
-        })
+      async confirmDelete () {
+        //  this.$refs.dialogConfirm.dialog = true
+        if (
+          await this.$refs.dialogConfirm.open(
+            "Confirm",
+            "Are you sure you want to delete this record?"
+          )
+        ){
+          this.deleteChiTieu()
+        }
+        // const seft = this;
+        // await axios
+        //   .post(config.API_FAMILY + '/api/deleteChiTieu', this.item)
+        //   .then(function (response) {
+        //     console.log('succuess')
+        //     seft.dialog = false;
+        //     seft.$emit('refeshList');
+        //   })
+        //   .catch(error => {
+        //     console.log(error)
+        //   })
       },
+
+      async deleteChiTieu () {
+        const seft = this;
+        await axios
+          .post(config.API_FAMILY + '/api/deleteChiTieu', this.item)
+          .then(function (response) {
+            console.log('succuess')
+            seft.dialog = false;
+            seft.$emit('refeshList');
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      }
     }, // end created
   } // End exxport default
 </script>

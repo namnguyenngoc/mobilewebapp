@@ -88,6 +88,34 @@
         </v-card-actions>
       </v-card>
     </v-col>
+    <v-col cols="12" md="12" class="pa-2">
+      <v-card>
+        <v-card-text class="mt-0 mb-0 pt-0 pb-1">
+
+          <v-col cols="12" md="12" class="ma-0 text-right pt-1 pa-6">
+            <v-slider
+              inverse-label
+              label="Số ngày hiển thị"
+              v-model="sliderWC"
+              :thumb-size="30"
+              thumb-label="always"
+              max="15"
+              min="1"
+              class="pt-0 pb-0 mb-0"
+              hide-details
+              @change="showChartWC()"
+            >
+              <template v-slot:thumb-label="{ value }">
+                {{ value }}
+              </template>
+            </v-slider>
+          </v-col>
+          <v-col cols="12" md="12" class="ma-0 text-right pt-1 pb-0 mb-0">
+            <apexchart type="line" :options="chartTotalOptionsWC" :series="seriesTotalWC" ref="totalChartWC" ></apexchart>
+          </v-col>
+       </v-card-text>
+      </v-card>
+    </v-col>
     <!-- Bú sữa -->
     <v-col cols="12" md="12" class="pa-2">
       <v-card>
@@ -1421,6 +1449,91 @@ export default {
           name: 'Tháng'
         }
       ],
+
+      sliderWC: 5,
+        seriesTotalWC: [],
+        chartTotalOptionsWC: {
+          ...this.chartTotalOptionsWC,
+          ...{
+              chart: {
+                height: 350,
+                type: 'column',
+                stacked: false,
+              },
+              dataLabels: {
+                enabled: true,
+                // labels: ['Apples', 'Oranges', 'Berries', 'Grapes']
+              },
+              stroke: {
+                 curve: 'smooth'
+              },
+              title: {
+              },
+              xaxis: {
+                type: 'category',
+                categories: [],
+                tickAmount: undefined,
+                tickPlacement: 'between',
+              },
+              yaxis: [
+                  {
+                    seriesName: 'GIO',
+                    axisTicks: {
+                      show: true,
+                    },
+                    axisBorder: {
+                      show: true,
+                      color: '#00E396',
+                    },
+                    labels: {
+                      style: {
+                        colors: '#FF0000',
+                      },
+                    },
+                    // title: {
+                    //   text: 'Thời gian (giờ)',
+                    //   style: {
+                    //     color: '#00E396',
+                    //   },
+                    // },
+                    tooltip: {
+                      enabled: true,
+                    },
+                },
+              
+              ],
+              tooltip: {
+                // fixed: {
+                //   enabled: true,
+                //   position: 'topLeft', // topRight, topLeft, bottomRight, bottomLeft
+                //   offsetY: 30,
+                //   offsetX: 60,
+                // },
+                y: {
+                  formatter: function (val) {
+                    return `${Math.floor(val / 24) } ngày ${val % 24} giờ`
+                  },
+                },
+              },
+              legend: {
+                horizontalAlign: 'left',
+                position: 'top',
+                offsetX: 40,
+                markers: {
+                  width: 12,
+                  height: 12,
+                  strokeWidth: 0,
+                  strokeColor: '#fff',
+                  fillColors: undefined,
+                  radius: 12,
+                  customHTML: undefined,
+                  onClick: undefined,
+                  offsetX: 0,
+                  offsetY: 0
+                },
+              },
+          },
+        }
     }
   },
   async created() {
@@ -1433,6 +1546,7 @@ export default {
     const self = this
     await this.loadingChartSK();
     await this.summarySuckhoeByCongViec();
+    await this.showChartWC();
      
   },
   mounted() {
@@ -2182,75 +2296,43 @@ export default {
     },
 
     async showChartWC(){
-    //   const self = this;
-    //   this.$refs.chartComponent.seriesTotal = [];
-    //   let param = {
-    //     ma_cv: 'WC',
-    //     ho_ten: 'NGUYEN DANG KHOI',
-    //     limit: 10,
-    //   }
-    //   await axios
-    //     .post(`${config.API_URL}/selectKhoangThoiGianTheoCongViec`, param)
-    //     .then(async function (response){
-    //       console.log('reponse', response);
-    //       let arr = response.data.data;
-    //       let dataChart = []  ;
-    //       let categories = [];
-    //       for(let i = 0; i < arr.length; i++){
+      const self = this;
+      this.seriesTotalWC = [];
+      // this.chartTotalOptionsWC.xaxis.categories = [];
+      while (this.chartTotalOptionsWC.xaxis.categories.length) {
+        this.chartTotalOptionsWC.xaxis.categories.pop();
+      }
+      let param = {
+        ma_cv: 'WC',
+        ho_ten: 'NGUYEN DANG KHOI',
+        limit: this.sliderWC,
+      }
+      await axios
+        .post(`${config.API_URL}/selectKhoangThoiGianTheoCongViec`, param)
+        .then(function (response){
+          console.log('reponse', response);
+          let arr = response.data.data;
+          let dataChart = []  ;
+          let categories = [];
+          for(let i = 0; i < arr.length; i++){
             
-    //         dataChart.push(Math.round(arr[i].thoi_gian_cho_hour));
-    //         // dataChart.push(arr[i].thoi_gian_cho);
-    //         // categories.push(arr[i].ngay_thuc_hien);
-    //         self.$refs.chartComponent.chartTotalOptions.xaxis.categories.push(arr[i].ngay_thuc_hien);
-    //       }
+            dataChart.push(Math.round(arr[i].thoi_gian_cho_hour));
+            // dataChart.push(arr[i].thoi_gian_cho);
+            // categories.push(arr[i].ngay_thuc_hien);
+            self.chartTotalOptionsWC.xaxis.categories.push(arr[i].ngay_thuc_hien);
+          }
           
           
-    //       self.$refs.chartComponent.seriesTotal.push({
-    //         name: 'GIO',
-    //         type: 'line',
-    //         data: dataChart,
-    //         enabled:true,
-    //       });
-    //       console.log('dataChart', dataChart);
-    //       if(dataChart.length > 0){
-    //         self.$refs.chartComponent.dialog = true;
-
-    //       }
-    //       // self.$refs.chartComponent.totalChart.xaxis.categories.push(100);
-    //       // this.$refs.chartComponent.dialog = true;
-    //       // self.$refs.chartComponent.open(
-    //       // "Chart thống kê wc của con",
-    //       // "Are you sure you want to delete this record?",
-    //       //   data,
-    //       //   categories
-    //  });
-
-      
-      this.$refs.chartComponent.dialog = true;
-      // let data = [
-      //   {
-      //     name: 'GIO',
-      //     type: 'column',
-      //     data: [30, 610, 570, 650, 480, 380],
-      //     enabled:false,
-      //   },
-      // ];
-
-      // let chartTotalOptions = {
-        
-      // }
-
-      
-      // if (
-      //     await this.$refs.chartComponent.open(
-      //       "Chart thống kê wc của con",
-      //       "Are you sure you want to delete this record?"
-      //     )
-      //   ){
-      //    console.log('Refse');
-      //   }
+          self.seriesTotalWC.push({
+            name: 'GIO',
+            type: 'line',
+            data: dataChart,
+            enabled:true,
+          });
+          console.log('dataChart', dataChart);
+          
+      });
     }
-    
   },
 }
 </script>

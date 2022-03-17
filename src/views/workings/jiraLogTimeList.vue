@@ -690,6 +690,11 @@ export default {
     //   this.chartOptions.labels.push(dateList[i]);
     // }
 
+    let dateStartWeek = momentBiz(momentBiz(new Date()).startOf('isoWeek').isoWeekday(2), "YYYY-MM-DD").businessSubtract(0);
+   
+    this.trip.start = new Date(momentBiz(dateStartWeek, 'YYYY-MM-DD')._d).toISOString().substr(0, 10);
+
+
     this.loadData();
   },
   computed: {

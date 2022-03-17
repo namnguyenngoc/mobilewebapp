@@ -157,6 +157,14 @@
                   hide-details
               ></v-text-field>
             </v-col>
+            <v-col cols="12" sm="12" md="12" class="mb-0 pb-0">
+              <v-text-field
+                  label="Tháng tiêm"
+                  v-model="thong_tin_suc_khoe.thong_tin_them.thang_tiem"
+                  clearable
+                  hide-details
+              ></v-text-field>
+            </v-col>
           </v-container>
         </v-card-text>
         <v-divider />

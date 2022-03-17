@@ -42,6 +42,10 @@
                 enabled: true,
                 placeholder: 'Search this table',
               }"
+              :group-options="{
+                enabled: true,
+                headerPosition: 'top',
+              }"
               max-height="700px"
             >
             <template slot="table-row" slot-scope="props">
@@ -82,9 +86,13 @@
                 
               </div>
               <div v-else-if="props.column.field == 'thong_tin_them'">
-                <pre>
-                  {{ JSON.parse(props.formattedRow['thong_tin_them']) }}
-                </pre>
+                {{ JSON.parse(props.formattedRow['thong_tin_them']) }}
+              </div>
+              <div v-else-if="props.column.field == 'thang_tiem'">
+                {{ JSON.parse(props.formattedRow['thong_tin_them']).thang_tiem }}
+              </div>
+              <div v-else-if="props.column.field == 'so_lieu'">
+                {{ JSON.parse(props.formattedRow['thong_tin_them']).so_lieu }}
               </div>
             </template>
             </vue-good-table>
@@ -218,6 +226,36 @@ export default {
          
         },
         {
+          label: 'Tháng tiêm',
+          field: 'thang_tiem',
+          filterable: false,
+          filterOptions: {
+            styleClass: 'class-filter', // class to be added to the parent th element
+              enabled: true, // enable filter for this column
+              placeholder: 'Tháng tiêm', // placeholder for filter input
+              filterValue: '',
+              filterDropdownItems: [], // dropdown (with selected values) instead of text input
+              // filterFn: this.columnFilterFn, //custom filter function that
+              trigger: 'enter', //only trigger on enter not on keyup 
+          },
+        },
+        {
+          label: 'Số liều',
+          field: 'so_lieu',
+          type: 'njumber',
+          filterable: false,
+          filterOptions: {
+            styleClass: 'class-filter', // class to be added to the parent th element
+              enabled: true, // enable filter for this column
+              placeholder: 'Số liều', // placeholder for filter input
+              filterValue: '',
+              filterDropdownItems: [], // dropdown (with selected values) instead of text input
+              // filterFn: this.columnFilterFn, //custom filter function that
+              trigger: 'enter', //only trigger on enter not on keyup 
+          },
+          headerField: this.sumSoLieu,
+        },
+        {
           label: 'Thông tin thêm',
           field: 'thong_tin_them',
           filterable: false,
@@ -253,7 +291,9 @@ export default {
         },
         
       ],
-      tblDataCongViec: [
+      tblDataCongViec: [{
+          children: [],
+        }
       ],
       chamConTitle: '',
       chamConItem: {},
@@ -313,7 +353,11 @@ export default {
       .then(response => {
         // seft.hotSettings.data = response.data.data;
         let data = response.data.data;
-        self.tblDataCongViec = data;
+        self.tblDataCongViec = [
+          {
+            children: data
+          }
+        ] ;
         self.close();
       });
     },
@@ -379,7 +423,20 @@ export default {
     },
     async insert(maCV){
       this.$refs.chamConAdd.dialog = true;
-    }
+    },
+    sumSoLieu(rowObj) {
+    	console.log('sumSoLieu', rowObj);
+    	let sum = 0;
+      for (let i = 0; i < rowObj.children.length; i++) {
+        let item = null;
+        if(rowObj.children[i].thong_tin_them != undefined && rowObj.children[i].thong_tin_them != null){
+          item = JSON.parse(rowObj.children[i].thong_tin_them);
+          sum += parseFloat(item.so_lieu);
+
+        }
+      }
+      return sum;
+    },
   },
 };
 </script>

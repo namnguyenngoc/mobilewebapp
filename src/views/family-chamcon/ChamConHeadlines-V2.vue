@@ -359,12 +359,23 @@
             </v-col>
             <v-col cols="12" md="12">
               <v-autocomplete
-              label="Tình trạng phân"
-              v-model="be_wc_model.selectModel"
-              :items="be_wc_model.items"
+              label="Đi Ị hay Tiểu"
+              v-model="be_wc_model.hinhthuc_wc"
+              :items="wcItem"
               item-text="name"
               item-value="code"
               dense>
+                
+              </v-autocomplete>
+            </v-col>
+            <v-col cols="12" md="12">
+              <v-autocomplete
+                label="Tình trạng phân"
+                v-model="be_wc_model.selectModel"
+                :items="be_wc_model.items"
+                item-text="name"
+                item-value="code"
+                dense>
                 
               </v-autocomplete>
             </v-col>
@@ -398,11 +409,11 @@
     </v-row>
     
     <!-- NGỦ-->
-    <v-col cols="12" md="12" class="pa-2" v-show="false">
+    <v-col cols="12" md="12" class="pa-2">
       <v-card>
         <v-card-title class="pt-5 pb-2">
-          <v-col cols="5" md="5" class="pb-0 mb-0" v-show="false"> Ngủ </v-col>
-          <v-col cols="7" md="7" class="pa-0 ma-0 text-right" v-show="false">
+          <v-col cols="5" md="5" class="pb-0 mb-0"> Ngủ </v-col>
+          <v-col cols="7" md="7" class="pa-0 ma-0 text-right">
             <circular-count-down-timer
               :circles="nguCountDown.circles"
               :interval="nguCountDown.interval"
@@ -428,7 +439,7 @@
         <v-divider class="mx-4"></v-divider>
         <v-card-text class="mt-0 mb-0 pt-3 pb-1">
           <!-- Row 1 -->
-          <v-row class="ml-2 mr-2" v-show="false">
+          <v-row class="ml-2 mr-2">
             <v-col cols="3" md="3" class="pb-0 mb-0 ml-0 mr-0 pl-0 pr-0">
               <v-checkbox
                 v-model="ngu_model.isEditTimeNgu"
@@ -633,8 +644,8 @@
           </v-row>
           <!-- End -->
         </v-card-text>
-        <v-divider class="mx-4" v-show="false"></v-divider>
-        <v-card-actions v-show="false">
+        <v-divider class="mx-4"></v-divider>
+        <v-card-actions>
           <v-row class="pl-2 float-end">
             <v-spacer></v-spacer>
             <v-btn color="info" @click="insert('NGU', 'N')" :disabled="!isNgu" class="mr-1" small>
@@ -758,8 +769,20 @@ export default {
           name: 'Đi nhiều'
           },
           ],
-        ghi_chu_them: 'Hoa cải'
+        ghi_chu_them: 'Hoa cải',
+        hinhthuc_wc: 'WC'
+
       },
+      wcItem: [
+        {
+          code: 'WC',
+          name: 'Đi Ị'
+        },
+        {
+          code: 'DT',
+          name: 'Chỉ đi tiểu'
+        },
+      ],
       ti_me_model: {
         ti_binh_gan_nhat: '',
         timeTiBinh: null,
@@ -1753,7 +1776,7 @@ export default {
             ma_cv: code_cv,
             gio_bat_dau: gio_bat_dau,
             the_tich_sua: this.ti_me_model.the_tich_sua_new,
-            thong_tin_them: thong_tin_them,
+            
           }
           await axios.post(config.API_URL + '/insertChamCon', congviec).then(async function (response) {
             await self.updateBtn()
@@ -1770,10 +1793,11 @@ export default {
           //   });
           // self.dialogWC = false;
           congviec = {
-            ma_cv: 'WC',
+            ma_cv: this.be_wc_model.hinhthuc_wc,
             gio_bat_dau: moment(`${this.be_wc_model.ngay_thuc_hien} ${this.be_wc_model.gio_thuc_hien}`),
             the_tich_sua: this.ti_me_model.the_tich_sua_new,
-            thong_tin_them: thong_tin_them,
+            thong_tin_them:  this.be_wc_model.ghi_chu_them,
+            ten_cv:  this.wcItem.find(({ code }) => code == this.be_wc_model.hinhthuc_wc).name,
           }
           await axios.post(config.API_URL + '/insertChamCon', congviec).then(async function (response) {
             self.dialogWC = false;

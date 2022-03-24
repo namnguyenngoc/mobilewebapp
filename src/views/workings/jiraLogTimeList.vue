@@ -200,7 +200,7 @@
           <v-col cols="5" sm="12" md="12" class="mb-0 pb-0">
               <div id="chart">
                 <apexchart type="bar" height="350" 
-                :options="chartOptions" :series="series"></apexchart>
+                :options="chartOptions" :series="series" ref="chartOptions"></apexchart>
               </div>
           </v-col>
           <v-col cols="12">
@@ -490,28 +490,28 @@ export default {
               "jiraTicketByTimeH": [],
               "total": {}
           },
-          "clvMemberList": [
-              {
-                  "id": "nam.nguyenngoc",
-                  "email": "nam.nguyenngoc@cyberlogitec.com",
-                  "name": "Nguyen Ngoc Nam"
-              },
-              {
-                  "id": "203728",
-                  "email": "khanh.vn@cyberlogitec.com",
-                  "name": "Nguyen Van Khanh"
-              },
-              {
-                  "id": "213960",
-                  "email": "trang.ng@cyberlogitec.com",
-                  "name": "Nguyen Thi Thuy Trang"
-              },
-              {
-                  "id": "213979",
-                  "email": "thanh.nc@cyberlogitec.com",
-                  "name": "Nguyen Chau Thanh"
-              }
-          ],
+          // "clvMemberList": [
+          //     {
+          //         "id": "nam.nguyenngoc",
+          //         "email": "nam.nguyenngoc@cyberlogitec.com",
+          //         "name": "Nguyen Ngoc Nam"
+          //     },
+          //     {
+          //         "id": "203728",
+          //         "email": "khanh.vn@cyberlogitec.com",
+          //         "name": "Nguyen Van Khanh"
+          //     },
+          //     {
+          //         "id": "213960",
+          //         "email": "trang.ng@cyberlogitec.com",
+          //         "name": "Nguyen Thi Thuy Trang"
+          //     },
+          //     {
+          //         "id": "213979",
+          //         "email": "thanh.nc@cyberlogitec.com",
+          //         "name": "Nguyen Chau Thanh"
+          //     }
+          // ],
           "boardId": {
               "id": 343,
               "self": "https://pim.cyberlogitec.com/jira/rest/agile/1.0/board/343",
@@ -621,12 +621,12 @@ export default {
         },
         plotOptions: {
           bar: {
-            borderRadius: 8,
+            borderRadius: 3,
             horizontal: false
           }
         },
         stroke: {
-          width: [3,3,3,3],
+          width: [2,2,2,2,2,2,2,2],
           curve: 'smooth',
         },
         // stroke: {
@@ -644,29 +644,7 @@ export default {
          
         },
         yaxis: [
-          {
-            title: {
-              text: "Hours"
-            },
-            max: 24,
-            min: 0,
-          },
-          {
-            max: 24,
-            min: 0,
-          },
-          {
-            max: 24,
-            min: 0,
-          },
-          {
-            max: 100,
-            min: 0,
-            opposite: true,
-            title: {
-              text: "(%) Ratio"
-            }
-          }
+          
         ]
         }
       },
@@ -810,6 +788,24 @@ export default {
         while (this.chartOptions.xaxis.categories.length) {
           this.chartOptions.xaxis.categories.pop();
         }
+        while (this.chartOptions.yaxis.length) {
+          this.chartOptions.yaxis.pop();
+        }
+       
+        let yaxisArr = [];
+        let flagShowYaxis = true;
+        // for(let i = 0; i < config.CLV_PIM_ACCOUNT.COUNT_CONTRACT; i++){
+       
+        //  yaxisArr.push(
+        //   {
+        //     opposite: true,
+        //     title: {
+        //       text: "(%) Ratio"
+        //     }
+        //   }
+        // );
+        
+        
         var startDate =  moment(this.trip.start);
         let endDate =  moment(this.trip.end);
         let dateList = this.getDaysBetweenDates(startDate, endDate);
@@ -835,21 +831,13 @@ export default {
 
         console.log("dateList", dateList);
         console.log("dataChart", dataChart);
-
+        
         let serial2 = [];  
         
+            
         //Data
         if(userTotal != undefined && userTotal != null){
-          //  this.series.push( {
-          //   data: [2,3],
-          //     name: "Pending",
-          //     type: "column"
-          //   }),
-          //   this.series.push( {
-          //     data: [50, 90],
-          //     name: "Ratio",
-          //     type: "line"
-          //   });
+          
           for(var i = 0; i < userTotal.length; i ++){
             let item = userTotal[i];
 
@@ -875,19 +863,43 @@ export default {
             }
             //  console.log('effortLog',effortLog);
            
+            yaxisArr.push({
+              max: userTotal.length * 8,
+              show: flagShowYaxis,
+            });
+
             this.series.push( {
               data: arrLog,
               name: effortLog[0].assignee,
               type: "column"
             });
             
-
+            flagShowYaxis = false;
           }
+
+          //check yaxis
+          // this.chartOptions.yaxis.push(
+          //   {
+          //     max: 100,
+          //     min: 0,
+          //     opposite: true,
+          //     title: {
+          //       text: "(%) Ratio"
+          //     }
+          //   },
+          // );
+          yaxisArr.push({
+            opposite: true,
+              title: {
+                text: "(%) Ratio"
+              }
+          });
           this.series.push({
             data: serKPI,
             name: 'KPI',
             type:'line'
           });
+          self.$refs.chartOptions.updateOptions({ yaxis: yaxisArr,});
           console.log('series',this.series);
         }
         
@@ -935,6 +947,7 @@ export default {
       let url = `${config.API_WORKING.JR_API_JIRA}/api/jiraWorklogs`;
       this.efforJsonList.from = this.trip.start;
       this.efforJsonList.to = this.trip.end;
+      this.efforJsonList.clvMemberList = config.CLV_PIM_ACCOUNT.MEM_LIST;
       let parameter = this.efforJsonList;
 
       // if(ticketList != undefined){

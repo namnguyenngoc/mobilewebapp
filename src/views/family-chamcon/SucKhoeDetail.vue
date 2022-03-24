@@ -196,24 +196,48 @@
         lsPropTextField: [
           {
             code: 'ho_ten',
-            text: 'Họ tên',
+            text: '1_Họ tên',
             order: 0,
           },
           {
             code: 'nam_sinh',
-            text: 'Năm sinh',
-            order: 0,
+            text: '2_Năm sinh',
+            order: 1,
+          },
+         {
+            code: 'can_nang_minus_2sd',
+            text: '3_Cân nặng (-2SD)',
+            order: 3,
+            type: 'number',
           },
           {
             code: 'can_nang',
-            text: 'Cân nặng(kg)',
-            order: 1,
+            text: '4_Cân nặng',
+            order: 3,
+            type: 'number',
+          },
+          {
+            code: 'can_nang_add_2sd',
+            text: '5_Cân nặng (+2SD)',
+            order: 4,
+            type: 'number',
+          },
+          {
+            code: 'chieu_cao_minus_2sd',
+            text: '6_Chiều cao (-2SD)',
+            order: 5,
             type: 'number',
           },
           {
             code: 'chieu_cao',
-            text: 'Chiều cao (cm)',
-            order: 2,
+            text: '7_Chiều cao',
+            order: 6,
+            type: 'number',
+          },
+          {
+            code: 'chieu_cao_add_2sd',
+            text: '8_Chiều cao (+2SD)',
+            order: 7,
             type: 'number',
           },
           // {
@@ -258,6 +282,18 @@
           {
             code: 'working_time',
             text: 'Tổng giờ'
+          },
+          {
+            code: 'phan_loai',
+            text: 'Phân loại (TC: Tiêu chuẩn)'
+          },
+          {
+            code: 'gioi_tinh',
+            text: 'Giới tính (M/F)'
+          },
+          {
+            code: 'thang_thu',
+            text: 'Tháng áp dụng'
           },
 
         ],

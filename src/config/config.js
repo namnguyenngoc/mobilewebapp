@@ -73,7 +73,7 @@ const config = {
     DATE_FM: 'YYYY-MM-DD',
     CLV_PIM_ACCOUNT: {
       COUNT_CONTRACT: 3,
-      SML_TEAM: ['163189', 'nam.nguyenngoc', '213960', '213979', '203728'],
+      SML_TEAM: ['163189', 'nam.nguyenngoc', '213960', '213979', '203728', '213898'],
       MEM_LIST: [
         {
             id: 'nam.nguyenngoc',
@@ -98,6 +98,21 @@ const config = {
           id: '213979',
           email: 'thanh.nc@cyberlogitec.com',
           isBackup: 'Y',
+        },
+        {
+          id: 'TruongDo',
+          email: 'edidev@cyberlogitec.comm',
+          isBackup: 'N',
+        },
+        {
+          id: '193521',
+          email: 'duan.la@cyberlogitec.com',
+          isBackup: 'N',
+        },
+        {
+          id: '213898',
+          email: 'hieu.lnt@cyberlogitec.com',
+          isBackup: 'N',
         },
       ]
     },

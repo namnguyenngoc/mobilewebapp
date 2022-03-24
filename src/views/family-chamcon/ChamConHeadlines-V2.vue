@@ -1241,6 +1241,7 @@ export default {
             position: 'top',
             offsetX: 40,
           },
+          // colors:['#F44336', '#E91E63', '#9C27B0']
         }
       },
       //Chart 2 end
@@ -1277,11 +1278,14 @@ export default {
           },
           dataLabels: {
             enabled: true,
-            position: 'top',
-            textAnchor: 'top',
-            style: {
-                colors: ['#ff0000',"#0000ff"]
-              },
+            position: 'middle',
+            textAnchor: 'middle',
+            // style: {
+            //     colors: ['#ff0000',"#0000ff"]
+            //   },
+          },
+          fill: {
+            type: 'gradient' / 'solid' / 'pattern' / 'image'
           },
           dropShadow: {
             enabled: true,
@@ -1317,54 +1321,54 @@ export default {
                 color: '#00E396',
               },
               labels: {
-                style: {
-                  colors: '#FF0000',
-                },
+                // style: {
+                //   colors: '#FF0000',
+                // },
               },
               title: {
                 text: 'Trọng lương (gr)',
                 style: {
-                  color: '#00E396',
+                  color: '#ff0000',
                 },
               },
               tooltip: {
                 enabled: true,
               },
             },
-            {
-              seriesName: 'CAN_NANG',
-              opposite: true,
-              axisTicks: {
-                show: true,
-              },
-              axisBorder: {
-                show: true,
-                color: '#00E396',
-              },
-              labels: {
-                style: {
-                  colors: '#FF0000',
-                },
-              },
-              title: {
-                text: 'Tỉ lệ tăng (gr)',
-                style: {
-                  color: '#00E396',
-                },
-              },
-              tooltip: {
-                enabled: true,
-              },
-            },
+            // {
+            //   seriesName: 'CAN_NANG',
+            //   opposite: true,
+            //   axisTicks: {
+            //     show: true,
+            //   },
+            //   axisBorder: {
+            //     show: true,
+            //     color: '#00E396',
+            //   },
+            //   labels: {
+            //     style: {
+            //       colors: '#FF0000',
+            //     },
+            //   },
+            //   title: {
+            //     text: 'Tỉ lệ tăng (gr)',
+            //     style: {
+            //       color: '#00E396',
+            //     },
+            //   },
+            //   tooltip: {
+            //     enabled: true,
+            //   },
+            // },
            
           ],
           tooltip: {
-            fixed: {
-              enabled: true,
-              position: 'topLeft', // topRight, topLeft, bottomRight, bottomLeft
-              offsetY: 30,
-              offsetX: 60,
-            },
+            // fixed: {
+            //   enabled: true,
+            //   position: 'topLeft', // topRight, topLeft, bottomRight, bottomLeft
+            //   offsetY: 30,
+            //   offsetX: 60,
+            // },
           },
           legend: {
             show: true,
@@ -1418,7 +1422,7 @@ export default {
            
           },
           markers: {
-            size: 3
+            size: 2
           },
           
         }
@@ -1442,6 +1446,10 @@ export default {
         {
           code: 'CN',
           name: 'Cân nặng'
+        },
+        {
+          code: 'CN_TC',
+          name: 'Cân nặng TC'
         }
       ],
       chartSKItems:[
@@ -1450,8 +1458,20 @@ export default {
           name: 'Cân nặng'
         },
         {
+          code: 'CN_TC',
+          name: 'Cân nặng TC'
+        },
+        {
           code: 'TL_CN',
           name: 'Tăng cân nặng'
+        },
+        {
+          code: 'CC',
+          name: 'Chiều cao'
+        },
+        {
+          code: 'CC_TC',
+          name: 'Chiều cao TC'
         },
         {
           code: 'TL_CC',
@@ -2249,9 +2269,12 @@ export default {
       let ho_ten = 'NGUYỄN ĐĂNG KHÔI';
       // let limit = 5;
       let can_nang_arr = [];
+      let can_nang_tc_arr = [];
       let ti_le_tang_arr = [];
       let chieu_cao_arr = [];
+      let chieu_cao_tc_arr = [];
       let tang_chieu_cao = [];
+
       let myArray = [];
       let categories  = [];
       await axios
@@ -2263,8 +2286,10 @@ export default {
             let newitem = moment(element.ngay_bat_dau).format('YYYY-MM-DD');
             categories.push(newitem);
             can_nang_arr.push(element.can_nang);
+            can_nang_tc_arr.push(element.can_nang_tc);
             ti_le_tang_arr.push(element.ti_le_tang_giam);
             chieu_cao_arr.push(element.chieu_cao);
+            chieu_cao_tc_arr.push(element.chieu_cao_tc);
             tang_chieu_cao.push(element.tang_chieu_cao);
           });
           
@@ -2275,6 +2300,10 @@ export default {
           let f_cn = self.chartSKColSelect.find(({code}) => code == 'CN');
           let TL_CN = self.chartSKColSelect.find(({code}) => code == 'TL_CN');
           let TL_CC = self.chartSKColSelect.find(({code}) => code == 'TL_CC');
+          let CN_TC = self.chartSKColSelect.find(({code}) => code == 'CN_TC');
+          let CC_TC = self.chartSKColSelect.find(({code}) => code == 'CC_TC');
+          let CC = self.chartSKColSelect.find(({code}) => code == 'CC');
+
           if(f_cn != undefined && f_cn != null){
             self.serialsSucKhoe.push({
               name: 'Cân nặng',
@@ -2287,6 +2316,28 @@ export default {
               name: 'Tăng cân nặng',
               type: 'line',
               data: ti_le_tang_arr,
+            });
+          }
+           if(CN_TC != undefined && CN_TC != null){
+            self.serialsSucKhoe.push({
+              name: 'Cân nặng TC',
+              type: 'area',
+              data: can_nang_tc_arr,
+            });
+          }
+
+           if(CC_TC != undefined && CC_TC != null){
+            self.serialsSucKhoe.push({
+              name: 'Chiều cao TC',
+              type: 'area',
+              data: chieu_cao_tc_arr,
+            });
+          }
+           if(CC != undefined && CC != null){
+            self.serialsSucKhoe.push({
+              name: 'Chiều cao',
+              type: 'line',
+              data: chieu_cao_arr,
             });
           }
           // self.serialsSucKhoe.push({

@@ -343,6 +343,10 @@
         let newItem = this.item;
 
         newItem.can_nang = this.item.can_nang * 1000;
+        newItem.can_na = this.item.can_nang * 1000;
+        newItem.can_nang_add_2sd = this.item.can_nang_add_2sd * 1000;
+        newItem.can_nang_minus_2sd = this.item.can_nang_minus_2sd * 1000;
+        
         await axios
         .post(url, newItem)
         .then(function (response) {

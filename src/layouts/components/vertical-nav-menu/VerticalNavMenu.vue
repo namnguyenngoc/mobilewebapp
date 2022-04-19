@@ -151,7 +151,12 @@
         ></nav-menu-link>
         <nav-menu-link
           title="Tickets"
-          :to="{ name: 'chamcon-suckhoe-list' }"
+          :to="{ name: 'jira-ticket' }"
+          :icon="icons.mdiHeart"
+        ></nav-menu-link>
+        <nav-menu-link
+          title="BP Efforts"
+          :to="{ name: 'bp-effort' }"
           :icon="icons.mdiHeart"
         ></nav-menu-link>
       </nav-menu-group>

@@ -40,6 +40,106 @@
         <v-col cols="12" md="12" class="pa-0 ma-0 text-right mt-5">
           <apexchart type="bar" :options="chartTraGop" :series="serialsTraGop" ref="refChartTraGop" ></apexchart>
         </v-col>
+        <v-col cols="12" md="12" class="pa-0 ma-0 text-right mt-5">
+          <v-row
+          >
+            <v-col cols="12" md="4" sm="4" >
+              <v-menu
+                ref="startMenu"
+                :close-on-content-click="false"
+                :return-value.sync="trip.start"
+                offset-y
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="trip.start"
+                    label="Start date"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="date"
+                  no-title
+                  scrollable
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.startMenu.isActive = false"
+                  >
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.startMenu.save(date)"
+                  >
+                    OK
+                  </v-btn>
+                </v-date-picker>
+              </v-menu>
+            </v-col>
+
+            <v-col cols="12" md="4" sm="4">
+              <v-menu
+                ref="endMenu"
+                :close-on-content-click="false"
+                :return-value.sync="trip.end"
+                offset-y
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="trip.end"
+                    label="End date"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="date"
+                  no-title
+                  scrollable
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.endMenu.isActive = false"
+                  >
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.endMenu.save(date)"
+                  >
+                    OK
+                  </v-btn>
+                </v-date-picker>
+              </v-menu>
+            </v-col>
+
+            <v-col cols="12" md="4" sm="4" >
+               <v-btn
+                color="info"
+                @click="loadingChartTongChiTieu()"
+              >
+                <v-icon>
+                    {{ icons.mdiReload }}
+                </v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+          <apexchart type="bar" :options="chartTongChiTieu" :series="serialsTongChiTieu" ref="refTongChiTieu" ></apexchart>
+        </v-col>
       </v-col>
       
     <!-- CHART-->
@@ -50,9 +150,15 @@ import axios from 'axios'
 import config from '../../config/config'
 import moment from 'moment'
 
-import { mdiMinus, mdiOneUp, mdiPlus, mdiDeleteOutline, mdiCircleEditOutline, mdiSleep, mdiConsoleNetworkOutline } from '@mdi/js'
-import { reactive } from '@vue/composition-api'
-
+import {
+  mdiMinus,
+  mdiOneUp,
+  mdiPlus,
+  mdiDeleteOutline,
+  mdiCircleEditOutline,
+  mdiSleep,
+  mdiReload
+} from '@mdi/js';
 export default {
   name: 'ChiTieuGiaDinh',
   components: {},
@@ -311,12 +417,141 @@ export default {
         }
       },
       serialsTraGop:[],
+      
+
+      //tong chi tieu
+      chartTongChiTieu: {
+        ...this.chartTongChiTieu,
+        ...{
+          chart: {
+            height: 150,
+            width: "100%",
+            type: 'bar',
+            show: false
+          },
+          dataLabels: {
+            enabled: true,
+            style: {
+                colors: ['#ff0000',"#0000ff"]
+              },
+          },
+          dropShadow: {
+            enabled: true,
+            color: '#000',
+            top: 18,
+            left: 7,
+            blur: 10,
+            opacity: 0.2
+          },
+          stroke: {
+            // curve: 'smooth'
+          },
+          title: {
+            style: {
+              color: '#FFFFFF',
+              fontFamily: 'roboto',
+              fontSize: '18pt',
+            },
+            text: 'Thống kê chi tiêu',
+          },
+          xaxis: {
+            type: 'string',
+            categories: [],
+            lines: {
+                show: true
+            },
+          },
+          yaxis: {
+            categories: [],
+            labels: {
+              formatter: function (val) {
+                const val2 = (val / 1000).toFixed(0).replace(',', '.')
+                return val2.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + 'K'
+              },
+              hideOverlappingLabels: true,
+            },
+            axisTicks: {
+              show: true
+            },
+            axisBorder: {
+              show: true
+            },
+          },
+          tooltip: {
+            fixed: {
+              enabled: true,
+              position: 'topLeft', // topRight, topLeft, bottomRight, bottomLeft
+              offsetY: 30,
+              offsetX: 60,
+            },
+          },
+          legend: {
+            horizontalAlign: 'right',
+            position: 'top',
+            
+          },
+          grid: {
+            padding: {
+              left: 13.5,
+              right: 0
+            },
+            xaxis: {
+                lines: {
+                    show: true
+                }
+            }, 
+           
+          },
+          markers: {
+            size: 3
+          },
+          plotOptions: {
+            bar: {
+              dataLabels: {
+                maxItems: 2,
+                position: 'auto'
+              }
+            }
+          },
+          dataLabels: {
+            enabled: true,
+            formatter: function (val) {
+                const val2 = (val).toFixed(0).replace(',', '.')
+                return val2.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+              },
+           
+            offsetY: -20,
+            style: {
+              fontSize: '12px',
+              colors: ['#304758'],
+            },
+          },
+        }
+      },
+      serialsTongChiTieu:[],
+      icons: {
+        mdiMinus,
+        mdiOneUp,
+        mdiPlus,
+        mdiDeleteOutline,
+        mdiCircleEditOutline,
+        mdiSleep,
+        mdiReload
+      },
+      date: null,
+      trip: {
+        name: '',
+        location: null,
+        start: moment().subtract(1, 'month').format(config.DATE_FM),
+        end: moment().subtract(0, 'days').format(config.DATE_FM),
+      },
     }
   },
   async created() {
     this.getCurrentDate()
     await this.loadingChartChiTieu();
     await this.loadingChartTraGop();
+     await this.loadingChartTongChiTieu();
      
   },
   mounted() {
@@ -580,6 +815,96 @@ export default {
           })
         
       },
+      async loadingChartTongChiTieu () {
+        const self = this;
+        console.log(moment(this.trip.start).format(config.DATE_FM));
+        let param =  [
+            {
+              colName: 'ZALOPAY',
+              ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+              ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+              bank_code: ['VIB', 'HSBC', 'SC BANK'],
+              noi_dung: ["upper(noi_dung) like '%ZALO%'"],
+              other: false,
+            },
+            {
+              colName: 'BACH HOA XANH',
+              ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+              ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+              bank_code: ['VIB', 'HSBC', 'SC BANK'],
+              noi_dung: ["upper(noi_dung) like '%BACHHOA%'", "upper(noi_dung) like '%BACH HOA%'", "upper(noi_dung) like '%BHX%'"],
+              other: false,
+            },
+            {
+              colName: 'GRAB',
+              ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+              ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+              bank_code: ['VIB', 'HSBC', 'SC BANK'],
+              noi_dung: ["upper(noi_dung) like '%GRAB%'"],
+              other: false,
+            },
+            {
+              colName: 'METRO',
+              ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+              ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+              bank_code: ['VIB', 'HSBC', 'SC BANK'],
+              noi_dung: ["upper(noi_dung) like '%MMVN%'"],
+              other: false,
+            },
+            {
+              colName: 'SHOPEE',
+              ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+              ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+              bank_code: ['VIB', 'HSBC', 'SC BANK'],
+              noi_dung: ["upper(noi_dung) like '%SHOPEE%'", "upper(noi_dung) like '%FOODY%'"],
+              other: false,
+            },
+            {
+              colName: 'LAZADA',
+              ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+              ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+              bank_code: ['VIB', 'HSBC', 'SC BANK'],
+              noi_dung: ["upper(noi_dung) like '%LAZADA%'", "upper(noi_dung) like '%LAZADA%'"],
+              other: false,
+            },
+            {
+              colName: 'CHI TIEU KHÁC',
+              ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+              ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+              bank_code: ['VIB', 'HSBC', 'SC BANK'],
+              noi_dung: [" upper(noi_dung) not like '%SHOPEE%'", "upper(noi_dung) not like '%ZALO%'", "upper(noi_dung) not like '%MMVN%'", "upper(noi_dung) not like '%GRAB%'",
+                    "upper(noi_dung) not like '%BACHHOA%'", "upper(noi_dung) not like '%BACH HOA%'", "upper(noi_dung) not like '%BHX%'", "upper(noi_dung) not like '%FOODY%'"],
+              other: true,
+            }
+          ];
+
+        while (self.chartTongChiTieu.xaxis.categories.length) {
+          self.chartTongChiTieu.xaxis.categories.pop();
+        }
+        let data = [];
+        await axios
+          .post(config.API_FAMILY + '/api/thongkechitieu', param)
+          .then(function (response) {
+            let jsonData = response.data.data;
+            console.log("response-----", jsonData);
+           
+            for (var i = 0; i < jsonData.length; i ++) {
+              let item = jsonData[i];
+              self.chartTongChiTieu.xaxis.categories.push(item.title);
+              data.push(item.tongtien);
+              // self.serialsTongChiTieu.push(item.tongtien);
+              console.log("response-----item", item.title);
+            }
+            
+          });
+
+        this.serialsTongChiTieu = [{
+          name: 'Tổng tiền',
+          data: data
+        }]
+        
+      },
+      //
 
     
   },

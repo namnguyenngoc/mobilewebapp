@@ -127,6 +127,16 @@ const routes = [
     component: () => import('@/views/workings/jiraLogTimeList.vue'),
   },
   {
+    path: '/working/jira-ticket',
+    name: 'jira-ticket',
+    component: () => import('@/views/workings/jiraTickets.vue'),
+  },
+  {
+    path: '/working/bp-effort',
+    name: 'bp-effort',
+    component: () => import('@/views/workings/bpEfforts.vue'),
+  },
+  {
     path: '/kinhdoanhshopee/donhangshopee',
     name: 'donhangshopee',
     component: () => import('@/views/kinhdoanh-shopee/DonHangShopee.vue'),

@@ -3,9 +3,24 @@
     <v-col>
       <v-card>
         <v-card-title class="pt-5 pb-2 mr-0 pr-2">
-          <v-col cols="10" md="10" class="pa-0 ma-0">
+          <v-col cols="4" md="4" class="pa-0 ma-0">
             Theo dõi sức khỏe định kì
           </v-col>
+          <v-col cols="3" md="3" class="pa-0 ma-0">
+            <v-select
+            :items="itemsHoTen"
+            v-model="searchAll"
+            label="Họ Tên"
+          ></v-select>
+            
+          </v-col>
+          <!-- <v-col cols="3" md="3" class="pa-0 ma-0">
+            <v-btn
+              color="info"
+               @click="filterNameFn('SỨC KHỎE TIÊU CHUẨN CHO BÉ')"
+            >  BẢNG TIÊU CHUẨN
+            </v-btn>
+          </v-col> -->
           <v-col cols="2" md="2" class="pa-0 ma-0 text-right">
             <v-btn
               color="info"
@@ -81,6 +96,7 @@ export default {
     suckhoeDetail
   },
   data() {
+    let self = this;
     return {
       loadingInstance: null,
       colCongViec: [
@@ -97,9 +113,9 @@ export default {
             styleClass: 'class-filter', // class to be added to the parent th element
               enabled: true, // enable filter for this column
               placeholder: 'Mã CV', // placeholder for filter input
-              filterValue: 'NGUYỄN ĐĂNG KHÔI',
+              // filterValue: 'NGUYỄN ĐĂNG KHÔI',
               filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
+              // filterFn: this.tblColumnNameFn, //custom filter function that
               trigger: 'enter', //only trigger on enter not on keyup 
           },
         },
@@ -118,6 +134,83 @@ export default {
           },
           formatFn: function (value) {
             return value != null ? moment(value).format(config.DATE_FM) : null
+          },
+        },
+         {
+          label: 'Tháng áp dụng',
+          field: 'thang_thu',
+          filterable: true,
+          filterOptions: {
+            styleClass: 'class-filter', // class to be added to the parent th element
+              enabled: true, // enable filter for this column
+              placeholder: 'Giới tính', // placeholder for filter input
+              filterValue: '',
+              filterDropdownItems: [], // dropdown (with selected values) instead of text input
+              // filterFn: this.columnFilterFn, //custom filter function that
+              trigger: 'enter', //only trigger on enter not on keyup 
+          },
+        },
+        {
+          label: 'Cân nặng (kg)',
+          field: 'can_nang',
+          filterable: false,
+          type: 'number',
+          filterOptions: {
+            styleClass: 'class-filter', // class to be added to the parent th element
+              enabled: true, // enable filter for this column
+              placeholder: 'Cân nặng', // placeholder for filter input
+              filterValue: '',
+              filterDropdownItems: [], // dropdown (with selected values) instead of text input
+              // filterFn: this.columnFilterFn, //custom filter function that
+              trigger: 'enter', //only trigger on enter not on keyup 
+          },
+          formatFn: function (value) {
+            return value != null ? `${value / 1000} kg` : null
+          },
+          
+        },
+        {
+          label: 'Chiều cao (cm)',
+          field: 'chieu_cao',
+          filterable: false,
+          type: 'number',
+          filterOptions: {
+            styleClass: 'class-filter', // class to be added to the parent th element
+              enabled: true, // enable filter for this column
+              placeholder: 'Chiều cao', // placeholder for filter input
+              filterValue: '',
+              filterDropdownItems: [], // dropdown (with selected values) instead of text input
+              // filterFn: this.columnFilterFn, //custom filter function that
+              trigger: 'enter', //only trigger on enter not on keyup 
+          },
+          formatFn: function (value) {
+            return value != null ? `${value} cm` : null
+          },
+        },
+        {
+          label: 'BMI',
+          field: 'bmi',
+          filterable: false,
+          type: 'number',
+          filterOptions: {
+            styleClass: 'class-filter', // class to be added to the parent th element
+              enabled: true, // enable filter for this column
+              placeholder: 'BMI', // placeholder for filter input
+              filterValue: '',
+              filterDropdownItems: [], // dropdown (with selected values) instead of text input
+              // filterFn: this.columnFilterFn, //custom filter function that
+              trigger: 'enter', //only trigger on enter not on keyup 
+          },
+          formatFn: function (value) {
+            if (!value) {
+              return ''
+            }
+            const val = (value / 1).toFixed(2).replace(',', '.')
+            if (!val) {
+              return ''
+            }
+
+            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
           },
         },
         {
@@ -139,25 +232,7 @@ export default {
           },
           
         },
-        {
-          label: 'Cân nặng (kg)',
-          field: 'can_nang',
-          filterable: false,
-          type: 'number',
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Cân nặng', // placeholder for filter input
-              filterValue: '',
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
-          formatFn: function (value) {
-            return value != null ? `${value / 1000} kg` : null
-          },
-          
-        },
+        
         {
           label: 'Cân nặng (+2SD)',
           field: 'can_nang_add_2sd',
@@ -195,24 +270,7 @@ export default {
             return value != null ? `${value} cm` : null
           },
         },
-        {
-          label: 'Chiều cao (cm)',
-          field: 'chieu_cao',
-          filterable: false,
-          type: 'number',
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Chiều cao', // placeholder for filter input
-              filterValue: '',
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
-          formatFn: function (value) {
-            return value != null ? `${value} cm` : null
-          },
-        },
+        
         {
           label: 'Chiều cao (+2SD)',
           field: 'chieu_cao_add_2sd',
@@ -262,23 +320,10 @@ export default {
               trigger: 'enter', //only trigger on enter not on keyup 
           },
           formatFn: function (value) {
-            return value == "" ? "" : (value == 'M' ? 'Bé Trai': 'Bé Gái')
+            return value == "F" ? 'Bé Gái' : 'Bé Trai' 
           },
         },
-        {
-          label: 'Tháng áp dụng',
-          field: 'thang_thu',
-          filterable: true,
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Giới tính', // placeholder for filter input
-              filterValue: '',
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
-        },
+       
       ],
       phan_loai: [
         {
@@ -310,6 +355,10 @@ export default {
         mdiSleep,
         mdiReload
       },
+      searchAll: 'ALL',
+      itemsHoTen: [
+        'NGUYỄN ĐĂNG KHÔI', 'SỨC KHỎE TIÊU CHUẨN CHO BÉ', 'ALL'
+      ] 
     }
   },
   created() {
@@ -351,6 +400,11 @@ export default {
       .then(response => {
         // seft.hotSettings.data = response.data.data;
         let data = response.data.data;
+        if(self.searchAll != undefined && self.searchAll != null && self.searchAll != ""  && self.searchAll != "ALL"){
+          data = data.filter(function (item) {
+            if (item.ho_ten == self.searchAll) return true
+          });
+        }
         self.tblDataCongViec = data;
         self.close();
       });
@@ -380,14 +434,25 @@ export default {
         phan_loai: params.row.phan_loai,
         gioi_tinh: params.row.gioi_tinh,
         thang_thu: params.row.thang_thu,
-        can_nang_add_2sd: params.row.can_nang_add_2sd,
-        can_nang_minus_2sd:params.row.can_nang_minus_2sd,
+        can_nang_add_2sd: params.row.can_nang_add_2sd / 1000,
+        can_nang_minus_2sd:params.row.can_nang_minus_2sd / 1000,
         chieu_cao_add_2sd:params.row.chieu_cao_add_2sd,
         chieu_cao_minus_2sd:params.row.chieu_cao_minus_2sd,
       }
 //  moment.tz(new Date(), tzString).format("YYYY-MM-DD HH:mm:ss"),
       this.$refs.suckhoeDetail.dialog = true;
-    }
+    },
+    filterNameFn(name){
+      this.tblDataCongViec = this.tblDataCongViec.filter(function (item) {
+          if (item.ho_ten == name) return true
+      });
+    },
+
+    // tblColumnNameFn(data, filterString) {
+    //   // var x = parseInt(filterString)
+    //   // return data >= x - 5 && data <= x + 5;
+    //   return data == filterString;  
+    // },
   },
 };
 </script>

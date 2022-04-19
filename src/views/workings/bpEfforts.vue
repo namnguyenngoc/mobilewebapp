@@ -17,7 +17,7 @@
                         v-on="on"
                         @click="openSOGSheet()"
                       >
-                        Worklog SOG
+                        BLUEPRINT EFFORT
                       </v-btn>
                     </v-col>
                     <v-col
@@ -868,9 +868,13 @@ export default {
     let dateStartWeek = momentBiz(momentBiz(new Date()).startOf('isoWeek').isoWeekday(2), "YYYY-MM-DD").businessSubtract(0);
    
     this.trip.start = new Date(momentBiz(dateStartWeek, 'YYYY-MM-DD')._d).toISOString().substr(0, 10);
-
-
-    this.loadData();
+    let url = `${config.API_WORKING.JR_API_JIRA}/api/bpEfforts`;
+    axios
+    .post(url, {})
+    .then(async function (response) {
+      console.log('response', response);
+    });
+    // this.loadData();
   },
   computed: {
      

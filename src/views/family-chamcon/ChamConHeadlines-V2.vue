@@ -69,7 +69,8 @@
         <v-card-actions>
           <v-row class="pl-2 float-end">
             <v-btn color="info" @click="insert('CN')" class="mr-1" small>Cân Nặng </v-btn>
-            <v-btn color="success" @click="insert('BSB')" class="mr-1" small> Cữ sữa </v-btn>
+            <v-btn color="warning" @click="insert('BSB_HUT')" class="mr-1" small> Tích sữa </v-btn>
+            <v-btn color="success" @click="insert('BSB_UONG')" class="mr-1" small> Uống Sữa </v-btn>
             <v-spacer></v-spacer>
              <v-btn color="warning" @click="insert('WC')" small>
                 WC ({{be_wc_model.ngay_thuc_hien_gan_nhat }})</v-btn>
@@ -112,6 +113,36 @@
           </v-col>
           <v-col cols="12" md="12" class="ma-0 text-right pt-1 pb-0 mb-0">
             <apexchart type="line" :options="chartTotalOptionsWC" :series="seriesTotalWC" ref="totalChartWC" ></apexchart>
+          </v-col>
+       </v-card-text>
+      </v-card>
+    </v-col>
+    
+    <!-- chart bu sua -->
+    <v-col cols="12" md="12" class="pa-2">
+      <v-card>
+        <v-card-text class="mt-0 mb-0 pt-0 pb-1">
+
+          <v-col cols="12" md="12" class="ma-0 text-right pt-1 pa-6">
+            <v-slider
+              inverse-label
+              label="Số ngày hiển thị"
+              v-model="sliderWC"
+              :thumb-size="30"
+              thumb-label="always"
+              max="15"
+              min="1"
+              class="pt-0 pb-0 mb-0"
+              hide-details
+              @change="showChartBS()"
+            >
+              <template v-slot:thumb-label="{ value }">
+                {{ value }}
+              </template>
+            </v-slider>
+          </v-col>
+          <v-col cols="12" md="12" class="ma-0 text-right pt-1 pb-0 mb-0">
+            <apexchart type="bar" :options="chartTotalOptionsBS" :series="seriesTotalBS" ref="totalChartBS" ></apexchart>
           </v-col>
        </v-card-text>
       </v-card>
@@ -400,6 +431,138 @@
               color="blue darken-1"
               text
               @click="insert('WC_INFO')"
+            >
+              Save
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
+
+    <!-- Cu sưa -->
+    <v-row>
+      <v-dialog
+        v-model="dialogSua"
+        max-width="500px"
+      >
+        <v-card>
+          <v-card-title>
+            {{ cuSuaModel.title }}
+          </v-card-title>
+          <v-card-text>
+            <v-col cols="12" md="12">
+              <v-menu
+                ref="menuWC"
+                v-model="menuWC"
+                :close-on-content-click="false"
+                :return-value.sync="cuSuaModel.ngay_thuc_hien"
+                transition="scale-transition"
+                offset-y
+                hide-details
+                min-width="auto"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="cuSuaModel.ngay_thuc_hien"
+                    label="Ngày thực hiện"
+                    prepend-icon="mdi-calendar"
+                    class="text-right"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    hide-details
+                    required
+                    :rules="emptyRules"
+                  ></v-text-field>
+                </template>
+                <v-date-picker v-model="cuSuaModel.ngay_thuc_hien" no-title scrollable>
+                  <v-spacer></v-spacer>
+                  <v-btn text color="primary" @click="menuWC = false"> Cancel </v-btn>
+                  <v-btn text color="primary" @click="$refs.menuWC.save(cuSuaModel.ngay_thuc_hien)">
+                    OK
+                  </v-btn>
+                </v-date-picker>
+              </v-menu>
+              <v-dialog
+                ref="dialogTimeCS"
+                v-model="modalCS"
+                :return-value.sync="time"
+                persistent
+                width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="cuSuaModel.gio_thuc_hien"
+                    label="Giờ"
+                    prepend-icon="mdi-clock-time-four-outline"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-time-picker
+                  v-if="modalCS"
+                  v-model="cuSuaModel.gio_thuc_hien"
+                  full-width
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="modalCS = false"
+                  >
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.dialogTimeCS.save(time)"
+                  >
+                    OK
+                  </v-btn>
+                </v-time-picker>
+              </v-dialog>
+            </v-col>
+            <v-col cols="12" md="12">
+              <v-text-field
+                label="Thể tích"
+                v-model="cuSuaModel.the_tich_sua_new"
+                hide-details
+                clearable
+            ></v-text-field>
+            </v-col>
+            <!-- <v-col cols="12" md="12">
+              <v-autocomplete
+                label="Tình trạng phân"
+                v-model="be_wc_model.selectModel"
+                :items="be_wc_model.items"
+                item-text="name"
+                item-value="code"
+                dense>
+                
+              </v-autocomplete>
+            </v-col> -->
+            <v-col cols="12" md="12">
+              <v-text-field
+                label="Ghi chú thêm"
+                v-model="cuSuaModel.ghi_chu_them"
+                hide-details
+                clearable
+            ></v-text-field>
+            </v-col>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="dialogSua = false"
+            >
+              Close
+            </v-btn>
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="insert('BSB_UONG_SAVE')"
             >
               Save
             </v-btn>
@@ -803,6 +966,7 @@ export default {
       ti_me_gan_nhat: '',
       wc_gan_nhat: '',
       dialogWC: false,
+      dialogSua: false,
       ngu_gan_nhat: '',
       ti_binh_gan_nhat: '',
       timeTiBinh: null,
@@ -1432,6 +1596,7 @@ export default {
       countDownValue:[],
       menu2: false,
       modalWC: false,
+      modalCS: false,
       time: null,
       color: null,
       colors: [
@@ -1533,12 +1698,12 @@ export default {
                         colors: '#FF0000',
                       },
                     },
-                    // title: {
-                    //   text: 'Thời gian (giờ)',
-                    //   style: {
-                    //     color: '#00E396',
-                    //   },
-                    // },
+                    title: {
+                      text: 'Giờ',
+                      style: {
+                        color: '#00E396',
+                      },
+                    },
                     tooltip: {
                       enabled: true,
                     },
@@ -1577,6 +1742,110 @@ export default {
               },
           },
         }
+      ,
+      sliderBS: 5,
+        seriesTotalBS: [],
+        chartTotalOptionsBS: {
+          ...this.chartTotalOptionsBS,
+          ...{
+              chart: {
+                height: 350,
+                type: 'bar',
+                stacked: false,
+              },
+              dataLabels: {
+                enabled: true,
+                // labels: ['Apples', 'Oranges', 'Berries', 'Grapes']
+              },
+              stroke: {
+                 curve: 'smooth'
+              },
+              title: {
+              },
+              xaxis: {
+                type: 'category',
+                categories: [],
+                tickAmount: undefined,
+                tickPlacement: 'between',
+              },
+              yaxis: [
+                  {
+                    seriesName: 'THE_TICH',
+                    axisTicks: {
+                      show: true,
+                    },
+                    axisBorder: {
+                      show: true,
+                      color: '#00E396',
+                    },
+                    labels: {
+                      style: {
+                        colors: '#FF0000',
+                      },
+                    },
+                    title: {
+                      text: 'ml',
+                      style: {
+                        color: '#00E396',
+                      },
+                    },
+                    tooltip: {
+                      enabled: true,
+                    },
+                },
+              
+              ],
+              tooltip: {
+                // fixed: {
+                //   enabled: true,
+                //   position: 'topLeft', // topRight, topLeft, bottomRight, bottomLeft
+                //   offsetY: 30,
+                //   offsetX: 60,
+                // },
+                y: {
+                  formatter: function (val) {
+                    return `${Math.floor(val / 24) } ngày ${val % 24} giờ`
+                  },
+                },
+              },
+              legend: {
+                horizontalAlign: 'left',
+                position: 'top',
+                offsetX: 40,
+                markers: {
+                  width: 12,
+                  height: 12,
+                  strokeWidth: 0,
+                  strokeColor: '#fff',
+                  fillColors: undefined,
+                  radius: 12,
+                  customHTML: undefined,
+                  onClick: undefined,
+                  offsetX: 0,
+                  offsetY: 0
+                },
+              },
+          },
+        }
+      ,
+      cuSuaModel: {
+        title: 'Uống sữa',
+        ma_cv: 'BSB_UONG', //
+        gio_thuc_hien: moment(new Date()).format('HH:mm:ss'),
+        ngay_thuc_hien: moment(new Date()).format("YYYY-MM-DD"),
+        gio_bat_dau: new Date(),
+        the_tich_sua: 0,
+      },
+      tichSuaType: [
+        {
+          code: 'BSB_UONG',
+          name: 'Uống sữa'
+        },
+        {
+          code: 'BSB_HUT',
+          name: 'Tích sữa'
+        }
+      ],
     }
   },
   async created() {
@@ -1590,6 +1859,8 @@ export default {
     await this.loadingChartSK();
     await this.summarySuckhoeByCongViec();
     await this.showChartWC();
+    await this.showChartBS();
+    
      
   },
   mounted() {
@@ -1751,6 +2022,11 @@ export default {
         return;
       }
       const self = this;
+      this.thong_tin_suc_khoe.can_nang = this.thong_tin_suc_khoe.can_nang * 1000;
+      // this.thong_tin_suc_khoe.can_nang_total = this.thong_tin_suc_khoe.can_nang * 1000;
+      // this.thong_tin_suc_khoe.can_nang_con = this.thong_tin_suc_khoe.can_nang * 1000; 
+      // this.thong_tin_suc_khoe.can_nang_bo = this.thong_tin_suc_khoe.can_nang * 1000; 
+
       await axios.post(`${config.API_URL}/insertSucKhoe`, this.thong_tin_suc_khoe).then(async function (response) {
         await self.updateBtn();
         self.thong_tin_suc_khoe.dialogCN = false;
@@ -1783,24 +2059,79 @@ export default {
             await self.updateBtn()
           })
           break;
-        case 'BSB':
+        case 'BSB_HUT':
+          // var timeAndDate = moment(gio_bat_dau + ' ' + self.ti_me_model.timeTiBinh);
+          // // gio_bat_dau = moment(timeAndDate).format('YYYY-MM-DD HH:mm:ss');
+          // if(!self.ti_me_model.isEditTimeTiBinh){
+          //   gio_bat_dau =  moment(currentDate).format('YYYY-MM-DD HH:mm:ss');
+          // } else {
+          //   gio_bat_dau = moment(timeAndDate).format('YYYY-MM-DD HH:mm:ss');
+          // }
+          // code_cv = self.ti_me_model.loai_sua;
+          // congviec = {
+          //   ma_cv: code_cv,
+          //   gio_bat_dau: gio_bat_dau,
+          //   the_tich_sua: this.ti_me_model.the_tich_sua_new,
+            
+          // }
+          // await axios.post(config.API_URL + '/insertChamCon', congviec).then(async function (response) {
+          //   await self.updateBtn()
+          // })
+          
+          this.cuSuaModel.title = "Tích sữa";
+          this.cuSuaModel.ma_cv = 'BSB_HUT';
+          this.dialogSua = true;
+
+          break;
+        case 'BSB_UONG':
           var timeAndDate = moment(gio_bat_dau + ' ' + self.ti_me_model.timeTiBinh);
           // gio_bat_dau = moment(timeAndDate).format('YYYY-MM-DD HH:mm:ss');
-          if(!self.ti_me_model.isEditTimeTiBinh){
-            gio_bat_dau =  moment(currentDate).format('YYYY-MM-DD HH:mm:ss');
-          } else {
-            gio_bat_dau = moment(timeAndDate).format('YYYY-MM-DD HH:mm:ss');
-          }
-          code_cv = self.ti_me_model.loai_sua;
+          // if(!self.ti_me_model.isEditTimeTiBinh){
+          //   gio_bat_dau =  moment(currentDate).format('YYYY-MM-DD HH:mm:ss');
+          // } else {
+          //   gio_bat_dau = moment(timeAndDate).format('YYYY-MM-DD HH:mm:ss');
+          // }
+          // code_cv = self.ti_me_model.loai_sua;
+          // congviec = {
+          //   ma_cv: code_cv,
+          //   gio_bat_dau: gio_bat_dau,
+          //   the_tich_sua: this.ti_me_model.the_tich_sua_new,
+            
+          // }
+          // await axios.post(config.API_URL + '/insertChamCon', congviec).then(async function (response) {
+          //   await self.updateBtn()
+          // })
+          // this.cuSuaModel.gio_bat_dau = gio_bat_dau;
+          // this.cuSuaModel.the_tich_sua = the_tich_sua;
+          this.cuSuaModel.ma_cv = 'BSB_UONG';
+          this.cuSuaModel.title = "Uống sữa";
+          this.dialogSua = true;
+
+          break;
+        case 'BSB_UONG_SAVE':
+          var timeAndDate = moment(gio_bat_dau + ' ' + self.ti_me_model.timeTiBinh);
+          gio_bat_dau = moment(timeAndDate).format('YYYY-MM-DD HH:mm:ss');
+          // if(!self.ti_me_model.isEditTimeTiBinh){
+          //   gio_bat_dau =  moment(currentDate).format('YYYY-MM-DD HH:mm:ss');
+          // } else {
+          //   gio_bat_dau = moment(timeAndDate).format('YYYY-MM-DD HH:mm:ss');
+          // }
+          // code_cv = self.ti_me_model.loai_sua;
           congviec = {
-            ma_cv: code_cv,
-            gio_bat_dau: gio_bat_dau,
-            the_tich_sua: this.ti_me_model.the_tich_sua_new,
+            ten_cv: this.tichSuaType.find(({ code }) => code == this.cuSuaModel.ma_cv).name,
+            ma_cv: this.cuSuaModel.ma_cv,
+            gio_bat_dau: moment(`${this.cuSuaModel.ngay_thuc_hien} ${this.cuSuaModel.gio_thuc_hien}`),
+            the_tich_sua: this.cuSuaModel.the_tich_sua_new,
+            thong_tin_them: this.cuSuaModel.ghi_chu_them,
             
           }
           await axios.post(config.API_URL + '/insertChamCon', congviec).then(async function (response) {
             await self.updateBtn()
           })
+          this.dialogSua = false;
+          // this.cuSuaModel.gio_bat_dau = gio_bat_dau;
+          // this.cuSuaModel.the_tich_sua = the_tich_sua;
+
           break;
         case 'WC':
           self.dialogWC = true;
@@ -2394,7 +2725,7 @@ export default {
             dataChart.push(Math.round(arr[i].thoi_gian_cho_hour));
             // dataChart.push(arr[i].thoi_gian_cho);
             // categories.push(arr[i].ngay_thuc_hien);
-            self.chartTotalOptionsWC.xaxis.categories.push(arr[i].ngay_thuc_hien);
+            self.chartTotalOptionsWC.xaxis.categories.push(moment(arr[i].ngay_thuc_hien).format('YYYY-MM-DD HH:mm'));
           }
           
           
@@ -2404,6 +2735,55 @@ export default {
             data: dataChart,
             enabled:true,
           });
+          console.log('dataChart', dataChart);
+          
+      });
+    },
+    async showChartBS(){
+      const self = this;
+      this.seriesTotalBS = [];
+      // this.chartTotalOptionsWC.xaxis.categories = [];
+      while (this.chartTotalOptionsBS.xaxis.categories.length) {
+        this.chartTotalOptionsBS.xaxis.categories.pop();
+      }
+      let param = {
+        ma_cv: 'WC',
+        ho_ten: 'NGUYEN DANG KHOI',
+        limit: this.sliderBS,
+      }
+      await axios
+        .post(`${config.API_URL}/selectBuSua`, param)
+        .then(function (response){
+          console.log('reponse', response);
+          let arr = response.data.data;
+          let dataChart = []  ;
+          let categories = [];
+          let arr_BSB_UONG = [];
+          let arr_BSB_HUT = [];
+          for(let i = 0; i < arr.length; i++){
+            arr_BSB_UONG.push(Math.round(arr[i].BSB_UONG));
+            arr_BSB_HUT.push(Math.round(arr[i].BSB_HUT));
+                        // dataChart.push(arr[i].thoi_gian_cho);
+            // categories.push(arr[i].ngay_thuc_hien);
+            // let exist = self.chartTotalOptionsBS.xaxis.categories.find(({code}) => code == arr[i].gio_bat_dau)
+            self.chartTotalOptionsBS.xaxis.categories.push(arr[i].gio_bat_dau);
+          }
+          
+          self.seriesTotalBS.push({
+              name: 'Lượng sữa uống',
+              data: arr_BSB_UONG
+          });
+          self.seriesTotalBS.push({
+              name: 'Lượng sữa tích',
+              data: arr_BSB_HUT
+          })
+
+          // self.seriesTotalBS.push({
+          //   name: 'GIO',
+          //   type: 'column',
+          //   data: dataChart,
+          //   enabled:true,
+          // });
           console.log('dataChart', dataChart);
           
       });

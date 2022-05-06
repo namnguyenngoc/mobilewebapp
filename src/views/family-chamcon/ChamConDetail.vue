@@ -193,6 +193,12 @@
         index: 1,
         itemChiTieu: {},
         lsPropTextField: [
+           {
+            code: 'id',
+            text: 'ID',
+            order: 1,
+            type: 'number',
+          },
           {
             code: 'can_nang',
             text: 'Cân nặng',

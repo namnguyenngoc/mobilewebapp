@@ -8,18 +8,6 @@
               <v-expansion-panel>
                 <v-expansion-panel-header v-slot="{ open }">
                   <v-row no-gutters>
-                    <v-col cols="12" md="2" sm="12">
-                      <v-btn
-                        color="warning"
-                        dark
-                        v-bind="attrs"
-                        class="rounded-pill"
-                        v-on="on"
-                        @click="openSOGSheet()"
-                      >
-                        Worklog SOG
-                      </v-btn>
-                    </v-col>
                     <v-col
                       cols="12" md="9" 
                       sm="12"
@@ -29,7 +17,34 @@
                         justify="space-around"
                         no-gutters
                       >
-                        <v-col cols="12" md="5" sm="6" >
+                        <v-col cols="12" sm="3" md="3" class="pt-0 pb-0 mt-0 mb-0 pr-1">
+                          <v-select
+                            v-model="valueBoard.id"
+                            :items="itemsBoard"
+                            label="Board Name"
+                            item-text="name"
+                            item-value="id"
+                            return-object
+                            hide-details
+                            required
+                            :rules="emptyRules.select"
+                            @change="boardChange()"
+                          ></v-select>
+                        </v-col>
+                        <v-col cols="12" sm="5" md="5" class="pt-0 pb-0 mt-0 mb-0">
+                          <v-select
+                            v-model="valueProject.key"
+                            :items="itemsProject"
+                            label="Project Name"
+                            item-text="name"
+                            item-value="key"
+                            multiple
+                            hide-details
+                            return-object
+                            @change="projectChange()"
+                          ></v-select>
+                        </v-col>
+                        <v-col cols="12" md="2" sm="2" >
                           <v-menu
                             ref="startMenu"
                             :close-on-content-click="false"
@@ -71,7 +86,7 @@
                           </v-menu>
                         </v-col>
 
-                        <v-col cols="12" md="5" sm="6">
+                        <v-col cols="12" md="2" sm="2">
                           <v-menu
                             ref="endMenu"
                             :close-on-content-click="false"
@@ -157,13 +172,22 @@
             >
               <v-btn
                 color="info"
+                icon
                 @click="loadData()"
               >
-                <!-- <v-icon>
+                <v-icon>
                     {{ icons.mdiReload }}
-                </v-icon> -->
-                Search
+                </v-icon>
               </v-btn>
+               <v-btn
+                  color="warning"
+                  icon
+                  @click="openSOGSheet()"
+                >
+                  <v-icon>
+                    {{ icons.mdiFileChart }}
+                  </v-icon>
+                </v-btn>
             </v-col>
             <v-col cols="12" sm="12" md="12" class="pt-3 mt-5">
               <h5 class="bold">Working days[{{this.workCount}}] CLV/Total:{{this.strMemberTotalCLV}}/{{this.strMemberTotal}} - KPI {{this.sKPICLV.toFixed(1)}}: ({{this.sWloadPercent.toFixed(2)}}%) </h5>
@@ -292,7 +316,9 @@ import {
   mdiDeleteOutline,
   mdiCircleEditOutline,
   mdiSleep,
-  mdiReload
+  mdiReload,
+  mdiJira,
+  mdiFileChart
 } from '@mdi/js';
 import { reactive } from '@vue/composition-api';
 
@@ -306,6 +332,11 @@ export default {
   data() {
     return {
       loadingInstance: null,
+      emptyRules: {
+        text:   [v => !!v || "Item is required"],
+        select: [(v) => !!v || "Item is required"],
+        select2: [(v) =>  v.length>0 || "Item is required in select 2"],
+      },
       colTableWorklog: [
         {
           label: 'key',
@@ -487,7 +518,9 @@ export default {
         mdiDeleteOutline,
         mdiCircleEditOutline,
         mdiSleep,
-        mdiReload
+        mdiReload,
+        mdiJira,
+        mdiFileChart
       },
       workCount: 0,
       strMemberTotal: 0,
@@ -499,128 +532,18 @@ export default {
       isChangeHour: false,
       totalHourWeek: 40,
       efforJsonList: {
-          "jiraLink": "",
-          "userName": "nam.nguyenngoc",
-          "pwd": "qwer@123",
-          "jiraDev": "",
-          "from": new Date().toISOString().substr(0, 10),
-          "to": new Date().toISOString().substr(0, 10),
-          "month": 5,
-          "week": 10,
-          "year": 2021,
-          "NAM": {
-              "member": "Nam Nguyen Ngoc",
-              "account": "nam.nguyenngoc",
-              "jiraLog": [],
-              "jiraTicketByTimeH": [],
-              "total": {}
-          },
-          "NAM2": {
-              "member": "Nam Nguyen Ngoc OLD",
-              "account": "doudevnn",
-              "jiraLog": [],
-              "jiraTicketByTimeH": [],
-              "total": {}
-          },
-          "DUNG": {
-              "member": "Dung Cao",
-              "account": "203737",
-              "jiraLog": [],
-              "jiraTicketByTimeH": [],
-              "total": {}
-          },
-          "KHANH": {
-              "member": "Khanh Nguyen",
-              "account": "203728",
-              "jiraLog": [],
-              "jiraTicketByTimeH": [],
-              "total": {}
-          },
-          "TRANG": {
-              "member": "Trang Nguyen",
-              "account": "213960",
-              "jiraLog": [],
-              "jiraTicketByTimeH": [],
-              "total": {}
-          },
-          "THANH": {
-              "member": "Thanh Nguyen",
-              "account": "213979",
-              "jiraLog": [],
-              "jiraTicketByTimeH": [],
-              "total": {}
-          },
-          // "clvMemberList": [
-          //     {
-          //         "id": "nam.nguyenngoc",
-          //         "email": "nam.nguyenngoc@cyberlogitec.com",
-          //         "name": "Nguyen Ngoc Nam"
-          //     },
-          //     {
-          //         "id": "203728",
-          //         "email": "khanh.vn@cyberlogitec.com",
-          //         "name": "Nguyen Van Khanh"
-          //     },
-          //     {
-          //         "id": "213960",
-          //         "email": "trang.ng@cyberlogitec.com",
-          //         "name": "Nguyen Thi Thuy Trang"
-          //     },
-          //     {
-          //         "id": "213979",
-          //         "email": "thanh.nc@cyberlogitec.com",
-          //         "name": "Nguyen Chau Thanh"
-          //     }
-          // ],
-          "boardId": {
-              "id": 343,
-              "self": "https://pim.cyberlogitec.com/jira/rest/agile/1.0/board/343",
-              "name": "SML Team CLV",
-              "type": "kanban"
-          },
-          "team": "Smartlink",
-          "itemsMember": {},
-          "itemsProject": [
-              {
-                  "self": "https://pim.cyberlogitec.com/jira/rest/api/2/project/12115",
-                  "id": "12115",
-                  "key": "SLI",
-                  "name": "22_SmartLink_SmartAgent [Internal]",
-                  "projectTypeKey": "software",
-                  "avatarUrls": {
-                      "48x48": "https://pim.cyberlogitec.com/jira/secure/projectavatar?pid=12115&avatarId=10200",
-                      "24x24": "https://pim.cyberlogitec.com/jira/secure/projectavatar?size=small&pid=12115&avatarId=10200",
-                      "16x16": "https://pim.cyberlogitec.com/jira/secure/projectavatar?size=xsmall&pid=12115&avatarId=10200",
-                      "32x32": "https://pim.cyberlogitec.com/jira/secure/projectavatar?size=medium&pid=12115&avatarId=10200"
-                  },
-                  "projectCategory": {
-                      "self": "https://pim.cyberlogitec.com/jira/rest/api/2/projectCategory/10208",
-                      "id": "10208",
-                      "description": "",
-                      "name": "Marine (Int. Project)"
-                  }
-              },
-              {
-                  "self": "https://pim.cyberlogitec.com/jira/rest/api/2/project/10709",
-                  "id": "10709",
-                  "key": "SPKA",
-                  "name": "SMARTLINK [Internal]",
-                  "projectTypeKey": "software",
-                  "avatarUrls": {
-                      "48x48": "https://pim.cyberlogitec.com/jira/secure/projectavatar?pid=10709&avatarId=10200",
-                      "24x24": "https://pim.cyberlogitec.com/jira/secure/projectavatar?size=small&pid=10709&avatarId=10200",
-                      "16x16": "https://pim.cyberlogitec.com/jira/secure/projectavatar?size=xsmall&pid=10709&avatarId=10200",
-                      "32x32": "https://pim.cyberlogitec.com/jira/secure/projectavatar?size=medium&pid=10709&avatarId=10200"
-                  },
-                  "projectCategory": {
-                      "self": "https://pim.cyberlogitec.com/jira/rest/api/2/projectCategory/10214",
-                      "id": "10214",
-                      "description": "",
-                      "name": "Logistics (Smartlink)"
-                  }
-              }
-          ]
+         
       },
+      valueBoard: {},
+      itemsBoard: [],
+      valueProject:{},
+      jiraIdTotalHourDetail: "",
+      estimatedEffort: '0h',
+      jiraIdSeleted: "",
+      jiraIdTotalHour: 0,
+      jiraIdTotalHourDetail: "",
+      jiraIdStatus: "",
+      jiraDev: "",
       date: null,
       trip: {
         name: '',
@@ -848,6 +771,7 @@ export default {
       ],
       tblDataComment: [
       ],
+      itemsProject: [],
     }
   },
   created() {
@@ -868,9 +792,10 @@ export default {
     let dateStartWeek = momentBiz(momentBiz(new Date()).startOf('isoWeek').isoWeekday(2), "YYYY-MM-DD").businessSubtract(0);
    
     this.trip.start = new Date(momentBiz(dateStartWeek, 'YYYY-MM-DD')._d).toISOString().substr(0, 10);
-
-
-    this.loadData();
+    this.efforJsonList.userName = this.$cookies.get('userName');
+    this.efforJsonList.pwd = this.$cookies.get('pwd');
+    this.reloadBoard();
+    // this.loadData();
   },
   computed: {
      
@@ -1200,6 +1125,12 @@ export default {
       this.efforJsonList.from = this.trip.start;
       this.efforJsonList.to = this.trip.end;
       this.efforJsonList.clvMemberList = config.CLV_PIM_ACCOUNT.MEM_LIST;
+      if(seft.valueProject.key != undefined && seft.valueProject.key.length > 0){
+        this.efforJsonList.itemsProject = seft.valueProject.key;
+
+      } else {
+        this.efforJsonList.itemsProject = this.itemsProject;
+      }
       let parameter = this.efforJsonList;
 
       // if(ticketList != undefined){
@@ -1435,6 +1366,58 @@ export default {
       // let route = this.$router.resolve('/link/to/page'); // This also works.
       window.open(`${config.JR_PIM_URL}/${jiraTicket}`, '_blank');
     },
+    async reloadBoard(){
+      this.jiraBoards();
+    },
+    async jiraBoards(){
+      this.show();
+      const seft = this;
+      try {
+        await axios
+        .post(`${config.API_WORKING.JR_API_JIRA}/api/jiraBoards`, this.efforJsonList)
+        .then(async function (response) {
+          // seft.hotSettings.data = response.data.data;
+          console.log('jiraBoardsxxxxxxxx', response.data);
+          // seft.pimDATA = response.data.data;
+          seft.itemsBoard = response.data.data;
+          seft.close();
+        });
+      } catch (error) {
+        seft.close();
+      }
+      
+    },
+    async boardChange(){
+      this.show();
+      const seft = this;
+      
+      this.efforJsonList.boardId = seft.valueBoard.id;
+      try {
+        await axios
+          .post(`${config.API_WORKING.JR_API_JIRA}/api/jiraProjects`, this.efforJsonList)
+          .then(async function (response) {
+            // seft.hotSettings.data = response.data.data;
+            console.log('itemsProject', response.data);
+            // seft.pimDATA = response.data.data;
+            seft.itemsProject = response.data.data;
+            seft.overlay = false;
+            // seft.btnDisable = false;
+            //Set refix defalt = first
+            if(seft.valueProject.key != undefined && seft.valueProject.key.length > 0){
+              seft.prefixCodeProject = seft.valueProject.key; //seft.itemsProject[0].key
+            } else {
+              seft.prefixCodeProject = seft.itemsProject[0].key
+            }
+            seft.close();
+          });
+      } catch (error) {
+        seft.close();
+      }
+    },
+    projectChange(){
+        console.log(' this.valueProject', this.valueProject.key);
+        this.prefixCodeProject =  this.valueProject.key[0].key;
+      },
   },
 };
 </script>

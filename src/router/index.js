@@ -24,6 +24,11 @@ const routes = [
     component: () => import('@/views/family-chitieu/ChiTieuList.vue'),
   },
   {
+    path: '/chitieu-email',
+    name: 'chitieu-email',
+    component: () => import('@/views/family-chitieu/ChiTieuEmailList.vue'),
+  },
+  {
     path: '/tragop-list',
     name: 'tragop-list',
     component: () => import('@/views/family-chitieu/TraGopList.vue'),
@@ -145,6 +150,11 @@ const routes = [
     path: '/working/jira-logtime-sog',
     name: 'jira-logtime-sog',
     component: () => import('@/views/workings/jiraLogtime_SOG.vue'),
+  },
+  {
+    path: '/working/bp-data-model',
+    name: 'bp-data-model',
+    component: () => import('@/views/workings/bpDataModel.vue'),
   },
 ];
 

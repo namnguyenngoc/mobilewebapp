@@ -64,6 +64,12 @@
           :icon="icons.mdiCash"
         ></nav-menu-link>
 
+         <nav-menu-link
+          title="History Email"
+          :to="{ name: 'chitieu-email' }"
+          :icon="icons.mdiCash"
+        ></nav-menu-link>
+
       </nav-menu-group>
       <!-- <nav-menu-link
         title="Account Settings"
@@ -160,11 +166,23 @@
           :icon="icons.mdiHeart"
         ></nav-menu-link>
       </nav-menu-group>
+      <nav-menu-group
+        title="Blueprint"
+        :icon="icons.mdiFileOutline"
+        expand
+      >
+        <nav-menu-link
+          title="Data Model"
+          :to="{ name: 'bp-data-model' }"
+          :icon="icons.mdiHeart"
+        ></nav-menu-link>
+      </nav-menu-group>
        <nav-menu-link
         title="Form Layouts"
         :to="{ name: 'form-layouts' }"
         :icon="icons.mdiFormSelect"
       ></nav-menu-link>
+      
     </v-list>
     <a
       href="https://themeselection.com/products/materio-vuetify-vuejs-admin-template"

@@ -10,6 +10,7 @@ const config = {
     JR_API_JIRA: `${API_URL}:81/workingapi`,
 
   },
+  JR_PIM_URL: 'https://pim.cyberlogitec.com/jira/browse',
   wcCountDay:0,
   NAM_THONG_KE: [
     // '2020',
@@ -69,6 +70,7 @@ const config = {
     // title: '',
     // item: Object,
     DATE_TIME_FM: 'YYYY-MM-DD HH:mm:ss',
+    DATE_TIME_FM_1: 'MMM DD, HH:mm',
     DATE_TIME_FULL_FM: 'YYYY-MM-DD HH:mm:ss.SSS',
     DATE_FM: 'YYYY-MM-DD',
     CLV_PIM_ACCOUNT: {
@@ -126,6 +128,10 @@ const config = {
         pointaHour: 25,
         pointaDay: 200
       },
+    },
+    JIRA_ACCOUNT: {
+      userName: "nam.nguyenngoc",
+      pwd: "qwer@123"
     }
 }
 

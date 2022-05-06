@@ -10,7 +10,7 @@
                 <v-expansion-panel-header v-slot="{ open }">
                   <v-row>
                     <v-col cols="12" md="12" sm="12">
-                      <h3> Chi tiêu </h3>
+                      <h3> History Email</h3>
                     </v-col>
                     <v-col
                       cols="12" md="12" 
@@ -154,12 +154,10 @@
                 headerPosition: 'top',
               }"
               styleClass="vgt-table bordered"
-              @on-row-dblclick="onRowDoubleClick"
               @on-column-filter="onColumnFilter"
-              @on-cell-click="onCellClick"
               >
               <template slot="table-row" slot-scope="props">
-                <span v-if="props.column.field == 'id'">
+                <div v-if="props.column.field == 'id'">
                    <!-- && props.formattedRow['status'] == 'DN' -->
                   <v-btn
                     v-if="props.formattedRow['status'] == 'DN'"
@@ -188,10 +186,21 @@
                     Chuyển đổi {{props.formattedRow['id_tra_gop']}}
                    </span>
                   </v-btn>
-                </span>
-                <span v-else>
+                </div>
+                <div v-else-if="props.column.field == 'email_content'">
+                  <v-textarea
+                  name="input-7-1"
+                  width="200"
+                  height="100"
+                  filled
+                  light="true"
+                  :value="props.formattedRow[props.column.field]"
+                  hint="Hint text"
+                ></v-textarea>
+                </div>
+                <div v-else>
                   {{props.formattedRow[props.column.field]}}
-                </span>
+                </div>
               </template>
               </vue-good-table>
             </v-col>
@@ -301,7 +310,7 @@ export default {
             styleClass: 'class-filter', // class to be added to the parent th element
               enabled: true, // enable filter for this column
               placeholder: 'Status', // placeholder for filter input
-              filterValue: (new Date()).getDate() > 21 ? 'CSK' : 'DN', // initial populated value for this filter
+              // filterValue: (new Date()).getDate() > 21 ? 'CSK' : 'DN', // initial populated value for this filter
               filterDropdownItems: ['DN', 'CSK', 'DTCSK', 'TG', 'HT'], // dropdown (with selected values) instead of text input
               // filterFn: this.columnFilterFn, //custom filter function that
               trigger: 'enter', //only trigger on enter not on keyup 
@@ -331,7 +340,7 @@ export default {
             styleClass: 'class-filter', // class to be added to the parent th element
               enabled: true, // enable filter for this column
               placeholder: 'Kỳ Chi', // placeholder for filter input
-              filterValue: ((new Date()).getMonth() + ((new Date()).getDate() > 27 ? 2 : 1)).toString().concat((new Date()).getFullYear()), // initial populated value for this filter
+              // filterValue: ((new Date()).getMonth() + ((new Date()).getDate() > 27 ? 2 : 1)).toString().concat((new Date()).getFullYear()), // initial populated value for this filter
               filterDropdownItems: [], // dropdown (with selected values) instead of text input
               // filterFn: this.columnFilterFn, //custom filter function that
               trigger: 'enter', //only trigger on enter not on keyup 
@@ -345,6 +354,35 @@ export default {
             styleClass: 'class-filter', // class to be added to the parent th element
               enabled: true, // enable filter for this column
               placeholder: 'Nội dung', // placeholder for filter input
+              filterValue: '', // initial populated value for this filter
+              filterDropdownItems: [], // dropdown (with selected values) instead of text input
+              // filterFn: this.columnFilterFn, //custom filter function that
+              trigger: 'enter', //only trigger on enter not on keyup 
+          },
+        },
+         {
+          label: 'Email Subject',
+          field: 'email_subject',
+          filterable: true,
+          filterOptions: {
+            styleClass: 'class-filter', // class to be added to the parent th element
+              enabled: true, // enable filter for this column
+              placeholder: 'email_subject', // placeholder for filter input
+              filterValue: '', // initial populated value for this filter
+              filterDropdownItems: [], // dropdown (with selected values) instead of text input
+              // filterFn: this.columnFilterFn, //custom filter function that
+              trigger: 'enter', //only trigger on enter not on keyup 
+          },
+        },
+        {
+          label: 'Email Content',
+          field: 'email_content',
+          filterable: true,
+          width: '600px',
+          filterOptions: {
+            styleClass: 'class-filter', // class to be added to the parent th element
+              enabled: true, // enable filter for this column
+              placeholder: 'email_content', // placeholder for filter input
               filterValue: '', // initial populated value for this filter
               filterDropdownItems: [], // dropdown (with selected values) instead of text input
               // filterFn: this.columnFilterFn, //custom filter function that
@@ -543,7 +581,7 @@ export default {
       ];
       kyChi = ['ALLINONE'];
       axios
-      .get(`${config.API_FAMILY}/api/chitieus/${JSON.stringify(kyChi)}/${this.allStatusChecked}/${this.includeGop}/${this.trip.start}/${this.trip.end}`)
+      .get(`${config.API_FAMILY}/api/chitieu-email/${JSON.stringify(kyChi)}/${this.allStatusChecked}/${this.includeGop}/${this.trip.start}/${this.trip.end}`)
       .then(response => {
         // seft.hotSettings.data = response.data.data;
         let data = response.data.data;

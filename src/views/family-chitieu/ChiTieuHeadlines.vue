@@ -8,6 +8,9 @@
         <v-col cols="12" md="12" class="pa-0 ma-0 text-right">
           <v-card>
             <v-card-title class="pt-5 pb-2">
+              <v-col cols="12" md="12" class="ma-0 pt-1 pb-2 mb-0">
+                <ChiTieuThongTin ref="ChiTieuThongTin" />
+              </v-col>
               <v-col cols="12" md="12" class="ma-0 text-right pt-4 pb-0 mb-0">
                 <v-slider
                   inverse-label
@@ -43,7 +46,7 @@
         <v-col cols="12" md="12" class="pa-0 ma-0 text-right mt-5">
           <v-row
           >
-            <v-col cols="12" md="4" sm="4" >
+            <v-col cols="12" md="3" sm="3" >
               <v-menu
                 ref="startMenu"
                 :close-on-content-click="false"
@@ -85,7 +88,7 @@
               </v-menu>
             </v-col>
 
-            <v-col cols="12" md="4" sm="4">
+            <v-col cols="12" md="3" sm="3">
               <v-menu
                 ref="endMenu"
                 :close-on-content-click="false"
@@ -126,8 +129,32 @@
                 </v-date-picker>
               </v-menu>
             </v-col>
+            <v-col cols="12" md="3" sm="3">
+              <v-autocomplete
+                  ref="thongKeChiTieuSpec"
+                  v-model="thongKeChiTieuModels"
+                  :items="chiTieuList"
+                  label=""
+                  item-text="colName"
+                  item-value="colName"
+                  class="text-left"
+                  multiple
+                  return-object
+                  clearable
+              >
+              <template v-slot:no-data>
+                <v-list-item>
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      No results matching "<strong>data</strong>". Press <kbd>enter</kbd> to create a new one
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </template>
+              </v-autocomplete>
+            </v-col>
 
-            <v-col cols="12" md="4" sm="4" >
+            <v-col cols="12" md="3" sm="3" >
                <v-btn
                 color="info"
                 @click="loadingChartTongChiTieu()"
@@ -137,6 +164,57 @@
                 </v-icon>
               </v-btn>
             </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12" sm="12" md="3">
+              <v-autocomplete
+                  ref="colNameSuggestLs"
+                  v-model="thongKeChiTieuModelAdd.noi_dung"
+                  :items="colNameSuggestLs"
+                  :search-input.sync="newCondition"
+                  label="Column Name"
+                  item-text="noi_dung"
+                  item-value="noi_dung"
+                  class="text-left"
+                  return-object
+                  clearable
+                  @change="changeNoiDung()"
+              >
+                <template v-slot:no-data>
+                  <v-list-item>
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        No results matching "<strong>{{newCondition}}</strong>". Press <kbd>enter</kbd> to create a new one
+                      </v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </template>
+              </v-autocomplete>
+            </v-col>
+            <v-col cols="12" sm="12" md="7">
+              <v-text-field
+                  label="Condition"
+                  v-model="thongKeChiTieuModelAdd.condition"
+                  clearable
+                  hide-details
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" sm="12" md="2" class="mb-0 pb-0">
+               <v-btn
+                color="warning"
+                @click="addCondition()"
+              >
+                <v-icon>
+                    {{ icons.mdiPlus }}
+                </v-icon>
+              </v-btn>
+            </v-col>
+                   <!-- colName: 'ZALOPAY',
+               ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+               ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+               bank_code: ['VIB', 'HSBC', 'SC BANK'],
+               noi_dung: ["upper(noi_dung) like '%ZALO%'"],
+             other: false, -->
           </v-row>
           <apexchart type="bar" :options="chartTongChiTieu" :series="serialsTongChiTieu" ref="refTongChiTieu" ></apexchart>
         </v-col>
@@ -149,6 +227,7 @@
 import axios from 'axios'
 import config from '../../config/config'
 import moment from 'moment'
+import ChiTieuThongTin from './ChiTieuThongTin.vue'
 
 import {
   mdiMinus,
@@ -161,7 +240,7 @@ import {
 } from '@mdi/js';
 export default {
   name: 'ChiTieuGiaDinh',
-  components: {},
+  components: {ChiTieuThongTin},
   data() {
     return {
       //Chart 2 end
@@ -417,8 +496,6 @@ export default {
         }
       },
       serialsTraGop:[],
-      
-
       //tong chi tieu
       chartTongChiTieu: {
         ...this.chartTongChiTieu,
@@ -545,14 +622,81 @@ export default {
         start: moment().subtract(1, 'month').format(config.DATE_FM),
         end: moment().subtract(0, 'days').format(config.DATE_FM),
       },
+      chiTieuList: [
+        {
+            colName: 'ZALOPAY',
+            // ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+            // ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+            // bank_code: ['VIB', 'HSBC', 'SC BANK'],
+            noi_dung: ["upper(noi_dung) like '%ZALO%'"],
+            other: false,
+          },
+          {
+            colName: 'BACH HOA XANH',
+            // ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+            // ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+            // bank_code: ['VIB', 'HSBC', 'SC BANK'],
+            noi_dung: ["upper(noi_dung) like '%BACHHOA%'", "upper(noi_dung) like '%BACH HOA%'", "upper(noi_dung) like '%BHX%'"],
+            other: false,
+          },
+          {
+            colName: 'GRAB',
+            // ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+            // ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+            // bank_code: ['VIB', 'HSBC', 'SC BANK'],
+            noi_dung: ["upper(noi_dung) like '%GRAB%'"],
+            other: false,
+          },
+          {
+            colName: 'METRO',
+            // ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+            // ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+            // bank_code: ['VIB', 'HSBC', 'SC BANK'],
+            noi_dung: ["upper(noi_dung) like '%MMVN%'"],
+            other: false,
+          },
+          {
+            colName: 'SHOPEE',
+            // ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+            // ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+            // bank_code: ['VIB', 'HSBC', 'SC BANK'],
+            noi_dung: ["upper(noi_dung) like '%SHOPEE%'", "upper(noi_dung) like '%FOODY%'"],
+            other: false,
+          },
+          {
+            colName: 'LAZADA',
+            // ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+            // ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+            // bank_code: ['VIB', 'HSBC', 'SC BANK'],
+            noi_dung: ["upper(noi_dung) like '%LAZADA%'", "upper(noi_dung) like '%LAZADA%'"],
+            other: false,
+          },
+          {
+            colName: 'CHI TIEU KHÁC',
+            // ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+            // ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+            // bank_code: ['VIB', 'HSBC', 'SC BANK'],
+            noi_dung: [" upper(noi_dung) not like '%SHOPEE%'", "upper(noi_dung) not like '%ZALO%'", "upper(noi_dung) not like '%MMVN%'", "upper(noi_dung) not like '%GRAB%'",
+                  "upper(noi_dung) not like '%BACHHOA%'", "upper(noi_dung) not like '%BACH HOA%'", "upper(noi_dung) not like '%BHX%'", "upper(noi_dung) not like '%FOODY%'"],
+            other: true,
+          }
+      ],
+      thongKeChiTieuModels: null,
+      thongKeChiTieuModelAdd: {
+        colName: "NEW",
+        noi_dung: `upper(noi_dung) like '%LAZADA%'`
+      },
+      colNameSuggestLs: null,
+      newCondition: "",
     }
   },
   async created() {
-    this.getCurrentDate()
+    this.getCurrentDate();
+    await this.loadColNameSuggest();
     await this.loadingChartChiTieu();
     await this.loadingChartTraGop();
-     await this.loadingChartTongChiTieu();
-     
+    await this.loadingChartTongChiTieu();
+    
   },
   mounted() {
    
@@ -614,7 +758,20 @@ export default {
         self.be_wc_model.so_lan_i = response.data.data[0]._count
       })
     },
-    
+    async loadColNameSuggest(){
+      let param = {
+        ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+        ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+      };
+      let self = this;
+      await axios
+      .post(`${config.API_FAMILY}/api/loadColNameSuggest`, param)
+      .then(function (response) {
+        self.colNameSuggestLs = response.data.data;
+      // console.log("totalChiTieuChitietAS");
+      // console.log(self.itemsTotal)
+      })
+    },
     async loadingChartChiTieu() {
       const self = this;
       this.serialsChiTieu = [];
@@ -815,68 +972,154 @@ export default {
           })
         
       },
+      addCondition () {
+        let obj = { 
+            colName: this.thongKeChiTieuModelAdd.colName,
+            ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+            ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+            bank_code: ['VIB', 'HSBC', 'SC BANK'],
+            noi_dung: [this.thongKeChiTieuModelAdd.condition],
+            other: false,
+          }
+
+        this.chiTieuList.push(obj);
+      },
+      changeNoiDung (){
+        console.log("thongKeChiTieuModelAdd", this.thongKeChiTieuModelAdd);
+        this.thongKeChiTieuModelAdd.colName = this.thongKeChiTieuModelAdd.noi_dung.noi_dung.toUpperCase();
+        this.thongKeChiTieuModelAdd.condition = `upper(noi_dung) like '%${this.thongKeChiTieuModelAdd.colName}%'`;
+      },
       async loadingChartTongChiTieu () {
         const self = this;
+        // this.chiTieuList = [
+        //   {
+        //     colName: 'ZALOPAY',
+        //     ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+        //     ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+        //     bank_code: ['VIB', 'HSBC', 'SC BANK'],
+        //     noi_dung: ["upper(noi_dung) like '%ZALO%'"],
+        //     other: false,
+        //   },
+        //   {
+        //     colName: 'BACH HOA XANH',
+        //     ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+        //     ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+        //     bank_code: ['VIB', 'HSBC', 'SC BANK'],
+        //     noi_dung: ["upper(noi_dung) like '%BACHHOA%'", "upper(noi_dung) like '%BACH HOA%'", "upper(noi_dung) like '%BHX%'"],
+        //     other: false,
+        //   },
+        //   {
+        //     colName: 'GRAB',
+        //     ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+        //     ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+        //     bank_code: ['VIB', 'HSBC', 'SC BANK'],
+        //     noi_dung: ["upper(noi_dung) like '%GRAB%'"],
+        //     other: false,
+        //   },
+        //   {
+        //     colName: 'METRO',
+        //     ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+        //     ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+        //     bank_code: ['VIB', 'HSBC', 'SC BANK'],
+        //     noi_dung: ["upper(noi_dung) like '%MMVN%'"],
+        //     other: false,
+        //   },
+        //   {
+        //     colName: 'SHOPEE',
+        //     ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+        //     ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+        //     bank_code: ['VIB', 'HSBC', 'SC BANK'],
+        //     noi_dung: ["upper(noi_dung) like '%SHOPEE%'", "upper(noi_dung) like '%FOODY%'"],
+        //     other: false,
+        //   },
+        //   {
+        //     colName: 'LAZADA',
+        //     ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+        //     ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+        //     bank_code: ['VIB', 'HSBC', 'SC BANK'],
+        //     noi_dung: ["upper(noi_dung) like '%LAZADA%'", "upper(noi_dung) like '%LAZADA%'"],
+        //     other: false,
+        //   },
+        //   {
+        //     colName: 'CHI TIEU KHÁC',
+        //     ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+        //     ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+        //     bank_code: ['VIB', 'HSBC', 'SC BANK'],
+        //     noi_dung: [" upper(noi_dung) not like '%SHOPEE%'", "upper(noi_dung) not like '%ZALO%'", "upper(noi_dung) not like '%MMVN%'", "upper(noi_dung) not like '%GRAB%'",
+        //           "upper(noi_dung) not like '%BACHHOA%'", "upper(noi_dung) not like '%BACH HOA%'", "upper(noi_dung) not like '%BHX%'", "upper(noi_dung) not like '%FOODY%'"],
+        //     other: true,
+        //   }
+        // ],
+
+        // add ngay chi tieu to condition
+        for(let i = 0; i < this.chiTieuList.length; i ++){
+          this.chiTieuList[i].ngay_chi_start = `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`;
+          this.chiTieuList[i].ngay_chi_end = `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`;
+          this.chiTieuList[i].bank_code = ['VIB', 'HSBC', 'SC BANK'];
+        };
+
         console.log(moment(this.trip.start).format(config.DATE_FM));
-        let param =  [
-            {
-              colName: 'ZALOPAY',
-              ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
-              ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
-              bank_code: ['VIB', 'HSBC', 'SC BANK'],
-              noi_dung: ["upper(noi_dung) like '%ZALO%'"],
-              other: false,
-            },
-            {
-              colName: 'BACH HOA XANH',
-              ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
-              ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
-              bank_code: ['VIB', 'HSBC', 'SC BANK'],
-              noi_dung: ["upper(noi_dung) like '%BACHHOA%'", "upper(noi_dung) like '%BACH HOA%'", "upper(noi_dung) like '%BHX%'"],
-              other: false,
-            },
-            {
-              colName: 'GRAB',
-              ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
-              ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
-              bank_code: ['VIB', 'HSBC', 'SC BANK'],
-              noi_dung: ["upper(noi_dung) like '%GRAB%'"],
-              other: false,
-            },
-            {
-              colName: 'METRO',
-              ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
-              ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
-              bank_code: ['VIB', 'HSBC', 'SC BANK'],
-              noi_dung: ["upper(noi_dung) like '%MMVN%'"],
-              other: false,
-            },
-            {
-              colName: 'SHOPEE',
-              ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
-              ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
-              bank_code: ['VIB', 'HSBC', 'SC BANK'],
-              noi_dung: ["upper(noi_dung) like '%SHOPEE%'", "upper(noi_dung) like '%FOODY%'"],
-              other: false,
-            },
-            {
-              colName: 'LAZADA',
-              ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
-              ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
-              bank_code: ['VIB', 'HSBC', 'SC BANK'],
-              noi_dung: ["upper(noi_dung) like '%LAZADA%'", "upper(noi_dung) like '%LAZADA%'"],
-              other: false,
-            },
-            {
-              colName: 'CHI TIEU KHÁC',
-              ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
-              ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
-              bank_code: ['VIB', 'HSBC', 'SC BANK'],
-              noi_dung: [" upper(noi_dung) not like '%SHOPEE%'", "upper(noi_dung) not like '%ZALO%'", "upper(noi_dung) not like '%MMVN%'", "upper(noi_dung) not like '%GRAB%'",
-                    "upper(noi_dung) not like '%BACHHOA%'", "upper(noi_dung) not like '%BACH HOA%'", "upper(noi_dung) not like '%BHX%'", "upper(noi_dung) not like '%FOODY%'"],
-              other: true,
-            }
-          ];
+        console.log('thongKeChiTieuModels', this.thongKeChiTieuModels);
+        let param =  this.thongKeChiTieuModels;
+        // [
+        //     {
+        //       colName: 'ZALOPAY',
+        //       ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+        //       ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+        //       bank_code: ['VIB', 'HSBC', 'SC BANK'],
+        //       noi_dung: ["upper(noi_dung) like '%ZALO%'"],
+        //       other: false,
+        //     },
+        //     {
+        //       colName: 'BACH HOA XANH',
+        //       ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+        //       ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+        //       bank_code: ['VIB', 'HSBC', 'SC BANK'],
+        //       noi_dung: ["upper(noi_dung) like '%BACHHOA%'", "upper(noi_dung) like '%BACH HOA%'", "upper(noi_dung) like '%BHX%'"],
+        //       other: false,
+        //     },
+        //     {
+        //       colName: 'GRAB',
+        //       ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+        //       ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+        //       bank_code: ['VIB', 'HSBC', 'SC BANK'],
+        //       noi_dung: ["upper(noi_dung) like '%GRAB%'"],
+        //       other: false,
+        //     },
+        //     {
+        //       colName: 'METRO',
+        //       ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+        //       ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+        //       bank_code: ['VIB', 'HSBC', 'SC BANK'],
+        //       noi_dung: ["upper(noi_dung) like '%MMVN%'"],
+        //       other: false,
+        //     },
+        //     {
+        //       colName: 'SHOPEE',
+        //       ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+        //       ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+        //       bank_code: ['VIB', 'HSBC', 'SC BANK'],
+        //       noi_dung: ["upper(noi_dung) like '%SHOPEE%'", "upper(noi_dung) like '%FOODY%'"],
+        //       other: false,
+        //     },
+        //     {
+        //       colName: 'LAZADA',
+        //       ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+        //       ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+        //       bank_code: ['VIB', 'HSBC', 'SC BANK'],
+        //       noi_dung: ["upper(noi_dung) like '%LAZADA%'", "upper(noi_dung) like '%LAZADA%'"],
+        //       other: false,
+        //     },
+        //     {
+        //       colName: 'CHI TIEU KHÁC',
+        //       ngay_chi_start: `${moment(this.trip.start).format(config.DATE_FM)} 00:00:00`,
+        //       ngay_chi_end: `${moment(this.trip.end).format(config.DATE_FM)} 23:59:59`,
+        //       bank_code: ['VIB', 'HSBC', 'SC BANK'],
+        //       noi_dung: [" upper(noi_dung) not like '%SHOPEE%'", "upper(noi_dung) not like '%ZALO%'", "upper(noi_dung) not like '%MMVN%'", "upper(noi_dung) not like '%GRAB%'",
+        //             "upper(noi_dung) not like '%BACHHOA%'", "upper(noi_dung) not like '%BACH HOA%'", "upper(noi_dung) not like '%BHX%'", "upper(noi_dung) not like '%FOODY%'"],
+        //       other: true,
+        //     }
+        //   ];
 
         while (self.chartTongChiTieu.xaxis.categories.length) {
           self.chartTongChiTieu.xaxis.categories.pop();

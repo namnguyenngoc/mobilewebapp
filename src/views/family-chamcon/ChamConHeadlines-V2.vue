@@ -5,21 +5,71 @@
       <h5 color="warning">{{ tuan_tuoi }}</h5>
     </v-card-title>
     <!-- Theo doi suc khoe -->
+   
     <v-col cols="12" md="12" class="pa-2">
       <v-card>
-        <v-card-title class="pt-5 pb-2">
+        <v-card-title class="pa-0 pt-5 pb-2 ma-0">
+          <v-col cols="12" md="12" class="ma-0 pt-1 pb-2 mb-0">
+            <ChamConThongTin ref="ChamConThongTin2" />
+          </v-col>
+          <v-col cols="12">
+            <v-row>
+              <v-col cols="12" md="8" sm="8">
+                <v-btn color="info" @click="insert('CN')" class="mr-1" small>Cân Nặng </v-btn>
+                <v-btn color="warning" @click="insert('BSB_HUT')" class="mr-1" small> Tích sữa </v-btn>
+                <v-btn color="success" @click="insert('BSB_UONG')" class="mr-1" small> Uống Sữa </v-btn>
+              </v-col>
+              <v-col cols="12" md="4" sm="4" class="text-right">
+                <v-btn color="warning" @click="insert('WC')" small>
+                    WC ({{be_wc_model.ngay_thuc_hien_gan_nhat }})</v-btn>
+              </v-col>
+            </v-row>
+          </v-col>
+          <v-col cols="12">
+            <h4>Số ngày hiển thị (BÚ SỮA)</h4>
+          </v-col>
+          <v-col cols="12" md="12" class="ma-0 text-right pt-1">
+            <v-slider
+              inverse-label
+              v-model="sliderKCBS"
+              :thumb-size="maxSlide"
+              thumb-label="always"
+              :max="maxValue.value1"
+              min="1"
+              class="pt-0 pb-0 mb-0"
+              @change="showChartKCBS()"
+              :append-icon="icons.mdiMagnifyPlusOutline"
+              :prepend-icon="icons.mdiMagnifyMinusOutline"
+              @click:append="zoomInKCBS"
+              @click:prepend="zoomOutKCBS"
+            >
+              <template v-slot:thumb-label="{ value }">
+                {{ value }}
+              </template>
+            </v-slider>
+          </v-col>
+          <v-col cols="12" md="12" class="ma-0 text-right pa-0 pt-1 pb-0 mb-0">
+            <apexchart type="line" :options="chartTotalOptionsKCBS" :series="seriesTotalKCBS" ref="chartTotalOptionsKCBS" ></apexchart>
+          </v-col>
+          <v-divider class="mx-1 mb-5"></v-divider>
+          <v-col cols="12">
+            <h4>Thống kê sức khỏe định kỳ</h4>
+          </v-col>
           <v-col cols="12" md="12" class="ma-0 text-right pt-4 pb-0 mb-0">
             <v-slider
               inverse-label
-              label="Display"
               v-model="sliderSK"
-              :thumb-size="24"
+              :thumb-size="maxSlide"
               thumb-label="always"
-              max="15"
+              :max="maxValue.value1"
               min="1"
               class="pt-0 pb-0 mb-0"
               hide-details
               @change="changeSliderSK()"
+              :append-icon="icons.mdiMagnifyPlusOutline"
+              :prepend-icon="icons.mdiMagnifyMinusOutline"
+              @click:append="zoomInSK"
+              @click:prepend="zoomOutSK"
             >
               <template v-slot:thumb-label="{ value }">
                 {{ value }}
@@ -32,6 +82,7 @@
               <v-radio label="Theo tháng" value="THANG" hide-details @click="loadingChartSK()"></v-radio>
             </v-radio-group>
           </v-col> -->
+          
           <v-col cols="12" md="4" sm="4" class="pt-0 pb-0 mt-0 mb-0 text-right">
             <v-select
               v-model="chartOptionSelect"
@@ -43,6 +94,7 @@
               @change="loadingChartSK()"
             ></v-select>
           </v-col>
+          
           <v-col cols="12" md="8" sm="8" class="pt-0 pb-0 mt-0 mb-0 text-right">
             <v-select
               v-model="chartSKColSelect"
@@ -65,42 +117,67 @@
               <apexchart type="line" :options="chartSucKhoe" :series="serialsSucKhoe" ref="refChartSucKhoe" ></apexchart>
             </v-col>
           </v-row>
+
+          <!-- <v-row class="ma-2">
+            <ChamConThongTin ref="ChamConThongTin" />
+          </v-row> -->
         </v-card-text>
         <v-card-actions>
-          <v-row class="pl-2 float-end">
-            <v-btn color="info" @click="insert('CN')" class="mr-1" small>Cân Nặng </v-btn>
-            <v-btn color="warning" @click="insert('BSB_HUT')" class="mr-1" small> Tích sữa </v-btn>
-            <v-btn color="success" @click="insert('BSB_UONG')" class="mr-1" small> Uống Sữa </v-btn>
-            <v-spacer></v-spacer>
-             <v-btn color="warning" @click="insert('WC')" small>
-                WC ({{be_wc_model.ngay_thuc_hien_gan_nhat }})</v-btn>
-            <!-- <v-btn color="success" @click="insert('BSB')" class="mr-1"> Ti bình </v-btn> -->
-            <!-- <v-btn color="warning" @click="update('BSM')" class="mr-1" :disabled="true" small>
-              <v-icon dark>
-                {{ icons.mdiCircleEditOutline }}
-              </v-icon>
-            </v-btn> -->
-            <!-- <v-btn color="error" @click="update('BSM')" class="mr-1" :disabled="true" small>
-              <v-icon dark>
-                {{ icons.mdiDeleteOutline }}
-              </v-icon>
-            </v-btn> -->
-          </v-row>
+          
+          
         </v-card-actions>
       </v-card>
     </v-col>
-    <v-col cols="12" md="12" class="pa-2">
+    <v-col cols="12">
+      <h4>Thống kê sữa uống / tích</h4>
+    </v-col>
+    <!-- chart bu sua -->
+    <v-col cols="12" md="12" class="ma-0 pa-0">
       <v-card>
-        <v-card-text class="mt-0 mb-0 pt-0 pb-1">
+        <v-card-text class="ma-0 pa-0 mt-0 mb-0 pt-0 pb-1">
 
           <v-col cols="12" md="12" class="ma-0 text-right pt-1 pa-6">
             <v-slider
               inverse-label
-              label="Số ngày hiển thị"
-              v-model="sliderWC"
-              :thumb-size="30"
+              v-model="sliderBS"
+              :thumb-size="maxSlide"
               thumb-label="always"
-              max="15"
+              :max="maxValue.value1"
+              min="1"
+              class="pt-0 pb-0 mb-0"
+              hide-details
+              @change="showChartBS()"
+              :append-icon="icons.mdiMagnifyPlusOutline"
+              :prepend-icon="icons.mdiMagnifyMinusOutline"
+              @click:append="zoomInBS"
+              @click:prepend="zoomOutBS"
+            >
+              <template v-slot:thumb-label="{ value }">
+                {{ value }}
+              </template>
+            </v-slider>
+          </v-col>
+          <v-col cols="12" md="12" class="ma-0 pa-0">
+            <apexchart type="line" :options="chartTotalOptionsBS" :series="seriesTotalBS" ref="chartTotalOptionsBS" ></apexchart>
+          </v-col>
+         
+       </v-card-text>
+      </v-card>
+    </v-col>
+    <!-- Bú sữa -->
+    <v-col cols="12" md="12" class="ma-0 pa-0">
+      <v-card>
+        <v-card-text class="mt-0 mb-0 pt-0 pb-1">
+          <v-col cols="12">
+            <h4>Trạng thái WC</h4>
+          </v-col>
+          <v-col cols="12" md="12" class="ma-0 text-right pt-1 pa-6">
+            <v-slider
+              inverse-label
+              v-model="sliderWC"
+              :thumb-size="maxSlide"
+              thumb-label="always"
+              :max="maxValue.value1"
               min="1"
               class="pt-0 pb-0 mb-0"
               hide-details
@@ -111,47 +188,31 @@
               </template>
             </v-slider>
           </v-col>
-          <v-col cols="12" md="12" class="ma-0 text-right pt-1 pb-0 mb-0">
+          <v-col cols="12" md="12" class="ma-0 pa-0 text-right pt-1 pb-0 mb-0">
             <apexchart type="line" :options="chartTotalOptionsWC" :series="seriesTotalWC" ref="totalChartWC" ></apexchart>
           </v-col>
+          
        </v-card-text>
       </v-card>
     </v-col>
-    
-    <!-- chart bu sua -->
-    <v-col cols="12" md="12" class="pa-2">
-      <v-card>
-        <v-card-text class="mt-0 mb-0 pt-0 pb-1">
 
-          <v-col cols="12" md="12" class="ma-0 text-right pt-1 pa-6">
-            <v-slider
-              inverse-label
-              label="Số ngày hiển thị"
-              v-model="sliderWC"
-              :thumb-size="30"
-              thumb-label="always"
-              max="15"
-              min="1"
-              class="pt-0 pb-0 mb-0"
-              hide-details
-              @change="showChartBS()"
-            >
-              <template v-slot:thumb-label="{ value }">
-                {{ value }}
-              </template>
-            </v-slider>
-          </v-col>
-          <v-col cols="12" md="12" class="ma-0 text-right pt-1 pb-0 mb-0">
-            <apexchart type="bar" :options="chartTotalOptionsBS" :series="seriesTotalBS" ref="totalChartBS" ></apexchart>
-          </v-col>
-       </v-card-text>
-      </v-card>
-    </v-col>
-    <!-- Bú sữa -->
+    
     <v-col cols="12" md="12" class="pa-2">
       <v-card>
         <v-card-title class="pt-5 pb-2">
-          <v-col cols="5" md="5" class="pb-0 mb-0"> Sữa </v-col>
+          <v-col cols="5" md="5" class="pb-0 mb-0"> 
+            <v-autocomplete
+              label="Chọn công việc cần đếm giờ"
+              v-model="congViecModel.selected"
+              :items="congViecModel.items"
+              item-text="name"
+              item-value="code"
+              @change="updateBtn('COUNT_DOWN')"
+              return-object
+            >
+              
+            </v-autocomplete>
+          </v-col>
           <v-col cols="7" md="7" class="pa-0 ma-0 text-right">
             <circular-count-down-timer
               :circles="tibinhCountDown.circles"
@@ -277,7 +338,9 @@
                 text-align="right"
                 hide-details
               ></v-text-field>
+              
             </v-col>
+            
           </v-row>
 
           <!-- Row 2 -->
@@ -523,13 +586,54 @@
                 </v-time-picker>
               </v-dialog>
             </v-col>
-            <v-col cols="12" md="12">
+            <!-- <v-col cols="12" md="12">
               <v-text-field
                 label="Thể tích"
                 v-model="cuSuaModel.the_tich_sua_new"
                 hide-details
                 clearable
             ></v-text-field>
+            </v-col> -->
+            <v-col cols="12" md="12" class="pb-0 pt-0 mt-0 mb-0">
+              <v-slider
+                inverse-label
+                v-model="cuSuaModel.the_tich_sua_new"
+                :thumb-size="30"
+                thumb-label="always"
+                :max="250"
+                min="1"
+                class="pt-0 pb-0 mb-0"
+                :append-icon="icons.mdiMagnifyPlusOutline"
+                :prepend-icon="icons.mdiMagnifyMinusOutline"
+                @click:append="theTichSuaChange('+')"
+                @click:prepend="theTichSuaChange('-')"
+              >
+                <template v-slot:thumb-label="{ value }">
+                  {{ value }}
+                </template>
+              </v-slider>
+            </v-col>
+            <v-col cols="12" md="12">
+              <v-combobox
+                v-model="cuSuaModel.the_tich_sua_new"
+                :items="items"
+                :search-input.sync="search"
+                hide-selected
+                label="Thể tích"
+                persistent-hint
+                small-chips
+                clearable
+              >
+              <template v-slot:no-data>
+                <v-list-item>
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      No results matching "<strong>{{ search }}</strong>". Press <kbd>enter</kbd> to create a new one
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </template>
+              </v-combobox>
             </v-col>
             <!-- <v-col cols="12" md="12">
               <v-autocomplete
@@ -543,12 +647,26 @@
               </v-autocomplete>
             </v-col> -->
             <v-col cols="12" md="12">
-              <v-text-field
-                label="Ghi chú thêm"
+             <v-combobox
                 v-model="cuSuaModel.ghi_chu_them"
-                hide-details
+                :items="items_ghichu"
+                :search-input.sync="search"
+                hide-selected
+                label="Ghi chú thêm"
+                persistent-hint
+                small-chips
                 clearable
-            ></v-text-field>
+              >
+              <template v-slot:no-data>
+                <v-list-item>
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      No results matching "<strong>{{ search }}</strong>". Press <kbd>enter</kbd> to create a new one
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </template>
+              </v-combobox>
             </v-col>
           </v-card-text>
           <v-card-actions>
@@ -570,269 +688,157 @@
         </v-card>
       </v-dialog>
     </v-row>
-    
-    <!-- NGỦ-->
-    <v-col cols="12" md="12" class="pa-2">
-      <v-card>
-        <v-card-title class="pt-5 pb-2">
-          <v-col cols="5" md="5" class="pb-0 mb-0"> Ngủ </v-col>
-          <v-col cols="7" md="7" class="pa-0 ma-0 text-right">
-            <circular-count-down-timer
-              :circles="nguCountDown.circles"
-              :interval="nguCountDown.interval"
-              :main-circle-id="nguCountDown.mainCircleId || '1'"
-              :size="nguCountDown.size"
-              :container-classes="['countdown']"
-              :circle-classes="nguCountDown.circleClasses"
-              :stop-conditions="nguCountDown.stopConditions"
-              :trigger-update="nguCountDown.triggerUpdate"
-              :stroke-width="nguCountDown.strokeWidth"
-              :stroke-color="nguCountDown.strokeColor"
-              :underneath-stroke-color="nguCountDown.underneathStrokeColor"
-              :fill-color="nguCountDown.fillColor"
-              :value-font-size="nguCountDown.valueFontSize"
-              :label-font-size="nguCountDown.labelFontSize"
-              :label-position="nguCountDown.labelPosition"
-            />
-          </v-col>
-          <!-- <v-col cols="5" md="5" class="pb-0 mb-0">WC</v-col> -->
-          
-        </v-card-title>
-
-        <v-divider class="mx-4"></v-divider>
-        <v-card-text class="mt-0 mb-0 pt-3 pb-1">
-          <!-- Row 1 -->
-          <v-row class="ml-2 mr-2">
-            <v-col cols="3" md="3" class="pb-0 mb-0 ml-0 mr-0 pl-0 pr-0">
-              <v-checkbox
-                v-model="ngu_model.isEditTimeNgu"
-                label="Sửa giờ"
-                hide-details
-              ></v-checkbox>
-            </v-col>
-            <v-col cols="3" md="3" class="pb-0 mb-0 ml-0 mr-0 pl-0 pr-0">
-              <v-dialog ref="dialogNguGanNhat" v-model="ngu_model.modalNgu" :return-value.sync="ngu_model.timeNgu">
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="ngu_model.timeNgu"
-                    label="Ngủ"
-                    class="text-right"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
-                    :disabled="!ngu_model.isEditTimeNgu"
-                  ></v-text-field>
-                </template>
-                <v-time-picker v-if="ngu_model.modalNgu" v-model="ngu_model.timeNgu" full-width>
-                  <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="ngu_model.modalNgu = false"> Cancel </v-btn>
-                  <v-btn text color="primary" @click="$refs.dialogNguGanNhat.save(ngu_model.timeNgu)"> Save </v-btn>
-                </v-time-picker>
-              </v-dialog>
-            </v-col>
-            <v-col cols="3" md="3" class="pb-0 mb-0 ml-0 pl-0">
-              <v-dialog ref="dialogNguKeTiep" v-model="ngu_model.modalNgu1" :return-value.sync="ngu_model.timeNgu1">
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="ngu_model.timeNgu1"
-                    label="Thức giấc"
-                    class="text-right"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-time-picker v-if="ngu_model.modalNgu1" v-model="ngu_model.timeNgu1" full-width>
-                  <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="ngu_model.modalNgu1 = false"> Cancel </v-btn>
-                  <v-btn text color="primary" @click="$refs.dialogNguKeTiep.save(ngu_model.timeNgu1)"> Save </v-btn>
-                </v-time-picker>
-              </v-dialog>
-            </v-col>
-          </v-row>
-          
-          <!-- Row 3 -->
-
-          <!--- Row CN -->
-          <v-row>
-            <v-form
-                ref="thong_tin_suc_khoe"
-                v-model="thong_tin_suc_khoe.valid"
-                lazy-validation
+    <v-row>
+      <v-form
+          ref="thong_tin_suc_khoe"
+          v-model="thong_tin_suc_khoe.valid"
+          lazy-validation
+        >
+        <v-dialog
+          v-model="thong_tin_suc_khoe.dialogCN"
+          max-height="700"
+        >
+          <v-card>
+            <v-toolbar
+              dark
+              color="primary"
+            >
+              <v-btn
+                icon
+                @click="thong_tin_suc_khoe.dialogCN = false"
               >
-              <v-dialog
-                v-model="thong_tin_suc_khoe.dialogCN"
-                max-height="700"
+                X
+              </v-btn>
+              <v-toolbar-title>Thông tin sức khỏe</v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-toolbar-items>
+                <v-btn
+                  class="mt-3"
+                  color="success"
+                  @click="insert_thong_tin_sk('CN')"
+                >
+                  Save
+                </v-btn>
+              </v-toolbar-items>
+            </v-toolbar>
+              <v-card-text class="mt-5">
+              <v-row class="mr-5 ml-1 mb-0 pb-0">
+                <v-col cols="6" sm="6" md="6" class="mb-0 pb-0">
+                  <v-text-field
+                    label="Tổng"
+                    v-model="thong_tin_suc_khoe.can_nang_total"
+                    type="number"
+                    suffix="kg"
+                    clearable
+                    required
+                    hide-details
+                    @input="tinhCanNang()"
+                    :rules="emptyRules.can_nang"
+                  ></v-text-field>
+                  
+                </v-col>
+                <v-col cols="6" sm="6" md="6" class="mb-0 pb-0">
+                  <v-text-field
+                    label="Cân nặng của bố"
+                    v-model="thong_tin_suc_khoe.can_nang_bo"
+                    type="number"
+                    suffix="kg"
+                    clearable
+                    required
+                    hide-details
+                    @input="tinhCanNang()"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="6" class="mb-0 pb-0">
+                  <v-text-field
+                    label="Cân nặng của con"
+                    v-model="thong_tin_suc_khoe.can_nang"
+                    type="number"
+                    suffix="kg"
+                    clearable
+                    required
+                    hide-details
+                    :rules="emptyRules.can_nang"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="6" class="mb-0 pb-0">
+                  <v-text-field
+                    label="Chiều cao"
+                    v-model="thong_tin_suc_khoe.chieu_cao"
+                    type="number"
+                    suffix="cm"
+                    clearable
+                    required
+                    hide-details
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row class="mr-5 ml-1 mb-0 pb-0">
+                <v-col cols="12" sm="12" md="12" class="mb-0 pb-0">
+                  <v-text-field
+                      label="Tên con"
+                      v-model="thong_tin_suc_khoe.ho_ten"
+                      clearable
+                      readonly
+                      hide-details
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row class="mr-5 ml-1 mb-0 pb-0">
+                <v-col cols="6" sm="6" md="6" class="mb-0 pb-0">
+                  <v-text-field
+                    label="Ngày sinh"
+                    v-model="thong_tin_suc_khoe.nam_sinh"
+                    clearable
+                    hide-details
+                    readonly
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="6" sm="6" md="6" class="mb-0 pb-0">
+                  <v-text-field
+                    label="Ngày thực hiện"
+                    v-model="thong_tin_suc_khoe.ngay_bat_dau"
+                    clearable
+                    hide-details
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              
+              <!-- <v-row class="mr-5 ml-1 mb-0 pb-0">
+                <v-col cols="12" sm="12" md="12" class="mb-0 pb-0">
+                  <v-text-field
+                    label="Mục tiêu"
+                    v-model="thong_tin_suc_khoe.muc_tieu"
+                    clearable
+                    hide-details
+                    
+                  ></v-text-field>
+                </v-col>
+              </v-row> -->
+
+            </v-card-text>
+            <!-- <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="thong_tin_suc_khoe.dialogCN = false"
               >
-                <v-card>
-                  <v-toolbar
-                    dark
-                    color="primary"
-                  >
-                    <v-btn
-                      icon
-                      @click="thong_tin_suc_khoe.dialogCN = false"
-                    >
-                      X
-                    </v-btn>
-                    <v-toolbar-title>Thông tin sức khỏe</v-toolbar-title>
-                    <v-spacer></v-spacer>
-                    <v-toolbar-items>
-                      <v-btn
-                        class="mt-3"
-                        color="success"
-                        @click="insert_thong_tin_sk('CN')"
-                      >
-                        Save
-                      </v-btn>
-                    </v-toolbar-items>
-                  </v-toolbar>
-                    <v-card-text class="mt-5">
-                    <v-row class="mr-5 ml-1 mb-0 pb-0">
-                      <v-col cols="6" sm="6" md="6" class="mb-0 pb-0">
-                        <v-text-field
-                          label="Tổng"
-                          v-model="thong_tin_suc_khoe.can_nang_total"
-                          type="number"
-                          suffix="kg"
-                          clearable
-                          required
-                          hide-details
-                          @input="tinhCanNang()"
-                          :rules="emptyRules.can_nang"
-                        ></v-text-field>
-                        
-                      </v-col>
-                      <v-col cols="6" sm="6" md="6" class="mb-0 pb-0">
-                        <v-text-field
-                          label="Cân nặng của bố"
-                          v-model="thong_tin_suc_khoe.can_nang_bo"
-                          type="number"
-                          suffix="kg"
-                          clearable
-                          required
-                          hide-details
-                          @input="tinhCanNang()"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6" class="mb-0 pb-0">
-                        <v-text-field
-                          label="Cân nặng của con"
-                          v-model="thong_tin_suc_khoe.can_nang"
-                          type="number"
-                          suffix="kg"
-                          clearable
-                          required
-                          hide-details
-                          :rules="emptyRules.can_nang"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6" class="mb-0 pb-0">
-                        <v-text-field
-                          label="Chiều cao"
-                          v-model="thong_tin_suc_khoe.chieu_cao"
-                          type="number"
-                          suffix="cm"
-                          clearable
-                          required
-                          hide-details
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                    <v-row class="mr-5 ml-1 mb-0 pb-0">
-                      <v-col cols="12" sm="12" md="12" class="mb-0 pb-0">
-                        <v-text-field
-                            label="Tên con"
-                            v-model="thong_tin_suc_khoe.ho_ten"
-                            clearable
-                            readonly
-                            hide-details
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                    <v-row class="mr-5 ml-1 mb-0 pb-0">
-                      <v-col cols="6" sm="6" md="6" class="mb-0 pb-0">
-                        <v-text-field
-                          label="Ngày sinh"
-                          v-model="thong_tin_suc_khoe.nam_sinh"
-                          clearable
-                          hide-details
-                          readonly
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="6" sm="6" md="6" class="mb-0 pb-0">
-                        <v-text-field
-                          label="Ngày thực hiện"
-                          v-model="thong_tin_suc_khoe.ngay_bat_dau"
-                          clearable
-                          hide-details
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                   
-                    <!-- <v-row class="mr-5 ml-1 mb-0 pb-0">
-                      <v-col cols="12" sm="12" md="12" class="mb-0 pb-0">
-                        <v-text-field
-                          label="Mục tiêu"
-                          v-model="thong_tin_suc_khoe.muc_tieu"
-                          clearable
-                          hide-details
-                          
-                        ></v-text-field>
-                      </v-col>
-                    </v-row> -->
-
-                  </v-card-text>
-                  <!-- <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                      color="blue darken-1"
-                      text
-                      @click="thong_tin_suc_khoe.dialogCN = false"
-                    >
-                      Close
-                    </v-btn>
-                    <v-btn
-                      color="success"
-                      text
-                      @click="insert_thong_tin_sk('CN')"
-                    >
-                      Save
-                    </v-btn>
-                  </v-card-actions> -->
-                    <v-divider class="mx-4 mb-3 mt-4"></v-divider>
-                </v-card>
-              </v-dialog>
-            </v-form>
-          </v-row>
-          <!-- End -->
-        </v-card-text>
-        <v-divider class="mx-4"></v-divider>
-        <v-card-actions>
-          <v-row class="pl-2 float-end">
-            <v-spacer></v-spacer>
-            <v-btn color="info" @click="insert('NGU', 'N')" :disabled="!isNgu" class="mr-1" small>
-              <!-- <v-icon dark>
-                {{icons.mdiSleep}} 
-              </v-icon> -->
-              Ngủ
-            </v-btn>
-            <v-btn color="success" @click="update('NGU', 'T')" :disabled="isNgu" class="mr-1" small> Thức</v-btn>
-            <v-btn color="warning" @click="update('BSM')" class="mr-1" :disabled="true" small>
-              <v-icon dark>
-                {{ icons.mdiCircleEditOutline }}
-              </v-icon>
-            </v-btn>
-            <v-btn color="error" @click="update('BSM')" class="mr-1" :disabled="true" small>
-              <v-icon dark>
-                {{ icons.mdiDeleteOutline }}
-              </v-icon>
-            </v-btn>
-          </v-row>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-
+                Close
+              </v-btn>
+              <v-btn
+                color="success"
+                text
+                @click="insert_thong_tin_sk('CN')"
+              >
+                Save
+              </v-btn>
+            </v-card-actions> -->
+              <v-divider class="mx-4 mb-3 mt-4"></v-divider>
+          </v-card>
+        </v-dialog>
+      </v-form>
+    </v-row>
     <!-- CHART-->
     
     <v-col cols="12" md="12" class="pa-0 mt-2" v-show="false">
@@ -845,9 +851,9 @@
               inverse-label
               label="Ngày / lần"
               v-model="slider"
-              :thumb-size="24"
+              :thumb-size="maxSlide"
               thumb-label="always"
-              max="15"
+              :max="maxValue.value1"
               min="1"
               class="pt-0 pb-0 mb-0"
               hide-details
@@ -871,7 +877,7 @@
     </v-col>
     <v-col cols="12">
       <ChartComponent ref="chartComponent" />
-
+      
     </v-col>
   </v-row>
   
@@ -881,15 +887,21 @@ import axios from 'axios'
 import config from '../../config/config'
 import moment from 'moment'
 import ChartComponent from '../../components/ChartComponent.vue'
+import ChamConThongTin from './ChamConThongTin.vue'
 
 
-import { mdiMinus, mdiOneUp, mdiPlus, mdiDeleteOutline, mdiCircleEditOutline, mdiSleep, mdiConsoleNetworkOutline } from '@mdi/js'
+import { 
+  mdiMinus, mdiOneUp, mdiPlus, mdiDeleteOutline, mdiCircleEditOutline, mdiSleep, mdiConsoleNetworkOutline,
+  mdiMagnifyPlusOutline, 
+  mdiMagnifyMinusOutline
+} from '@mdi/js'
 import { reactive } from '@vue/composition-api'
 
 export default {
   name: 'SucKhoe',
   components: {
-    ChartComponent
+    ChartComponent,
+    ChamConThongTin
   },
   data() {
     return {
@@ -898,12 +910,16 @@ export default {
       slider: 3,
       desserts: [],
       tuan_tuoi: '',
+      items: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200],
+      items_ghichu: ["Sữa mẹ", "Sữa CT"],
       icons: {
         mdiMinus,
         mdiPlus,
         mdiDeleteOutline,
         mdiCircleEditOutline,
         mdiSleep,
+        mdiMagnifyPlusOutline, 
+        mdiMagnifyMinusOutline,
       },
       be_wc_model: {
         so_lan_i: 0,
@@ -1658,99 +1674,117 @@ export default {
         }
       ],
 
-      sliderWC: 5,
-        seriesTotalWC: [],
-        chartTotalOptionsWC: {
-          ...this.chartTotalOptionsWC,
-          ...{
-              chart: {
-                height: 350,
-                type: 'column',
-                stacked: false,
-              },
-              dataLabels: {
-                enabled: true,
-                // labels: ['Apples', 'Oranges', 'Berries', 'Grapes']
-              },
-              stroke: {
-                 curve: 'smooth'
-              },
-              title: {
-              },
-              xaxis: {
-                type: 'category',
-                categories: [],
-                tickAmount: undefined,
-                tickPlacement: 'between',
-              },
-              yaxis: [
-                  {
-                    seriesName: 'GIO',
-                    axisTicks: {
-                      show: true,
+      sliderWC: 2,
+      seriesTotalWC: [],
+      chartTotalOptionsWC: {
+        ...this.chartTotalOptionsWC,
+        ...{
+            chart: {
+              height: 350,
+              type: 'column',
+              stacked: false,
+            },
+            dataLabels: {
+              enabled: true,
+              // labels: ['Apples', 'Oranges', 'Berries', 'Grapes']
+            },
+            stroke: {
+                curve: 'smooth'
+            },
+            title: {
+            },
+            xaxis: {
+              type: 'category',
+              categories: [],
+              tickAmount: undefined,
+              tickPlacement: 'between',
+            },
+            yaxis: [
+                {
+                  seriesName: 'GIO',
+                  axisTicks: {
+                    show: true,
+                  },
+                  axisBorder: {
+                    show: true,
+                    color: '#00E396',
+                  },
+                  labels: {
+                    style: {
+                      colors: '#FF0000',
                     },
-                    axisBorder: {
-                      show: true,
+                  },
+                  title: {
+                    text: 'Giờ',
+                    style: {
                       color: '#00E396',
                     },
-                    labels: {
-                      style: {
-                        colors: '#FF0000',
-                      },
-                    },
-                    title: {
-                      text: 'Giờ',
-                      style: {
-                        color: '#00E396',
-                      },
-                    },
-                    tooltip: {
-                      enabled: true,
-                    },
-                },
-              
-              ],
-              tooltip: {
-                // fixed: {
-                //   enabled: true,
-                //   position: 'topLeft', // topRight, topLeft, bottomRight, bottomLeft
-                //   offsetY: 30,
-                //   offsetX: 60,
-                // },
-                y: {
-                  formatter: function (val) {
-                    return `${Math.floor(val / 24) } ngày ${val % 24} giờ`
                   },
+                  tooltip: {
+                    enabled: true,
+                  },
+              },
+            
+            ],
+            tooltip: {
+              // fixed: {
+              //   enabled: true,
+              //   position: 'topLeft', // topRight, topLeft, bottomRight, bottomLeft
+              //   offsetY: 30,
+              //   offsetX: 60,
+              // },
+              y: {
+                formatter: function (val) {
+                  return `${Math.floor(val / 24) } ngày ${val % 24} giờ`
                 },
               },
-              legend: {
-                horizontalAlign: 'left',
-                position: 'top',
-                offsetX: 40,
-                markers: {
-                  width: 12,
-                  height: 12,
-                  strokeWidth: 0,
-                  strokeColor: '#fff',
-                  fillColors: undefined,
-                  radius: 12,
-                  customHTML: undefined,
-                  onClick: undefined,
-                  offsetX: 0,
-                  offsetY: 0
-                },
+            },
+            legend: {
+              horizontalAlign: 'left',
+              position: 'top',
+              offsetX: 40,
+              markers: {
+                width: 12,
+                height: 12,
+                strokeWidth: 0,
+                strokeColor: '#fff',
+                fillColors: undefined,
+                radius: 12,
+                customHTML: undefined,
+                onClick: undefined,
+                offsetX: 0,
+                offsetY: 0
               },
-          },
-        }
+            },
+             dataLabels: {
+              enabled: true,
+              enabledOnSeries: [0,1,2],
+              formatter: function(value, { seriesIndex, dataPointIndex, w}) {
+                if(seriesIndex == 0){
+                  let value2 = `${Math.floor(w.globals.stackedSeriesTotals[dataPointIndex]  / 24) } ngày ${w.globals.stackedSeriesTotals[dataPointIndex]  % 24} giờ`
+                  return value2;
+                }
+              },
+            
+              offsetY: 0,
+              style: {
+                fontSize: '12px',
+                colors: ['#304758'],
+              },
+            }
+            
+        },
+      }
       ,
-      sliderBS: 5,
+      sliderBS: 3,
         seriesTotalBS: [],
         chartTotalOptionsBS: {
           ...this.chartTotalOptionsBS,
           ...{
+              // colors : ['#b84644', '#4576b5'],
               chart: {
                 height: 350,
-                type: 'bar',
+                type: 'line',
                 stacked: false,
               },
               dataLabels: {
@@ -1769,30 +1803,6 @@ export default {
                 tickPlacement: 'between',
               },
               yaxis: [
-                  {
-                    seriesName: 'THE_TICH',
-                    axisTicks: {
-                      show: true,
-                    },
-                    axisBorder: {
-                      show: true,
-                      color: '#00E396',
-                    },
-                    labels: {
-                      style: {
-                        colors: '#FF0000',
-                      },
-                    },
-                    title: {
-                      text: 'ml',
-                      style: {
-                        color: '#00E396',
-                      },
-                    },
-                    tooltip: {
-                      enabled: true,
-                    },
-                },
               
               ],
               tooltip: {
@@ -1804,7 +1814,7 @@ export default {
                 // },
                 y: {
                   formatter: function (val) {
-                    return `${Math.floor(val / 24) } ngày ${val % 24} giờ`
+                    return val
                   },
                 },
               },
@@ -1835,6 +1845,8 @@ export default {
         ngay_thuc_hien: moment(new Date()).format("YYYY-MM-DD"),
         gio_bat_dau: new Date(),
         the_tich_sua: 0,
+        the_tich_sua_new: 100,
+        ghi_chu_them: 'Sữa mẹ'
       },
       tichSuaType: [
         {
@@ -1846,21 +1858,127 @@ export default {
           name: 'Tích sữa'
         }
       ],
+      sliderKCBS: 2, //// KHOANG CACH BU SUA
+      seriesTotalKCBS: [],
+      chartTotalOptionsKCBS: {
+        ...this.chartTotalOptionsKCBS,
+        ...{
+            colors: [function({ value, seriesIndex, w }) {
+              console.log('colors', value)    ;      
+              console.log('seriesIndex', seriesIndex)    ;    
+              console.log('w', w)    ;     
+              if (value < 55) {
+                  return '#8A2BE2'
+              } else {
+                  return '#ff0000'
+              }
+            }, function({ value, seriesIndex, w }) {
+              // if (value < 111) {
+              //     return '#FFE4C4'
+              // } else {
+                  return '#00FFFF'
+              // }
+            }],
+            chart: {
+              height: 350,
+              type: 'column',
+              stacked: false,
+            },
+            dataLabels: {
+              enabled: true,
+              // labels: ['Apples', 'Oranges', 'Berries', 'Grapes']
+            },
+            stroke: {
+                curve: 'smooth'
+            },
+            title: {
+            },
+            xaxis: {
+              type: 'category',
+              categories: [],
+              tickAmount: undefined,
+              tickPlacement: 'between',
+              labels: {
+                formatter: function (value) {
+                  return `${value}`;
+                }
+              }
+            },
+            yaxis: [
+                
+            
+            ],
+            tooltip: {
+              // y: {
+              //   formatter: function (val) {
+              //     return `${Math.floor(val / 60) } giờ ${val % 60} phút`
+              //   },
+              // },
+            },
+            legend: {
+              horizontalAlign: 'left',
+              position: 'top',
+              offsetX: 40,
+              markers: {
+                width: 12,
+                height: 12,
+                strokeWidth: 0,
+                strokeColor: '#fff',
+                fillColors: undefined,
+                radius: 12,
+                customHTML: undefined,
+                onClick: undefined,
+                offsetX: 0,
+                offsetY: 0
+              },
+            },
+            dataLabels: {
+            enabled: true,
+            enabledOnSeries: [0,1,2],
+            formatter: function(value, { seriesIndex, dataPointIndex, w}) {
+              if(seriesIndex == 0){
+                let value2 = `${Math.floor(value  / 60) } giờ ${value  % 60} phút`
+                return value2;
+              }
+              return value
+            },
+           
+            offsetY: 0,
+            style: {
+              fontSize: '12px',
+              colors: ['#304758'],
+            },
+          },
+            
+        },
+      },
+      maxSlide: 30,
+      maxValue: {
+        value1: 50,
+        value2: 12
+      },
+      congViecModel: {
+        selected: {
+          name: 'BSB_UONG', 
+          code: 'BSB_UONG'
+        },
+        items: []
+      }
     }
   },
-  async created() {
+  created() {
     this.color = this.colors[Math.floor(Math.random() * this.colors.length)]
 
     this.getCurrentDate()
     this.countWorkInDay()
-    await this.updateBtn()
-    await this.loadingChart()
-    const self = this
-    await this.loadingChartSK();
-    await this.summarySuckhoeByCongViec();
-    await this.showChartWC();
-    await this.showChartBS();
-    
+    this.updateBtn('COUNT_DOWN')
+    this.loadingChart()
+    this.loadingChartSK();
+    this.summarySuckhoeByCongViec();
+    this.showChartWC();
+    this.showChartBS();
+    this.showChartKCBS();
+    this.loadDataCongViec();
      
   },
   mounted() {
@@ -1913,7 +2031,23 @@ export default {
         self.tuan_tuoi = response.data.data[0].ngay_bat_dau_group
       })
     },
-
+    async loadDataCongViec(){
+      let self = this;
+      await axios.get(`${config.API_URL}/getChamSocList`)
+      .then(response => {
+        // seft.hotSettings.data = response.data.data;
+        let data = response.data.data;
+        const unique = [...new Set(data.map(item => item.ma_cv))]; // [ 'A', 'B']
+        console.log("unique", unique);
+        for(let item of unique){
+          self.congViecModel.items.push({
+            name: item,
+            code: item
+          })
+        }
+        // self.congViecModel.items = data;
+      });
+    },
     async countWorkInDay() {
       const self = this
 
@@ -2052,7 +2186,7 @@ export default {
           congviec = {
             ma_cv: code_cv,
             gio_bat_dau: gio_bat_dau,
-            the_tich_sua: this.ti_me_model.the_tich_sua_new,
+            the_tich_sua: this.ti_me_model.the_tich_sua_new[0],
             thong_tin_them: thong_tin_them,
           }
           await axios.post(config.API_URL + '/insertChamCon', congviec).then(async function (response) {
@@ -2117,6 +2251,7 @@ export default {
           //   gio_bat_dau = moment(timeAndDate).format('YYYY-MM-DD HH:mm:ss');
           // }
           // code_cv = self.ti_me_model.loai_sua;
+          console.log("TEXXXXXXXXXXX", this.cuSuaModel);
           congviec = {
             ten_cv: this.tichSuaType.find(({ code }) => code == this.cuSuaModel.ma_cv).name,
             ma_cv: this.cuSuaModel.ma_cv,
@@ -2207,10 +2342,20 @@ export default {
       this.$forceUpdate()
       // self.nguCountDown.circles  = 3;
     },
-    async updateBtn() {
+    async updateBtn(type) {
       const self = this
-      let busua = 'BSB_BSM'
-      await axios.get(`${config.API_URL}/getGioBatDauByCV/${busua}`).then(response => {
+
+      console.log('cvModel', this.congViecModel.selected);
+      console.log('type', type);
+      
+      let busua = 'BSB_BSM';
+      if(undefined != this.congViecModel.selected){
+        busua = this.congViecModel.selected.code;
+      }
+      if(undefined == type) {
+        type = "undefined";
+      }
+      await axios.get(`${config.API_URL}/getGioBatDauByCV/${busua}/${type}`).then(response => {
         // seft.hotSettings.data = response.data.data;
         let data = response.data.data
         self.ti_me_model.ti_binh_gan_nhat = moment(data[0].gio_bat_dau).format('YYYY-MM-DD h:mm:ss')
@@ -2248,7 +2393,7 @@ export default {
       //   self.cong_viec_modle.id = data[0].id;
       //   console.log('jiraBoards2', data);
       // });
-      await axios.get(`${config.API_URL}/getGioBatDauByCV/NGU`).then(response => {
+      await axios.get(`${config.API_URL}/getGioBatDauByCV/NGU/UNDEFINED`).then(response => {
         // seft.hotSettings.data = response.data.data;
         let data = response.data.data
         self.ngu_model.ngu_gan_nhat = moment(data[0].gio_bat_dau).format('YYYY-MM-DD HH:mm:ss')
@@ -2289,7 +2434,7 @@ export default {
         size: 40,
         value: parseInt(durationTM.asDays()),
         // stepLength: -1,
-        // label: 'Giờ',
+        label: 'Ngày',
         strokeWidth: 3,
         labelFontSize: 12,
         fillColor: '#312d4b',
@@ -2305,7 +2450,7 @@ export default {
         size: 40,
         value: parseInt(durationTM.asHours() % 60),
         // stepLength: -1,
-        // label: 'Giờ',
+        label: 'Giờ',
         strokeWidth: 3,
         labelFontSize: 12,
         fillColor: '#312d4b',
@@ -2326,7 +2471,7 @@ export default {
         strokeWidth: 3,
         labelFontSize: 12,
         fillColor: '#312d4b',
-        // label: 'Phút',
+        label: 'Phút',
         strokeColor: '#4169E1',
         underneathStrokeColor: '#DCDCDC',
         dependentCircles: ['3'],
@@ -2338,7 +2483,7 @@ export default {
         size: 40,
         value: parseInt(durationTM.asSeconds) % 60,
         // stepLength: -1,
-        // label: 'Giây',
+        label: 'Giây',
         strokeWidth: 3,
         labelFontSize: 12,
         fillColor: '#312d4b',
@@ -2701,6 +2846,111 @@ export default {
       await this.loadingChartSK()
     },
 
+    //Time line bú sữa
+    async showChartKCBS(){
+      const self = this;
+      this.seriesTotalKCBS = [];
+      // this.chartTotalOptionsWC.xaxis.categories = [];
+      while (this.chartTotalOptionsKCBS.xaxis.categories.length) {
+        this.chartTotalOptionsKCBS.xaxis.categories.pop();
+      }
+      let param = {
+        ma_cv: 'BSB_UONG',
+        ho_ten: 'NGUYEN DANG KHOI',
+        limit: this.sliderKCBS,
+      }
+      await axios
+        .post(`${config.API_URL}/selectKhoangThoiGianTheoCongViec`, param)
+        .then(function (response){
+          console.log('reponse', response);
+          let arr = response.data.data;
+          let dataChart = []  ;
+          let categories = [];
+          let arr_THOI_GIAN_CHO = [];
+          let arr_THE_TICH = [];
+          let yaxisArr = [];
+          for(let i = 0; i < arr.length; i++){
+            arr_THOI_GIAN_CHO.push(Math.round(arr[i].thoi_gian_cho_hour));
+            arr_THE_TICH.push(Math.round(arr[i].the_tich_sua));
+            // dataChart.push([
+            //   Math.round(arr[i].thoi_gian_cho_hour),
+            //   Math.round(arr[i].the_tich_sua)
+            // ]);
+            // dataChart.push(arr[i].thoi_gian_cho);
+            // categories.push(arr[i].ngay_thuc_hien);
+            self.chartTotalOptionsKCBS.xaxis.categories.push(moment(arr[i].gio_bat_dau).format('YYYY-MM-DD HH:mm'));
+          }
+          
+          yaxisArr.push( {
+            seriesName: 'thoi_gian_cho_hour',
+            show: true,
+            axisTicks: {
+              show: true,
+            },
+            axisBorder: {
+              show: true,
+              color: '#00E396',
+            },
+            labels: {
+              style: {
+                colors: '#FF0000',
+              },
+            },
+            title: {
+              text: 'ml',
+              style: {
+                color: '#00E396',
+              },
+            },
+            tooltip: {
+              enabled: true,
+            },
+          });
+          self.seriesTotalKCBS.push({
+            name: 'Thời gian cách nhau',
+            type: 'line',
+            data: arr_THOI_GIAN_CHO,
+            enabled:true,
+          });
+
+          yaxisArr.push( {
+            seriesName: 'the_tich_sua',
+            opposite: true,
+            show: true,
+            axisTicks: {
+              show: true,
+            },
+            axisBorder: {
+              show: true,
+              color: '#00E396',
+            },
+            labels: {
+              style: {
+                colors: '#FF0000',
+              },
+            },
+            title: {
+              text: 'Thể tích sữa',
+              style: {
+                color: '#00E396',
+              },
+            },
+            tooltip: {
+              enabled: true,
+            },
+        });
+
+        self.seriesTotalKCBS.push({
+          name: 'Thể tích',
+          type: 'column',
+          data: arr_THE_TICH,
+          enabled:true,
+        });
+        console.log('dataChart', dataChart);
+        self.$refs.chartTotalOptionsKCBS.updateOptions({ yaxis: yaxisArr,});
+ 
+      });
+    },
     async showChartWC(){
       const self = this;
       this.seriesTotalWC = [];
@@ -2757,36 +3007,189 @@ export default {
           console.log('reponse', response);
           let arr = response.data.data;
           let dataChart = []  ;
+          let yaxisArr = [];
           let categories = [];
           let arr_BSB_UONG = [];
           let arr_BSB_HUT = [];
+
+          let arr_BSB_UONG_SO_LAN = [];
+          let arr_BSB_HUT_SO_LAN = [];
           for(let i = 0; i < arr.length; i++){
             arr_BSB_UONG.push(Math.round(arr[i].BSB_UONG));
             arr_BSB_HUT.push(Math.round(arr[i].BSB_HUT));
+
+            arr_BSB_UONG_SO_LAN.push(Math.round(arr[i].BSB_UONG_SO_LAN));
+            arr_BSB_HUT_SO_LAN.push(Math.round(arr[i].BSB_HUT_SO_LAN));
                         // dataChart.push(arr[i].thoi_gian_cho);
             // categories.push(arr[i].ngay_thuc_hien);
             // let exist = self.chartTotalOptionsBS.xaxis.categories.find(({code}) => code == arr[i].gio_bat_dau)
-            self.chartTotalOptionsBS.xaxis.categories.push(arr[i].gio_bat_dau);
+            self.chartTotalOptionsBS.xaxis.categories.push(moment(arr[i].gio_bat_dau).format('DD-MM-YYYY'));
           }
-          
-          self.seriesTotalBS.push({
-              name: 'Lượng sữa uống',
-              data: arr_BSB_UONG
-          });
-          self.seriesTotalBS.push({
-              name: 'Lượng sữa tích',
-              data: arr_BSB_HUT
-          })
+          yaxisArr.push( {
+            seriesName: 'THE_TICH',
+            show: true,
+            axisTicks: {
+              show: true,
+            },
+            axisBorder: {
+              show: true,
+              color: '#00E396',
+            },
+            labels: {
+              style: {
+                colors: '#FF0000',
+              },
+            },
+            title: {
+              text: 'ml',
+              style: {
+                color: '#00E396',
+              },
+            },
+            tooltip: {
+              enabled: true,
+            },
+        });
 
-          // self.seriesTotalBS.push({
-          //   name: 'GIO',
-          //   type: 'column',
-          //   data: dataChart,
-          //   enabled:true,
-          // });
-          console.log('dataChart', dataChart);
+        self.seriesTotalBS.push({
+            name: 'Lượng sữa uống',
+            data: arr_BSB_UONG,
+            type: "column"
+            
+        });
+
+          yaxisArr.push( {
+            seriesName: 'THE_TICH_1',
+            show: false,
+            axisTicks: {
+              show: true,
+            },
+            axisBorder: {
+              show: true,
+              color: '#00E396',
+            },
+            labels: {
+              style: {
+                colors: '#FF0000',
+              },
+            },
+            title: {
+              text: 'ml',
+              style: {
+                color: '#00E396',
+              },
+            },
+            tooltip: {
+              enabled: true,
+            },
+        });
+        self.seriesTotalBS.push({
+            name: 'Lượng sữa tích',
+            data: arr_BSB_HUT,
+            type: "column"
+        })
+
+        yaxisArr.push( {
+          seriesName: 'SO_LAN',
+          opposite: true,
+          show: true,
+          axisTicks: {
+            show: true,
+          },
+          axisBorder: {
+            show: true,
+            color: '#00E396',
+          },
+          labels: {
+            style: {
+              colors: '#FF0000',
+            },
+          },
+          title: {
+            text: 'Số lần',
+            style: {
+              color: '#00E396',
+            },
+          },
+          tooltip: {
+            enabled: true,
+          },
+      });
+
+      self.seriesTotalBS.push({
+        name: 'Số lần uống',
+        type: 'line',
+        data: arr_BSB_UONG_SO_LAN,
+        enabled:true,
+      });
+
+        yaxisArr.push( {
+          opposite: true,
+          show: false,
+          axisTicks: {
+            show: true,
+          },
+          axisBorder: {
+            show: true,
+            color: '#00E396',
+          },
+          labels: {
+            style: {
+              colors: '#FF0000',
+            },
+          },
+          title: {
+            text: 'Số lần',
+            style: {
+              color: '#00E396',
+            },
+          },
+          tooltip: {
+            enabled: true,
+          },
+        });
+        self.seriesTotalBS.push({
+          name: 'Số lần hút',
+          type: 'line',
+          data: arr_BSB_HUT_SO_LAN,
+          enabled:false,
+        });
+
+          self.$refs.chartTotalOptionsBS.updateOptions({ yaxis: yaxisArr,});
+
+        console.log('dataChart', dataChart);
           
       });
+    },
+    zoomOutKCBS () {
+      this.sliderKCBS = (this.sliderKCBS - 1) || 1;
+      this.showChartKCBS();
+    },
+    zoomInKCBS () {
+      this.sliderKCBS = (this.sliderKCBS + 1) || this.maxValue.value1;
+      this.showChartKCBS();
+    },
+    zoomOutSK () {
+      this.sliderSK = (this.sliderSK - 1) || 1;
+      this.changeSliderSK();
+    },
+    zoomInSK () {
+      this.sliderSK = (this.sliderSK + 1) || this.maxValue.value1;
+      this.changeSliderSK();
+    },
+    // zoomInSK showChartBS
+    zoomOutBS () {
+      this.sliderBS = (this.sliderBS - 1) || 1;
+      this.showChartBS();
+    },
+    zoomInBS () {
+      this.sliderBS = (this.sliderBS + 1) || this.maxValue.value1;
+      this.showChartBS();
+    },
+
+    theTichSuaChange(type){
+      this.cuSuaModel.the_tich_sua_new  = (this.cuSuaModel.the_tich_sua_new  + 5 *(type=="+" ? 1 : -1 )) || 100; 
+      
     }
   },
 }

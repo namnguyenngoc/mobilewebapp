@@ -38,6 +38,7 @@ export default {
         // this.$router.push({ name: 'Login' })
         // window.$cookies = $cookies;
         // this.$cookies.set("cookies", this.$cookies.get("authen"), '12h')
+        
         let authenObj = {
           "authen": this.$cookies.get("authen"),
         }

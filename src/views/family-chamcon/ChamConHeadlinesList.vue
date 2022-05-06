@@ -155,21 +155,22 @@ export default {
          
         },
         {
-          label: 'Giờ kế tiếp',
-          field: 'gio_ke_tiep',
+          label: 'Thể tích sữa',
+          field: 'the_tich_sua',
           filterable: false,
-          type: 'date',
+          type: 'number',
           filterOptions: {
             styleClass: 'class-filter', // class to be added to the parent th element
               enabled: true, // enable filter for this column
-              placeholder: 'Ngày', // placeholder for filter input
+              placeholder: 'Thể tích sữa', // placeholder for filter input
               filterValue: '',
               filterDropdownItems: [], // dropdown (with selected values) instead of text input
               // filterFn: this.columnFilterFn, //custom filter function that
               trigger: 'enter', //only trigger on enter not on keyup 
           },
           formatFn: function (value) {
-              return value != null ? moment(value).format(config.DATE_TIME_FM) : null
+              const val = (value / 1).toFixed(0).replace(',', '.');
+              return val;
           },
         },
         {

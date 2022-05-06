@@ -7,7 +7,7 @@
             v-model="valid"
             lazy-validation
           >
-           <v-row>
+          <v-row>
             <v-col cols="12" sm="3" md="2" class="pt-0 pb-0 mt-0 mb-0">
                 <v-select
                   v-model="valueBoard.id"

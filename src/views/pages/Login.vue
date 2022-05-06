@@ -275,7 +275,9 @@ export default {
               ) {
               // self.$router.push({ name: 'Login' });
               } else {
-                self.$router.push({ name: 'dashboard' })
+                self.$router.push({ name: 'dashboard' });
+                self.$cookies.set('userName', config.JIRA_ACCOUNT.userName, '480min');
+                self.$cookies.set('pwd', config.JIRA_ACCOUNT.pwd, '480min');
               }
 
               console.log('login:', response.data.data)

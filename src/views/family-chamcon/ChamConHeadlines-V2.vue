@@ -51,6 +51,42 @@
           <v-col cols="12" md="12" class="ma-0 text-right pa-0 pt-1 pb-0 mb-0">
             <apexchart type="line" :options="chartTotalOptionsKCBS" :series="seriesTotalKCBS" ref="chartTotalOptionsKCBS" ></apexchart>
           </v-col>
+          <v-col cols="12">
+            <h4>Thống kê sữa uống / tích</h4>
+          </v-col>
+          <!-- chart bu sua -->
+          <v-col cols="12" md="12" class="ma-0 pa-0">
+            <v-card>
+              <v-card-text class="ma-0 pa-0 mt-0 mb-0 pt-0 pb-1">
+
+                <v-col cols="12" md="12" class="ma-0 text-right pt-1 pa-6">
+                  <v-slider
+                    inverse-label
+                    v-model="sliderBS"
+                    :thumb-size="maxSlide"
+                    thumb-label="always"
+                    :max="maxValue.value1"
+                    min="1"
+                    class="pt-0 pb-0 mb-0"
+                    hide-details
+                    @change="showChartBS()"
+                    :append-icon="icons.mdiMagnifyPlusOutline"
+                    :prepend-icon="icons.mdiMagnifyMinusOutline"
+                    @click:append="zoomInBS"
+                    @click:prepend="zoomOutBS"
+                  >
+                    <template v-slot:thumb-label="{ value }">
+                      {{ value }}
+                    </template>
+                  </v-slider>
+                </v-col>
+                <v-col cols="12" md="12" class="ma-0 pa-0">
+                  <apexchart type="line" :options="chartTotalOptionsBS" :series="seriesTotalBS" ref="chartTotalOptionsBS" ></apexchart>
+                </v-col>
+              
+            </v-card-text>
+            </v-card>
+          </v-col>
           <v-divider class="mx-1 mb-5"></v-divider>
           <v-col cols="12">
             <h4>Thống kê sức khỏe định kỳ</h4>
@@ -128,42 +164,7 @@
         </v-card-actions>
       </v-card>
     </v-col>
-    <v-col cols="12">
-      <h4>Thống kê sữa uống / tích</h4>
-    </v-col>
-    <!-- chart bu sua -->
-    <v-col cols="12" md="12" class="ma-0 pa-0">
-      <v-card>
-        <v-card-text class="ma-0 pa-0 mt-0 mb-0 pt-0 pb-1">
-
-          <v-col cols="12" md="12" class="ma-0 text-right pt-1 pa-6">
-            <v-slider
-              inverse-label
-              v-model="sliderBS"
-              :thumb-size="maxSlide"
-              thumb-label="always"
-              :max="maxValue.value1"
-              min="1"
-              class="pt-0 pb-0 mb-0"
-              hide-details
-              @change="showChartBS()"
-              :append-icon="icons.mdiMagnifyPlusOutline"
-              :prepend-icon="icons.mdiMagnifyMinusOutline"
-              @click:append="zoomInBS"
-              @click:prepend="zoomOutBS"
-            >
-              <template v-slot:thumb-label="{ value }">
-                {{ value }}
-              </template>
-            </v-slider>
-          </v-col>
-          <v-col cols="12" md="12" class="ma-0 pa-0">
-            <apexchart type="line" :options="chartTotalOptionsBS" :series="seriesTotalBS" ref="chartTotalOptionsBS" ></apexchart>
-          </v-col>
-         
-       </v-card-text>
-      </v-card>
-    </v-col>
+    
     <!-- Bú sữa -->
     <v-col cols="12" md="12" class="ma-0 pa-0">
       <v-card>
@@ -2908,7 +2909,7 @@ export default {
           });
           self.seriesTotalKCBS.push({
             name: 'Thời gian cách nhau',
-            type: 'line',
+            type: 'column',
             data: arr_THOI_GIAN_CHO,
             enabled:true,
           });
@@ -2942,7 +2943,7 @@ export default {
 
         self.seriesTotalKCBS.push({
           name: 'Thể tích',
-          type: 'column',
+          type: 'line',
           data: arr_THE_TICH,
           enabled:true,
         });

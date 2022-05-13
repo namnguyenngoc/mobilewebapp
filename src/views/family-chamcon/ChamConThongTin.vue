@@ -1,10 +1,11 @@
 <template>
   <v-row class="mb-0">
     <v-col cols="12" md="6" class="pa-0 ma-0 text-right mb-1">
-      <v-icon dark>
+      <v-icon dark @click="countWorkInDay2()">
         {{ icons.mdiHistory }}
       </v-icon>
       <span>
+        <!-- <div class="counter">{{ counter }}</div> -->
        Ti bình: {{model.thoi_gian_gan_nhat_uong}} ({{model.the_tich_sua_uong }}ml / {{model.sum_uong }}ml) {{model.duration}}
       </span>
     </v-col>
@@ -23,6 +24,7 @@
   import axios from 'axios'
   import config from '../../config/config.js'
   import moment from 'moment'
+
   import { 
     mdiMinus
     , mdiOneUp
@@ -65,6 +67,7 @@
           so_lan_hut: 0,
           thoi_gian_gan_nhat_uong: new Date(),
           thoi_gian_gan_nhat_hut: new Date(),
+          duration: null,
         },
         icons: {
           mdiMinus,
@@ -74,6 +77,7 @@
           mdiSleep,
           mdiHistory
         },
+        counter: 0
       }
     },
     computed: {
@@ -84,26 +88,33 @@
     async mounted () {
     //  await this.countWorkInDay2();
     }, // end method
-     created () {
+    created () {
        this.countWorkInDay2();
+      //  let result = this.$crontab.addJob({
+      //   name: 'counter',
+      //   interval: {
+      //     seconds: '/1',
+      //   },
+      //   job: this.countWorkInDay2
+      // })
     }, // end data
     methods: {
-       async countWorkInDay2() {
-        const self = this
+        countWorkInDay2() {
+        let self = this
         
-         await axios.get(`${config.API_URL}/countWorkInDay/BSB_UONG/now()`).then(response => {
+        axios.get(`${config.API_URL}/countWorkInDay/BSB_UONG/now()`).then(response => {
           // seft.hotSettings.data = response.data.data;
 
           self.model.so_lan_uong = response.data.data[0]._count;
           self.model.thoi_gian_gan_nhat_uong =  moment(response.data.data[0].ngay_thuc_hien_gan_nhat).format(config.DATE_TIME_FM_1);
           self.model.the_tich_sua_uong = response.data.data[0].the_tich_sua;
           self.model.sum_uong = response.data.data[0]._sum;
-          const duration = moment.duration(moment(new Date()).diff(moment(response.data.data[0].ngay_thuc_hien_gan_nhat)));
-          console.log("duration", duration);
+          let duration = moment.duration(moment(new Date()).diff(moment(response.data.data[0].ngay_thuc_hien_gan_nhat)));
           self.model.duration = `${duration._data.hours}h ${duration._data.minutes}m`;
+          console.log("duration", duration);
 
         });
-        await axios.get(`${config.API_URL}/countWorkInDay/BSB_HUT/now()`).then(response => {
+        axios.get(`${config.API_URL}/countWorkInDay/BSB_HUT/now()`).then(response => {
           // seft.hotSettings.data = response.data.data;
 
           self.model.so_lan_hut = response.data.data[0]._count;
@@ -112,8 +123,12 @@
           self.model.sum_hut = response.data.data[0]._sum;
         });
 
-        console.log('countWorkInDay---cham con', this.model);
+        // console.log('countWorkInDay---cham con', this.model);
       },
+      // countUp () {
+      //   // this.counter += 1;
+      //   // console.log('COUNT', this.counter);
+      // }
       
     }, // end created
   } // End exxport default

@@ -199,7 +199,17 @@
                   hide-details
               ></v-text-field>
             </v-col>
-            <v-col cols="12" sm="12" md="2" class="mb-0 pb-0">
+            <v-col cols="12" sm="12" md="1" class="mb-0 pb-0">
+               <v-btn
+                color="warning"
+                @click="loadColNameSuggest()"
+              >
+                <v-icon>
+                    {{ icons.mdiReload }}
+                </v-icon>
+              </v-btn>
+            </v-col>
+            <v-col cols="12" sm="12" md="1" class="mb-0 pb-0">
                <v-btn
                 color="warning"
                 @click="addCondition()"

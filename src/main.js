@@ -14,6 +14,7 @@ import VueGoodTablePlugin from 'vue-good-table';
 import 'vue-good-table/dist/vue-good-table.css';
 import _ from "lodash";
 import vueCookies from 'vue-cookies';
+import VueCrontab from 'vue-crontab'
 
 
 Vue.config.productionTip = false;
@@ -23,6 +24,7 @@ Vue.use(VueEasytable);
 Vue.use(VueGoodTablePlugin);
 Vue.prototype._ = _;
 Vue.use(vueCookies);
+Vue.use(VueCrontab)
 
 new Vue({
   router,

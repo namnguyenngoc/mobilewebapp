@@ -73,6 +73,7 @@ const config = {
     DATE_TIME_FM_1: 'MMM DD, HH:mm',
     DATE_TIME_FULL_FM: 'YYYY-MM-DD HH:mm:ss.SSS',
     DATE_FM: 'YYYY-MM-DD',
+    TIME_FM: 'HH:mm',
     CLV_PIM_ACCOUNT: {
       COUNT_CONTRACT: 3,
       SML_TEAM: ['163189', 'nam.nguyenngoc', '213960', '213979', '203728', '213898'],

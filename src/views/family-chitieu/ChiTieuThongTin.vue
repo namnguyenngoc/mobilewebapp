@@ -1,7 +1,7 @@
 <template>
   <v-row class="mb-0">
     <v-col cols="12" md="12" class="pa-0 ma-0 text-right">
-      <v-icon dark>
+      <v-icon dark @click="getLastChiTieu()">
         {{ icons.mdiHistory }}
       </v-icon>
       <span>

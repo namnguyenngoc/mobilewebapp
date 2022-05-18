@@ -1,6 +1,6 @@
 <template>
   <v-row class="mb-0">
-    <v-col cols="12" md="6" class="pa-0 ma-0 text-right mb-1">
+    <v-col cols="12" md="6" sm="12" class="pa-0 ma-0 text-right mb-1">
       <v-icon dark @click="countWorkInDay2()">
         {{ icons.mdiHistory }}
       </v-icon>
@@ -9,7 +9,7 @@
        Ti bình: {{model.thoi_gian_gan_nhat_uong}} ({{model.the_tich_sua_uong }}ml / {{model.sum_uong }}ml) {{model.duration}}
       </span>
     </v-col>
-    <v-col cols="12" md="6" class="pa-0 ma-0 text-right">
+    <v-col cols="12" md="6" sm="12" class="pa-0 ma-0 text-right">
       <v-icon dark>
         {{ icons.mdiHistory }}
       </v-icon>

@@ -5,6 +5,7 @@ FROM node:12-alpine
 # make the 'app' folder the current working directory
 WORKDIR /usr/src/f_mobileapp
 
+ENV NODE_OPTIONS=--max-old-space-size=8192
 COPY package*.json ./
 # install project dependencies
 RUN npm install
@@ -17,5 +18,4 @@ EXPOSE 8792
 
 ENV HOST=0.0.0.0
 ENV PORT=8792
-
 CMD [ "npm", "run", "start" ]

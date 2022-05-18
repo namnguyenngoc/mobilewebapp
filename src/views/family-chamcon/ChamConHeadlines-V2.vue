@@ -14,14 +14,19 @@
           </v-col>
           <v-col cols="12">
             <v-row>
-              <v-col cols="12" md="8" sm="8">
+              <v-col cols="12" md="6" sm="6">
                 <v-btn color="info" @click="insert('CN')" class="mr-1" small>Cân Nặng </v-btn>
                 <v-btn color="warning" @click="insert('BSB_HUT')" class="mr-1" small> Tích sữa </v-btn>
                 <v-btn color="success" @click="insert('BSB_UONG')" class="mr-1" small> Uống Sữa </v-btn>
               </v-col>
+              <v-col cols="12" md="2" sm="2">
+                <v-btn color="info" @click="insert('THUC')" small>
+                    Hoạt động</v-btn>
+              </v-col>
               <v-col cols="12" md="4" sm="4" class="text-right">
                 <v-btn color="warning" @click="insert('WC')" small>
-                    WC ({{be_wc_model.ngay_thuc_hien_gan_nhat }})</v-btn>
+                    WC ({{be_wc_model.ngay_thuc_hien_gan_nhat }})
+                </v-btn>
               </v-col>
             </v-row>
           </v-col>
@@ -69,7 +74,7 @@
                     min="1"
                     class="pt-0 pb-0 mb-0"
                     hide-details
-                    @change="showChartBS()"
+                    @change="showChartBS(); showChartNGU()"
                     :append-icon="icons.mdiMagnifyPlusOutline"
                     :prepend-icon="icons.mdiMagnifyMinusOutline"
                     @click:append="zoomInBS"
@@ -82,6 +87,21 @@
                 </v-col>
                 <v-col cols="12" md="12" class="ma-0 pa-0">
                   <apexchart type="line" :options="chartTotalOptionsBS" :series="seriesTotalBS" ref="chartTotalOptionsBS" ></apexchart>
+                </v-col>
+              
+            </v-card-text>
+            </v-card>
+          </v-col>
+          <v-divider class="mx-1 mb-5"></v-divider>
+          <v-col cols="12">
+            <h4>THỐNG KÊ NGỦ</h4>
+          </v-col>
+          <!-- chart bu sua -->
+          <v-col cols="12" md="12" class="ma-0 pa-0">
+            <v-card>
+              <v-card-text class="ma-0 pa-0 mt-0 mb-0 pt-0 pb-1">
+                <v-col cols="12" md="12" class="ma-0 pa-0">
+                  <apexchart type="line" :options="chartTotalOptionsNGU" :series="seriesTotalNGU" ref="chartTotalOptionsNGU" ></apexchart>
                 </v-col>
               
             </v-card-text>
@@ -880,6 +900,13 @@
       <ChartComponent ref="chartComponent" />
       
     </v-col>
+    <v-col cols="12">
+    <DialogHoatDong
+      ref="dialogHoatDong"
+      :v-model="dialogHoatDong"
+      @refeshList="showChartKCBS()"
+    />
+    </v-col>
   </v-row>
   
 </template>
@@ -889,7 +916,7 @@ import config from '../../config/config'
 import moment from 'moment'
 import ChartComponent from '../../components/ChartComponent.vue'
 import ChamConThongTin from './ChamConThongTin.vue'
-
+import DialogHoatDong from './DialogHoatDong.vue'
 
 import { 
   mdiMinus, mdiOneUp, mdiPlus, mdiDeleteOutline, mdiCircleEditOutline, mdiSleep, mdiConsoleNetworkOutline,
@@ -902,7 +929,8 @@ export default {
   name: 'SucKhoe',
   components: {
     ChartComponent,
-    ChamConThongTin
+    ChamConThongTin,
+    DialogHoatDong
   },
   data() {
     return {
@@ -1839,6 +1867,85 @@ export default {
           },
         }
       ,
+      seriesTotalNGU: [],
+      chartTotalOptionsNGU: {
+        ...this.chartTotalOptionsNGU,
+        ...{
+            // colors : ['#b84644', '#4576b5'],
+            chart: {
+              height: 350,
+              type: 'line',
+              stacked: false,
+            },
+            dataLabels: {
+              enabled: true,
+              // labels: ['Apples', 'Oranges', 'Berries', 'Grapes']
+            },
+            stroke: {
+                curve: 'smooth'
+            },
+            title: {
+            },
+            xaxis: {
+              type: 'category',
+              categories: [],
+              tickAmount: undefined,
+              tickPlacement: 'between',
+            },
+            yaxis: [
+            
+            ],
+            tooltip: {
+              // fixed: {
+              //   enabled: true,
+              //   position: 'topLeft', // topRight, topLeft, bottomRight, bottomLeft
+              //   offsetY: 30,
+              //   offsetX: 60,
+              // },
+              y: {
+                formatter: function (val) {
+                  return val
+                },
+              },
+            },
+            legend: {
+              horizontalAlign: 'left',
+              position: 'top',
+              offsetX: 40,
+              markers: {
+                width: 12,
+                height: 12,
+                strokeWidth: 0,
+                strokeColor: '#fff',
+                fillColors: undefined,
+                radius: 12,
+                customHTML: undefined,
+                onClick: undefined,
+                offsetX: 0,
+                offsetY: 0
+              },
+              
+            },
+            dataLabels: {
+              enabled: true,
+              enabledOnSeries: [0,1,2],
+              formatter: function(value, { seriesIndex, dataPointIndex, w}) {
+                if(seriesIndex == 0){
+                  let value2 = `${Math.floor(value  / 60) } giờ ${value  % 60} phút`
+                  return value2;
+                }
+                return value
+              },
+            
+              offsetY: 0,
+              style: {
+                fontSize: '12px',
+                colors: ['#304758'],
+              },
+          },
+        },
+      }
+      ,
       cuSuaModel: {
         title: 'Uống sữa',
         ma_cv: 'BSB_UONG', //
@@ -1964,7 +2071,8 @@ export default {
           code: 'BSB_UONG'
         },
         items: []
-      }
+      },
+      dialogHoatDong: false,
     }
   },
   created() {
@@ -1978,6 +2086,7 @@ export default {
     this.summarySuckhoeByCongViec();
     this.showChartWC();
     this.showChartBS();
+    this.showChartNGU();
     this.showChartKCBS();
     this.loadDataCongViec();
      
@@ -2296,6 +2405,10 @@ export default {
         case 'CN':
           self.thong_tin_suc_khoe.dialogCN = true;
           self.loadingChartSK();
+          break;
+        case 'THUC':
+          console.log('THUC');
+          this.$refs.dialogHoatDong.dialog = true;
           break;
 
         default:
@@ -2860,6 +2973,7 @@ export default {
         ho_ten: 'NGUYEN DANG KHOI',
         limit: this.sliderKCBS,
       }
+      
       await axios
         .post(`${config.API_URL}/selectKhoangThoiGianTheoCongViec`, param)
         .then(function (response){
@@ -2990,6 +3104,101 @@ export default {
           
       });
     },
+    async showChartNGU(){
+      const self = this;
+      this.seriesTotalNGU = [];
+      let yaxisArr = [];
+      let arr_TOTAL = [];
+      let arr_SO_LAN = [];
+      // this.chartTotalOptionsWC.xaxis.categories = [];
+      while (this.chartTotalOptionsNGU.xaxis.categories.length) {
+        this.chartTotalOptionsNGU.xaxis.categories.pop();
+      }
+      let param2 = {
+        ma_cv: 'NGU',
+        ho_ten: 'NGUYEN DANG KHOI',
+        limit: this.sliderBS,
+      }
+      await axios
+        .post(`${config.API_URL}/selectDataChartbyCongViec`, param2)
+        .then(function (response){
+          console.log('selectDataChartbyCongViec', response.data.data);
+          let arr = response.data.data;
+          
+           for(let i = 0; i < arr.length; i++){
+            arr_TOTAL.push(Math.round(arr[i].tong_so_phut));
+            arr_SO_LAN.push(Math.round(arr[i].so_lan));
+            console.log('start_date', moment(arr[i].start_date).format('DD-MM-YYYY'));
+            self.chartTotalOptionsNGU.xaxis.categories.push(moment(arr[i].start_date).format('DD-MM-YYYY'));
+          }
+      });
+      //yaxisArr
+      yaxisArr.push( {
+        seriesName: 'PHÚT',
+        show: true,
+        axisTicks: {
+          show: true,
+        },
+        axisBorder: {
+          show: true,
+          color: '#00E396',
+        },
+        labels: {
+          style: {
+            colors: '#FF0000',
+          },
+        },
+        title: {
+          text: 'Phút',
+          style: {
+            color: '#00E396',
+          },
+        },
+        tooltip: {
+          enabled: true,
+        },
+      });
+
+      this.seriesTotalNGU.push({
+        name: 'Tổng thời gian ngủ',
+        type: 'line',
+        data: arr_TOTAL,
+        enabled:true,
+      });
+      yaxisArr.push( {
+          seriesName: 'SO_LAN',
+          opposite: true,
+          show: true,
+          axisTicks: {
+            show: true,
+          },
+          axisBorder: {
+            show: true,
+            color: '#00E396',
+          },
+          labels: {
+            style: {
+              colors: '#FF0000',
+            },
+          },
+          title: {
+            text: 'Số lần',
+            style: {
+              color: '#00E396',
+            },
+          },
+          tooltip: {
+            enabled: true,
+          },
+      });
+      this.seriesTotalNGU.push({
+        name: 'Số lần',
+        type: 'line',
+        data: arr_SO_LAN,
+        enabled:true,
+      });
+      this.$refs.chartTotalOptionsNGU.updateOptions({ yaxis: yaxisArr,});
+    },
     async showChartBS(){
       const self = this;
       this.seriesTotalBS = [];
@@ -2997,6 +3206,9 @@ export default {
       while (this.chartTotalOptionsBS.xaxis.categories.length) {
         this.chartTotalOptionsBS.xaxis.categories.pop();
       }
+      
+
+
       let param = {
         ma_cv: 'WC',
         ho_ten: 'NGUYEN DANG KHOI',
@@ -3182,15 +3394,20 @@ export default {
     zoomOutBS () {
       this.sliderBS = (this.sliderBS - 1) || 1;
       this.showChartBS();
+      this.showChartNGU();
     },
     zoomInBS () {
       this.sliderBS = (this.sliderBS + 1) || this.maxValue.value1;
       this.showChartBS();
+      this.showChartNGU();
     },
 
     theTichSuaChange(type){
       this.cuSuaModel.the_tich_sua_new  = (this.cuSuaModel.the_tich_sua_new  + 5 *(type=="+" ? 1 : -1 )) || 100; 
       
+    },
+    search() {
+
     }
   },
 }

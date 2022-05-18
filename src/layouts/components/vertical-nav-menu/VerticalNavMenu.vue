@@ -129,6 +129,11 @@
         :icon="icons.mdiHandHeart"
       ></nav-menu-link>
       <nav-menu-link
+        title="Sinh hoạt 2"
+        :to="{ name: 'chamcon-layout' }"
+        :icon="icons.mdiHandHeart"
+      ></nav-menu-link>
+      <nav-menu-link
         title="Theo dõi sức khỏe"
         :to="{ name: 'chamcon-suckhoe-list' }"
         :icon="icons.mdiHeart"

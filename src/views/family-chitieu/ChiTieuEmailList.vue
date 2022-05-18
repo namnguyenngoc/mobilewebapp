@@ -152,6 +152,7 @@
               :group-options="{
                 enabled: true,
                 headerPosition: 'top',
+               
               }"
               styleClass="vgt-table bordered"
               @on-column-filter="onColumnFilter"

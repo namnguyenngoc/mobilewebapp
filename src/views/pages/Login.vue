@@ -1,5 +1,5 @@
 <template>
-  <div class="auth-wrapper auth-v1">
+  <div class="">
     <v-form
         ref="loginForm"
         v-model="valid"
@@ -30,11 +30,11 @@
 
           <!-- title -->
           <v-card-text>
-            <p class="text-2xl font-weight-semibold text--primary mb-2" @click="setText()">
+            <p class="text-2xl font-weight-semibold text--primary mb-6" @click="setText()">
             Family
             </p>
             <p class="mb-2">
-              Please sign-in to your account
+              <ChamConThongTin ref="ChamConThongTin2" />
             </p>
           </v-card-text>
 
@@ -156,7 +156,12 @@ import { mdiFacebook, mdiTwitter, mdiGithub, mdiGoogle, mdiEyeOutline, mdiEyeOff
 import { ref } from '@vue/composition-api'
 import axios from 'axios'
 import config from '../../config/config'
+import ChamConThongTin from '../family-chamcon/ChamConThongTin.vue'
+
 export default {
+  components: {
+    ChamConThongTin
+  },
   setup() {
     const isPasswordVisible = ref(false)
     const email = ref('')

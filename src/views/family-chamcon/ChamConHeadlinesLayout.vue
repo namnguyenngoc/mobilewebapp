@@ -295,6 +295,7 @@ export default {
         status: params.row.status,
         working_time: params.row.working_time,
         the_tich_sua: params.row.the_tich_sua,
+        item_time_lbl: params.row.ma_cv == 'BSB_UONG' ? `${params.row.the_tich_sua} ml` : `${Math.floor(params.row.working_time / 60) } giờ ${(Math.floor(params.row.working_time / 60)) % 24} phút`,
         row_item: params.row,
       }
       // this.chamConTitle = `${params.row.ten_cong_viec} ngày ${moment(params.row.ngay_thuc_hien).format(config.DATE_TIME_FM)}`;
@@ -307,7 +308,9 @@ export default {
         let data = response.data.data;
         let arr = [];
         for(let i = 0; i < data.length; i ++){
-           arr.push(data[i]);
+          data[i].item_time_lbl = data[i].ma_cv == 'BSB_UONG' ? `${data[i].the_tich_sua} ml` : `${Math.floor(data[i].working_time / 60) } giờ ${(Math.floor(data[i].working_time / 60)) % 24} phút`;
+          arr.push(data[i]);
+           console.log('data[i]', data[i]);
         }
         self.chamConItem = {
           tblDataCongViec: arr

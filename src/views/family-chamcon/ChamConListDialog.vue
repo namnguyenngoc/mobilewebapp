@@ -192,7 +192,7 @@ export default {
           code: 'NP',
           name: 'Đi nhiều'
           },
-          ],
+        ],
         ghi_chu_them: '',
         response: undefined,
         duration: 0,
@@ -203,7 +203,7 @@ export default {
         {
           label: 'Giờ',
           field: 'gio_bat_dau',
-          filterable: true,
+          // filterable: true,
           type: 'date',
           formatFn: function (value) {
             return value != null ? moment(value).format(config.TIME_FM) : null
@@ -212,58 +212,57 @@ export default {
         {
           label: 'Công việc',
           field: 'ten_cv',
-          filterable: true,
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Mã CV', // placeholder for filter input
-              filterValue: '',
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
+          // filterable: true,
+          // filterOptions: {
+          //   styleClass: 'class-filter', // class to be added to the parent th element
+          //     enabled: true, // enable filter for this column
+          //     placeholder: 'Mã CV', // placeholder for filter input
+          //     filterValue: '',
+          //     filterDropdownItems: [], // dropdown (with selected values) instead of text input
+          //     // filterFn: this.columnFilterFn, //custom filter function that
+          //     trigger: 'enter', //only trigger on enter not on keyup 
+          // },
         },
         {
           label: 'Thời gian (ngủ)',
-          field: 'working_time',
-          type: 'number',
-          filterable: true,
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Tổng', // placeholder for filter input
-              filterValue: '',
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
-          formatFn: function (val) {
-            return `${Math.floor(val / 60) } giờ ${(Math.floor(val / 60)) % 24} phút`
-          },
+          field: 'item_time_lbl',
+          // filterable: true,
+          // filterOptions: {
+          //   styleClass: 'class-filter', // class to be added to the parent th element
+          //     enabled: true, // enable filter for this column
+          //     placeholder: 'Tổng', // placeholder for filter input
+          //     filterValue: '',
+          //     filterDropdownItems: [], // dropdown (with selected values) instead of text input
+          //     // filterFn: this.columnFilterFn, //custom filter function that
+          //     trigger: 'enter', //only trigger on enter not on keyup 
+          // },
+          // formatFn: function (val) {
+          //   return `${Math.floor(val / 60) } giờ ${(Math.floor(val / 60)) % 24} phút`
+          // },
         },
-        {
-          label: 'Thể tích',
-          field: 'the_tich_sua',
-          type: 'number',
-          filterable: true,
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Tổng', // placeholder for filter input
-              filterValue: '',
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
-          formatFn: function (value) {
-            return `${value} ml`
-          },
-        },
+        // {
+        //   label: 'Thể tích',
+        //   field: 'the_tich_sua',
+        //   type: 'number',
+        //   filterable: true,
+        //   filterOptions: {
+        //     styleClass: 'class-filter', // class to be added to the parent th element
+        //       enabled: true, // enable filter for this column
+        //       placeholder: 'Tổng', // placeholder for filter input
+        //       filterValue: '',
+        //       filterDropdownItems: [], // dropdown (with selected values) instead of text input
+        //       // filterFn: this.columnFilterFn, //custom filter function that
+        //       trigger: 'enter', //only trigger on enter not on keyup 
+        //   },
+        //   formatFn: function (value) {
+        //     return `${value} ml`
+        //   },
+        // },
         {
           label: 'id',
           field: 'id',
           type: 'number',
-          filterable: true,
+          // filterable: true,
           filterOptions: {
             styleClass: 'class-filter', // class to be added to the parent th element
               enabled: true, // enable filter for this column

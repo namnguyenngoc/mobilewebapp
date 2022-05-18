@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-dialog v-model="dialog" max-width="500px">
+    <v-dialog v-model="dialog" fullscreen>
       <v-card>
         <v-card-title>GHI CHÚ HOẠT ĐỘNG</v-card-title>
         <v-card-text>

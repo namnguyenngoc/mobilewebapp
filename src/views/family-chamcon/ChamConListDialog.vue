@@ -2,7 +2,8 @@
   <v-row>
     <v-dialog 
       ref="chamConListDialog"
-      v-model="dialog">
+      v-model="dialog"
+      fullscreen>
       <v-card>
         <v-card-title>Chăm con {{title}} ngày {{date}}</v-card-title>
         <v-card-text>

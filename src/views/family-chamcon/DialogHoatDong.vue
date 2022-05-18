@@ -7,7 +7,7 @@
            <v-row class="pa-4">
             <v-col cols="4" md="4">
               <v-autocomplete
-                label="Type"
+                label="Hình thức hoạt động"
                 v-model="modal.loaiHoatDong"
                 :items="loaiHoatDong"
                 item-text="name"

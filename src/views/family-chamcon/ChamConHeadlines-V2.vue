@@ -20,6 +20,10 @@
                 <v-btn color="success" @click="insert('BSB_UONG')" class="mr-1" small> Uống Sữa </v-btn>
               </v-col>
               <v-col cols="12" md="2" sm="2">
+                <v-btn color="info" @click="updateNgu()" small>
+                    {{nguThucModal.name}} ( {{nguThucModal.lastTime}})</v-btn>
+              </v-col>
+              <v-col cols="12" md="2" sm="2" v-show="false">
                 <v-btn color="info" @click="insert('THUC')" small>
                     Hoạt động</v-btn>
               </v-col>
@@ -904,6 +908,7 @@
     <DialogHoatDong
       ref="dialogHoatDong"
       :v-model="dialogHoatDong"
+      :item = "nguThucModal"
       @refeshList="showChartKCBS()"
     />
     </v-col>
@@ -2073,11 +2078,23 @@ export default {
         items: []
       },
       dialogHoatDong: false,
+      nguThucModal: {
+        name: 'Ngủ',
+        code: 'T',
+        lastTime: moment(new Date()).format(config.DATE_TIME_FM)
+      }
+        
     }
   },
   created() {
     this.color = this.colors[Math.floor(Math.random() * this.colors.length)]
-
+    let result = this.$crontab.addJob({
+      name: 'loadNguThuc',
+      interval: {
+        seconds: '/1000',
+      },
+      job: this.loadNguThuc
+    });
     this.getCurrentDate()
     this.countWorkInDay()
     this.updateBtn('COUNT_DOWN')
@@ -2089,6 +2106,9 @@ export default {
     this.showChartNGU();
     this.showChartKCBS();
     this.loadDataCongViec();
+    // this.loadNguThuc();
+
+    
      
   },
   mounted() {
@@ -3408,7 +3428,44 @@ export default {
     },
     search() {
 
-    }
+    },
+
+    async loadNguThuc(){
+      let self = this;
+      console.log('cron');
+      await axios.get(`${config.API_URL}/getGioBatDauByCV/NGU/COUNT_DOWN`).then(response => {
+        // seft.hotSettings.data = response.data.data;
+        let data = response.data.data;
+        // var durationTM = moment.duration(moment(gio_bat_dau).diff(moment(data[0].gio_bat_dau)));
+        //  let duration = moment.duration(moment(new Date()).diff(moment(response.data.data[0].ngay_thuc_hien_gan_nhat)));
+        console.log('data_THUC', data);
+        console.log('data.gio_bat_dau', moment(data[0].gio_bat_dau));
+        // console.log('gio_bat_dau', moment(gio_bat_dau));
+        // console.log('durationTM', durationTM);
+        // console.log('durationTM', durationTM._milliseconds);
+        self.nguThucModal.name = data[0].status  == 'N' ? 'Thức dậy' : 'Ngủ';
+        self.nguThucModal.ten_cv = data[0].ten_cv;
+        self.nguThucModal.data = data[0];
+        self.nguThucModal.code = data[0].status;
+        self.nguThucModal.lastTime = moment(data[0].gio_bat_dau).format(config.DATE_TIME_FM);
+        
+        // self.modal.duration = Math.floor((durationTM._milliseconds / (1000 * 60)));
+      })
+    },
+    async updateNgu() {
+      console.log('Current status:', this.nguThucModal);
+      if(this.nguThucModal.code  == 'N'){
+          // this.$refs.dialogHoatDong.modal.duration = 100000;
+          this.$refs.dialogHoatDong.modal.loaiHoatDong = {
+            name: 'Thức',
+            code: 'THUC',
+          };
+          var durationTM = moment.duration(moment(new Date()).diff(moment(this.nguThucModal.data.gio_bat_dau)));
+          //  let duration = moment.duration(moment(new Date()).diff(moment(response.data.data[0].ngay_thuc_hien_gan_nhat)));
+          this.$refs.dialogHoatDong.modal.duration = Math.floor((durationTM._milliseconds / (1000 * 60)));
+      }
+      this.$refs.dialogHoatDong.dialog = true;
+    },
   },
 }
 </script>

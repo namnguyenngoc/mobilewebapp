@@ -78,7 +78,12 @@
             </v-dialog>
           </v-col>
           <v-col cols="12" md="12">
-            <v-text-field label="Tổng thời gian" v-model="modal.duration" hide-details clearable></v-text-field>
+            <v-text-field 
+              label="Tổng thời gian" 
+              v-model="modal.duration" 
+              :disabled="!((typeof modal.loaiHoatDong === 'object' && modal.loaiHoatDong.code == 'THUC') ||  modal.loaiHoatDong == 'THUC')"
+              hide-details 
+              clearable></v-text-field>
           </v-col>
           <v-col cols="12" md="12">
             <v-text-field label="Ghi chú thêm" v-model="modal.ghi_chu_them" hide-details clearable></v-text-field>
@@ -223,6 +228,7 @@ export default {
   created() {
     // this.countWorkInDay2();
     this.getGioBatDau();
+    console.log('modal.loaiHoatDong', this.modal.loaiHoatDong);
   }, // end data
   methods: {
     countWorkInDay2() {
@@ -255,7 +261,8 @@ export default {
       // console.log('countWorkInDay---cham con', this.model);
     },
     async getGioBatDau(){
-      
+      console.log('modal.loaiHoatDong', this.modal.loaiHoatDong);
+      this.modal.duration = 0;
       let loaiCongViec = this.modal.loaiHoatDong;
       let paramLoaiCV = typeof loaiCongViec === 'object' ? loaiCongViec.code.toString() : loaiCongViec;
       console.log('loaiCongViec', this.modal);

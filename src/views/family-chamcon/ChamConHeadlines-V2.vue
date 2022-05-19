@@ -21,7 +21,7 @@
               </v-col>
               <v-col cols="12" md="2" sm="2">
                 <v-btn color="info" @click="updateNgu()" small>
-                    {{nguThucModal.name}} ( {{nguThucModal.lastTime}})</v-btn>
+                    {{nguThucModal.name}} ({{nguThucModal.status=='N' ? 'Thức lúc:' : 'Ngủ lúc:' }} {{nguThucModal.lastTime}})</v-btn>
               </v-col>
               <v-col cols="12" md="2" sm="2" v-show="false">
                 <v-btn color="info" @click="insert('THUC')" small>
@@ -2088,13 +2088,7 @@ export default {
   },
   created() {
     this.color = this.colors[Math.floor(Math.random() * this.colors.length)]
-    let result = this.$crontab.addJob({
-      name: 'loadNguThuc',
-      interval: {
-        seconds: '/1000',
-      },
-      job: this.loadNguThuc
-    });
+    
     this.getCurrentDate()
     this.countWorkInDay()
     this.updateBtn('COUNT_DOWN')
@@ -2106,9 +2100,15 @@ export default {
     this.showChartNGU();
     this.showChartKCBS();
     this.loadDataCongViec();
-    // this.loadNguThuc();
+    this.loadNguThuc();
 
-    
+    let result = this.$crontab.addJob({
+      name: 'loadNguThuc',
+      interval: {
+        seconds: '/1000',
+      },
+      job: this.loadNguThuc
+    });
      
   },
   mounted() {
@@ -3454,6 +3454,7 @@ export default {
     },
     async updateNgu() {
       console.log('Current status:', this.nguThucModal);
+      this.loadNguThuc();
       if(this.nguThucModal.code  == 'N'){
           // this.$refs.dialogHoatDong.modal.duration = 100000;
           this.$refs.dialogHoatDong.modal.loaiHoatDong = {

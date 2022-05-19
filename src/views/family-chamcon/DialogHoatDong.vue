@@ -56,7 +56,7 @@
               <v-date-picker v-model="modal.ngay_thuc_hien" no-title scrollable>
                 <v-spacer></v-spacer>
                 <v-btn text color="primary" @click="modal.menuDateTime = false"> Cancel </v-btn>
-                <v-btn text color="primary" @click="$refs.menuDateTime.save(modal.ngay_thuc_hien)"> OK </v-btn>
+                <v-btn text color="primary" @click="$refs.menuDateTime.save(modal.ngay_thuc_hien);getGioBatDau()"> OK </v-btn>
               </v-date-picker>
             </v-menu>
             <v-dialog ref="dialogTimeWC" v-model="modalDateTime" :return-value.sync="time" persistent width="290px">
@@ -73,7 +73,7 @@
               <v-time-picker v-if="modalDateTime" v-model="modal.gio_thuc_hien" full-width>
                 <v-spacer></v-spacer>
                 <v-btn text color="primary" @click="modalDateTime = false"> Cancel </v-btn>
-                <v-btn text color="primary" @click="$refs.dialogTimeWC.save(time)"> OK </v-btn>
+                <v-btn text color="primary" @click="$refs.dialogTimeWC.save(time);getGioBatDau()"> OK </v-btn>
               </v-time-picker>
             </v-dialog>
           </v-col>

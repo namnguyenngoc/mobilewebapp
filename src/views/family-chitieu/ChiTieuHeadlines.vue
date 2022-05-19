@@ -705,7 +705,7 @@ export default {
     await this.loadColNameSuggest();
     await this.loadingChartChiTieu();
     await this.loadingChartTraGop();
-    await this.loadingChartTongChiTieu();
+    // await this.loadingChartTongChiTieu();
     
   },
   mounted() {

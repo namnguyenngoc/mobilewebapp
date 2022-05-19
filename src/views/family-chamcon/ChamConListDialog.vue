@@ -57,17 +57,25 @@
               styleClass="vgt-table bordered"
               :columns="colCongViec"
               :rows="item.tblDataCongViec"
-              :paginate="true"
               :lineNumbers="true"
               :search-options="{
                 enabled: true,
                 placeholder: 'Search this table',
               }"
-              :fixed-header="true"
+              @on-cell-click="onRowDoubleClick"
               max-height="700px"
               
             >
             </vue-good-table>
+          </v-col>
+           <v-col cols="12">
+            <chamConDetail
+              ref="chamConDetail2"
+              :title="chamConTitle"
+              :item="chamConItem"
+              :v-model="chamConDetaillDialog"
+              @refeshList="loadData()"
+            />
           </v-col>
         </v-card-text>
         <v-card-actions>
@@ -83,6 +91,7 @@
 import axios from 'axios'
 import config from '../../config/config.js'
 import moment from 'moment'
+import chamConDetail from "./ChamConDetail"
 
 import {
   mdiMinus,
@@ -97,8 +106,9 @@ import {
 
 export default {
   layout: 'chamConDetail',
-  // inheritAttrs: false,
-  components: {},
+  components: {
+    chamConDetail
+  },
   props: {
     title: {
       type: String,
@@ -205,6 +215,7 @@ export default {
           field: 'gio_bat_dau',
           // filterable: true,
           type: 'date',
+          sortable: false,
           formatFn: function (value) {
             return value != null ? moment(value).format(config.TIME_FM) : null
           },
@@ -212,71 +223,35 @@ export default {
         {
           label: 'Công việc',
           field: 'ten_cv',
-          // filterable: true,
-          // filterOptions: {
-          //   styleClass: 'class-filter', // class to be added to the parent th element
-          //     enabled: true, // enable filter for this column
-          //     placeholder: 'Mã CV', // placeholder for filter input
-          //     filterValue: '',
-          //     filterDropdownItems: [], // dropdown (with selected values) instead of text input
-          //     // filterFn: this.columnFilterFn, //custom filter function that
-          //     trigger: 'enter', //only trigger on enter not on keyup 
-          // },
+           sortable: false,
         },
         {
           label: 'Thời gian (ngủ)',
           field: 'item_time_lbl',
-          // filterable: true,
-          // filterOptions: {
-          //   styleClass: 'class-filter', // class to be added to the parent th element
-          //     enabled: true, // enable filter for this column
-          //     placeholder: 'Tổng', // placeholder for filter input
-          //     filterValue: '',
-          //     filterDropdownItems: [], // dropdown (with selected values) instead of text input
-          //     // filterFn: this.columnFilterFn, //custom filter function that
-          //     trigger: 'enter', //only trigger on enter not on keyup 
-          // },
-          // formatFn: function (val) {
-          //   return `${Math.floor(val / 60) } giờ ${(Math.floor(val / 60)) % 24} phút`
-          // },
+          sortable: false,
+          thClass: 'text-right',
         },
-        // {
-        //   label: 'Thể tích',
-        //   field: 'the_tich_sua',
-        //   type: 'number',
-        //   filterable: true,
-        //   filterOptions: {
-        //     styleClass: 'class-filter', // class to be added to the parent th element
-        //       enabled: true, // enable filter for this column
-        //       placeholder: 'Tổng', // placeholder for filter input
-        //       filterValue: '',
-        //       filterDropdownItems: [], // dropdown (with selected values) instead of text input
-        //       // filterFn: this.columnFilterFn, //custom filter function that
-        //       trigger: 'enter', //only trigger on enter not on keyup 
-        //   },
-        //   formatFn: function (value) {
-        //     return `${value} ml`
-        //   },
-        // },
+        {
+          label: 'Ghi chú',
+          field: 'thong_tin_them',
+        },
+        
+      
         {
           label: 'id',
           field: 'id',
           type: 'number',
-          // filterable: true,
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Tổng', // placeholder for filter input
-              filterValue: '',
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
+          sortable: false,
+          hidden: true,
+         
         },
         
       ],
       tblDataCongViec: [
       ],
+      chamConTitle: '',
+      chamConItem: {},
+      chamConDetaillDialog: false,
     }
   },
   computed: {
@@ -364,7 +339,42 @@ export default {
 
        console.log(' this.tblDataCongViec',  this.tblDataCongViec);
     },
-    time(){}
+    time(){},
+    onRowDoubleClick(params) {
+    // params.row - row object 
+    // params.pageIndex - index of this row on the current page.
+    // params.selected - if selection is enabled this argument 
+    // indicates selected or not
+    // params.event - click event
+
+      console.log('row', params.row);
+      this.chamConTitle = `${params.row.ten_cong_viec} ngày ${moment(params.row.ngay_thuc_hien).format(config.DATE_TIME_FM)}`;
+      this.chamConItem = {
+       	id: params.row.id,
+        ho_ten: params.row.ho_ten,
+        nam_sinh: params.row.nam_sinh,
+        ma_cv: params.row.ma_cv,
+        ghi_chu: params.row.ghi_chu,
+        ngay_thuc_hien:  moment(params.row.ngay_thuc_hien).format(config.DATE_TIME_FULL_FM),
+        gio_bat_dau:  moment(params.row.gio_bat_dau).format(config.DATE_TIME_FULL_FM),
+        gio_ke_tiep:  moment(params.row.gio_ke_tiep).format(config.DATE_TIME_FULL_FM),
+        thong_tin_them: params.row.thong_tin_them,
+        status: params.row.status,
+        working_time: params.row.working_time,
+        can_nang: params.row.can_nang,
+        chieu_cao: params.row.chieu_cao,
+        tinh_trang_suc_khoe: params.row.tinh_trang_suc_khoe,
+        updated_date: params.row.updated_date,
+        create_date: params.row.create_date,
+        the_tich_sua: params.row.the_tich_sua,
+        ten_cong_viec: params.row.ten_cong_viec,
+        vgt_id: params.row.vgt_id,
+        originalIndex:params.row.originalIndex 
+      }
+//  moment.tz(new Date(), tzString).format("YYYY-MM-DD HH:mm:ss"),
+      this.$refs.chamConDetail2.dialog = true;
+    }
+    
   }, // end created
 } // End exxport default
 </script>

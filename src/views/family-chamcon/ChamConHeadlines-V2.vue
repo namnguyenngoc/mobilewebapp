@@ -2710,9 +2710,9 @@ export default {
 
     async loadingChart() {
       const self = this;
-      self.$refs.totalChart.updateOptions({ xaxis: {
-        categories: [],
-      },})
+      // self.$refs.totalChart.updateOptions({ xaxis: {
+      //   categories: [],
+      // },})
       self.seriesTotal = [];
 
       // self.series = [];

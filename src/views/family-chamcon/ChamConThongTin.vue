@@ -1,15 +1,14 @@
 <template>
   <v-row class="mb-0">
     <v-col cols="12" md="6" sm="12" class="pa-0 ma-0 text-right mb-1">
-      <v-icon dark @click="countWorkInDay2()">
-        {{ icons.mdiHistory }}
-      </v-icon>
-      <span>
-        <!-- <div class="counter">{{ counter }}</div> -->
-       Ti bình: {{model.thoi_gian_gan_nhat_uong}} ({{model.the_tich_sua_uong }}ml / {{model.sum_uong }}ml) {{model.duration}}
-      </span>
+       <v-icon dark @click="countWorkInDay2()">
+          {{ icons.mdiHistory }}
+        </v-icon>
+        <span style="word-break: break-word;" @click="loadListDetail()">
+          Ti bình: {{model.thoi_gian_gan_nhat_uong}} ({{model.the_tich_sua_uong }}ml / {{model.sum_uong }}ml) {{model.duration}}
+        </span>
     </v-col>
-    <v-col cols="12" md="6" sm="12" class="pa-0 ma-0 text-right">
+    <v-col cols="12" md="6" sm="12" class="pa-0 ma-0 text-right" v-show="false">
       <v-icon dark>
         {{ icons.mdiHistory }}
       </v-icon>
@@ -17,6 +16,19 @@
        Tích sữa: {{model.thoi_gian_gan_nhat_hut}} ({{model.the_tich_sua_hut}} ml / {{model.sum_hut }}ml)
       </span>
     </v-col>
+
+     <v-col cols="12">
+      <ChamConListDialog
+        ref="chamConListDialog"
+        :title="lstDetail.title"
+        :date="lstDetail.date"
+        :item="lstDetail.item"
+        :v-model="lstDetail.vmodel"
+        @refeshList="showChartKCBS()"
+      />
+    </v-col>
+   
+
   </v-row>
 </template>
 
@@ -24,7 +36,7 @@
   import axios from 'axios'
   import config from '../../config/config.js'
   import moment from 'moment'
-
+  import ChamConListDialog from './ChamConListDialog.vue'
   import { 
     mdiMinus
     , mdiOneUp
@@ -34,12 +46,16 @@
     , mdiSleep
     , mdiConsoleNetworkOutline
     , mdiHistory
+    , mdiListStatus
+    , mdiViewList
   } from '@mdi/js'
 
   export default {
     layout: 'chamConDetail',
     // inheritAttrs: false,
     components: {
+      ChamConListDialog,
+      
     },
     props: {
       title: {
@@ -75,9 +91,17 @@
           mdiDeleteOutline,
           mdiCircleEditOutline,
           mdiSleep,
-          mdiHistory
+          mdiHistory,
+          mdiListStatus,
+          mdiViewList
         },
-        counter: 0
+        counter: 0,
+        lstDetail: {
+          title:"DETAIL",
+          date: moment(new Date()).format(config.DATE_FM),
+          item: {},
+          vmodel:true,
+        },
       }
     },
     computed: {
@@ -129,6 +153,35 @@
       //   // this.counter += 1;
       //   // console.log('COUNT', this.counter);
       // }
+      async loadListDetail() {
+        console.log('loadListDetail');
+        let self = this;
+        await axios
+          .get(`${config.API_URL}/selectCongViecByDate/'BSB_UONG'/${moment(this.lstDetail.date).format(config.DATE_FM)}`)
+          .then(response => {
+            // seft.hotSettings.data = response.data.data;
+            let data = response.data.data;
+            let arr = [];
+            for(let i = 0; i < data.length; i ++){
+              data[i].item_time_lbl = data[i].ma_cv == 'BSB_UONG' ? `${data[i].the_tich_sua} ml` : `${Math.floor(data[i].working_time / 60) } giờ ${(Math.floor(data[i].working_time / 60)) % 24} phút`;
+              arr.push(data[i]);
+              console.log('data[i]', data[i]);
+            }
+            self.lstDetail = {
+              title: 'Uống sữa',
+              date: moment(new Date()).format(config.DATE_FM),
+              item: {
+                tblDataCongViec: arr
+              }
+            }
+            self.$refs.chamConListDialog.dialog = true;
+            
+            // self.tblDataCongViec = data;
+            console.log('item-data', data);
+          });
+          
+        this.$refs.chamConListDialog.dialog = true;
+      },
       
     }, // end created
   } // End exxport default

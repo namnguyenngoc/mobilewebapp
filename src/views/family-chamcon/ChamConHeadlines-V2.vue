@@ -20,8 +20,9 @@
                 <v-btn color="success" @click="insert('BSB_UONG')" class="mr-1" small> Uống Sữa </v-btn>
               </v-col>
               <v-col cols="12" md="2" sm="2">
-                <v-btn color="info" @click="updateNgu()" small>
-                    {{nguThucModal.name}} ({{nguThucModal.status=='N' ? 'Thức lúc:' : 'Ngủ lúc:' }} {{nguThucModal.lastTime}})</v-btn>
+                
+                <v-btn :color="nguThucModal.code=='N' ? 'info' : 'warning'" @click="updateNgu('OPEN')" small>
+                  {{nguThucModal.name}} ({{nguThucModal.code=='N' ?  'Ngủ lúc:' : 'Thức lúc:' }} {{nguThucModal.lastTime}})</v-btn>
               </v-col>
               <v-col cols="12" md="2" sm="2" v-show="false">
                 <v-btn color="info" @click="insert('THUC')" small>
@@ -30,6 +31,11 @@
               <v-col cols="12" md="4" sm="4" class="text-right">
                 <v-btn color="warning" @click="insert('WC')" small>
                     WC ({{be_wc_model.ngay_thuc_hien_gan_nhat }})
+                </v-btn>
+              </v-col>
+              <v-col cols="12" md="12" sm="12" class="text-right">
+                <v-btn color="warning" @click="updateNgu()" small>
+                    Refesh button
                 </v-btn>
               </v-col>
             </v-row>
@@ -909,7 +915,7 @@
       ref="dialogHoatDong"
       :v-model="dialogHoatDong"
       :item = "nguThucModal"
-      @refeshList="showChartKCBS()"
+      @updateStatusBtn="updateNgu()"
     />
     </v-col>
   </v-row>
@@ -926,7 +932,8 @@ import DialogHoatDong from './DialogHoatDong.vue'
 import { 
   mdiMinus, mdiOneUp, mdiPlus, mdiDeleteOutline, mdiCircleEditOutline, mdiSleep, mdiConsoleNetworkOutline,
   mdiMagnifyPlusOutline, 
-  mdiMagnifyMinusOutline
+  mdiMagnifyMinusOutline,
+  mdiHistory
 } from '@mdi/js'
 import { reactive } from '@vue/composition-api'
 
@@ -954,6 +961,7 @@ export default {
         mdiSleep,
         mdiMagnifyPlusOutline, 
         mdiMagnifyMinusOutline,
+        mdiHistory
       },
       be_wc_model: {
         so_lan_i: 0,
@@ -3452,7 +3460,7 @@ export default {
         // self.modal.duration = Math.floor((durationTM._milliseconds / (1000 * 60)));
       })
     },
-    async updateNgu() {
+    async updateNgu(type) {
       console.log('Current status:', this.nguThucModal);
       this.loadNguThuc();
       if(this.nguThucModal.code  == 'N'){
@@ -3465,7 +3473,10 @@ export default {
           //  let duration = moment.duration(moment(new Date()).diff(moment(response.data.data[0].ngay_thuc_hien_gan_nhat)));
           this.$refs.dialogHoatDong.modal.duration = Math.floor((durationTM._milliseconds / (1000 * 60)));
       }
-      this.$refs.dialogHoatDong.dialog = true;
+      if('OPEN' == type){
+        this.$refs.dialogHoatDong.dialog = true;
+
+      }
     },
   },
 }

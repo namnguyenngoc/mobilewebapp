@@ -1,12 +1,21 @@
 <template>
-  <v-row class="mb-0 pb-0">
-    <v-col cols="12" md="6" sm="12" class="pa-0 ma-0 text-right mb-1">
-       <v-icon dark @click="countWorkInDay2()">
-          {{ icons.mdiHistory }}
-        </v-icon>
-        <span style="word-break: break-word;" @click="loadListDetail()">
-          Ti: {{model.thoi_gian_gan_nhat_uong}} ({{model.the_tich_sua_uong }}ml / {{model.sum_uong }}ml) {{model.duration}}
-        </span>
+  <v-row class="mb-0 pb-0 text-center">
+    <v-col cols="12" md="6" sm="12" class="pa-0 ma-0 text-left mb-1">
+      <v-btn-toggle class="">
+        <v-btn color="success" @click="countWorkInDay2()" small class="pl-1 pr-1"> 
+          <v-icon dark class="pl-1 pr-1">
+            {{ icons.mdiHistory }}
+          </v-icon>
+        </v-btn>
+        <v-btn color="info" small class="pl-1 pr-1">
+          Ti [{{model.thoi_gian_gan_nhat_uong}}] [{{model.the_tich_sua_uong }} / {{model.sum_uong }}ml] [{{model.duration}}]
+        </v-btn>
+        <v-btn color="success" @click="loadListDetail()" small class="pl-1 pr-1"> 
+          <v-icon dark>
+            {{ icons.mdiFormatListBulleted }}
+          </v-icon>
+        </v-btn>
+      </v-btn-toggle>
     </v-col>
     <v-col cols="12" md="6" sm="12" class="pa-0 ma-0 text-right hidden" v-show="false">
       <v-icon dark>
@@ -48,6 +57,7 @@
     , mdiHistory
     , mdiListStatus
     , mdiViewList
+    , mdiFormatListBulleted
   } from '@mdi/js'
 
   export default {
@@ -93,7 +103,8 @@
           mdiSleep,
           mdiHistory,
           mdiListStatus,
-          mdiViewList
+          mdiViewList,
+          mdiFormatListBulleted
         },
         counter: 0,
         lstDetail: {

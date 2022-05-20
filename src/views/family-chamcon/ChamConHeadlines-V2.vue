@@ -3506,7 +3506,7 @@ export default {
         // console.log('gio_bat_dau', moment(gio_bat_dau));
         // console.log('durationTM', durationTM);
         // console.log('durationTM', durationTM._milliseconds);
-        self.nguThucModal.name = data[0].status  == 'N' ? 'Thức dậy' : 'Ngủ';
+        self.nguThucModal.name = data[0].status  == 'N' ? 'Thức' : 'Ngủ';
         self.nguThucModal.ten_cv = data[0].ten_cv;
         self.nguThucModal.data = data[0];
         self.nguThucModal.code = data[0].status;

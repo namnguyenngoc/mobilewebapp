@@ -38,16 +38,16 @@
               <v-col cols="12" md="7" sm="12" class="text-left">
                 <v-btn-toggle v-model="toggle_exclusive">
                   <v-btn-toggle class="mr-1">
-                      <v-btn :color="nguThucModal.code=='N' ? 'info' : 'warning'" @click="updateNgu('OPEN')" small>
+                      <v-btn :color="nguThucModal.code=='N' ? 'info' : 'warning'" @click="updateNgu('OPEN')" small class="pl-1 pr-1">
                         {{nguThucModal.name}} ({{nguThucModal.code=='N' ?  'Ngủ:' : 'Thức:' }} {{nguThucModal.lastTime}})
                       </v-btn>
-                      <v-btn color="success" @click="loadListDetail('NGU')" small> 
+                      <v-btn color="success" @click="loadListDetail('NGU')" small class="pl-1 pr-1"> 
                         <v-icon dark>
                           {{ icons.mdiFormatListBulleted   }}
                         </v-icon>
                       </v-btn>
                     </v-btn-toggle>
-                    <v-btn color="info" @click="insert('WC')" small>
+                    <v-btn color="info" @click="insert('WC')" small class="pl-1 pr-1">
                         WC ({{be_wc_model.ngay_thuc_hien_gan_nhat }})
                     </v-btn>
                     

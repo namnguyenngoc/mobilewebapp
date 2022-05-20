@@ -154,7 +154,7 @@ export default {
               trigger: 'enter', //only trigger on enter not on keyup 
           },
           formatFn: function (val) {
-            return `${Math.floor(val / 60) } giờ ${(Math.floor(val / 60)) % 24} phút`
+            return `${Math.floor(val / 60) } giờ ${val % 60} phút`
           },
         },
         {
@@ -307,14 +307,18 @@ export default {
         // seft.hotSettings.data = response.data.data;
         let data = response.data.data;
         let arr = [];
+        let total = 0;
         for(let i = 0; i < data.length; i ++){
-          data[i].item_time_lbl = data[i].ma_cv == 'BSB_UONG' ? `${data[i].the_tich_sua} ml` : `${Math.floor(data[i].working_time / 60) } giờ ${(Math.floor(data[i].working_time / 60)) % 24} phút`;
+          data[i].item_time_lbl = data[i].ma_cv == 'BSB_UONG' ? `${data[i].the_tich_sua} ml` : `${Math.floor(data[i].working_time / 60) } giờ ${data[i].working_time % 60} phút`;
+          total += data[i].ma_cv == 'BSB_UONG' ? data[i].the_tich_sua : data[i].working_time;
           arr.push(data[i]);
            console.log('data[i]', data[i]);
         }
         self.chamConItem = {
-          tblDataCongViec: arr
+          tblDataCongViec: arr,
+         
         }
+        self.$refs.chamConListDialog.total  =  params.row.ma_cv == 'BSB_UONG' ? `${total} ml` : `${Math.floor(total / 60) } giờ ${total % 60} phút`;
         self.$refs.chamConListDialog.dialog = true;
         
         // self.tblDataCongViec = data;

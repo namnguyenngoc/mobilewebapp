@@ -3569,7 +3569,7 @@ export default {
             let data = response.data.data;
             let arr = [];
             for(let i = 0; i < data.length; i ++){
-              data[i].item_time_lbl = data[i].ma_cv == 'BSB_UONG' ? `${data[i].the_tich_sua} ml` : `${Math.floor(data[i].working_time / 60) } giờ ${(Math.floor(data[i].working_time / 60)) % 24} phút`;
+              data[i].item_time_lbl = data[i].ma_cv == 'BSB_UONG' ? `${data[i].the_tich_sua} ml` : `${Math.floor(data[i].working_time / 60) } giờ ${data[i].working_time % 60} phút`;
               arr.push(data[i]);
               console.log('data[i]', data[i]);
             }

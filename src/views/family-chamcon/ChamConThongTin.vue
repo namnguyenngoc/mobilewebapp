@@ -1,14 +1,14 @@
 <template>
-  <v-row class="mb-0">
+  <v-row class="mb-0 pb-0">
     <v-col cols="12" md="6" sm="12" class="pa-0 ma-0 text-right mb-1">
        <v-icon dark @click="countWorkInDay2()">
           {{ icons.mdiHistory }}
         </v-icon>
         <span style="word-break: break-word;" @click="loadListDetail()">
-          Ti bình: {{model.thoi_gian_gan_nhat_uong}} ({{model.the_tich_sua_uong }}ml / {{model.sum_uong }}ml) {{model.duration}}
+          Ti: {{model.thoi_gian_gan_nhat_uong}} ({{model.the_tich_sua_uong }}ml / {{model.sum_uong }}ml) {{model.duration}}
         </span>
     </v-col>
-    <v-col cols="12" md="6" sm="12" class="pa-0 ma-0 text-right" v-show="false">
+    <v-col cols="12" md="6" sm="12" class="pa-0 ma-0 text-right hidden" v-show="false">
       <v-icon dark>
         {{ icons.mdiHistory }}
       </v-icon>
@@ -17,7 +17,7 @@
       </span>
     </v-col>
 
-     <v-col cols="12">
+     <v-col cols="12" class="ma-0 pa-0">
       <ChamConListDialog
         ref="chamConListDialog"
         :title="lstDetail.title"

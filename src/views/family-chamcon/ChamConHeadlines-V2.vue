@@ -1,7 +1,7 @@
 <template>
   <v-row class="match-height">
-    <v-card-title class="pb-0">
-      Chăm sóc Đăng Khôi &nbsp
+    <v-card-title class="pb-0" style="word-break: break-word;">
+      Đăng Khôi &nbsp
       <h5 color="warning">{{ tuan_tuoi }}</h5>
     </v-card-title>
     <!-- Theo doi suc khoe -->
@@ -14,7 +14,7 @@
           </v-col>
           <v-col cols="12">
             <v-row>
-              <v-col cols="12" md="5" sm="12">
+              <v-col cols="12" md="5" sm="12" class="text-left">
                 <v-btn-toggle v-model="toggle_exclusive">
                   <v-btn color="warning" @click="updateNgu()" class="mr-1" small>
                     <v-icon dark>
@@ -29,10 +29,10 @@
                 
               </v-btn-toggle>
               </v-col>
-              <v-col cols="12" md="7" sm="12" class="text-right">
+              <v-col cols="12" md="7" sm="12" class="text-left">
                 <v-btn-toggle v-model="toggle_exclusive">
                   <v-btn :color="nguThucModal.code=='N' ? 'info' : 'warning'" @click="updateNgu('OPEN')" small class="mr-1">
-                      {{nguThucModal.name}} ({{nguThucModal.code=='N' ?  'Ngủ lúc:' : 'Thức lúc:' }} {{nguThucModal.lastTime}})
+                      {{nguThucModal.name}} ({{nguThucModal.code=='N' ?  'Ngủ:' : 'Thức:' }} {{nguThucModal.lastTime}})
                     </v-btn>
 
                     <v-btn color="info" @click="insert('WC')" small>

@@ -21,12 +21,14 @@
                       {{ icons.mdiReload }}
                     </v-icon>
                   </v-btn>
-                <v-btn color="info" @click="insert('CN')" class="mr-1" small>Cân Nặng </v-btn>
+                <v-btn color="info" @click="insert('CN')" class="mr-1" small>S.KHÓE </v-btn>
 
-                <v-btn color="warning" @click="insert('BSB_HUT')" class="mr-1" small> Tích sữa </v-btn>
+                <v-btn color="warning" @click="insert('BSB_HUT')" class="mr-1" small> T.SỮA </v-btn>
 
-                <v-btn color="success" @click="insert('BSB_UONG')" class="mr-1" small> Uống Sữa </v-btn>
+                <v-btn color="success" @click="insert('BSB_UONG')" class="mr-1" small>Sữa </v-btn>
                 
+                <v-btn color="error" @click="insert('BENH')" class="mr-1" small> Bệnh </v-btn>
+
               </v-btn-toggle>
               </v-col>
               <v-col cols="12" md="7" sm="12" class="text-left">
@@ -1985,6 +1987,10 @@ export default {
         {
           code: 'BSB_HUT',
           name: 'Tích sữa'
+        },
+        {
+          code: 'BENH',
+          name: 'Bệnh'
         }
       ],
       sliderKCBS: 2, //// KHOANG CACH BU SUA
@@ -2387,6 +2393,13 @@ export default {
           // this.cuSuaModel.the_tich_sua = the_tich_sua;
           this.cuSuaModel.ma_cv = 'BSB_UONG';
           this.cuSuaModel.title = "Uống sữa";
+          this.dialogSua = true;
+
+          break;
+          case 'BENH':
+          var timeAndDate = moment(gio_bat_dau + ' ' + self.ti_me_model.timeTiBinh);
+          this.cuSuaModel.ma_cv = 'BENH';
+          this.cuSuaModel.title = "GHI CHÚ BỆNH";
           this.dialogSua = true;
 
           break;

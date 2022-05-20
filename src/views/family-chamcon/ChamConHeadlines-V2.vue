@@ -14,30 +14,36 @@
           </v-col>
           <v-col cols="12">
             <v-row>
-              <v-col cols="12" md="6" sm="6">
+              <v-col cols="12" md="5" sm="12">
+                <v-btn-toggle v-model="toggle_exclusive">
+                  <v-btn color="warning" @click="updateNgu()" class="mr-1" small>
+                    <v-icon dark>
+                      {{ icons.mdiReload }}
+                    </v-icon>
+                  </v-btn>
                 <v-btn color="info" @click="insert('CN')" class="mr-1" small>Cân Nặng </v-btn>
+
                 <v-btn color="warning" @click="insert('BSB_HUT')" class="mr-1" small> Tích sữa </v-btn>
+
                 <v-btn color="success" @click="insert('BSB_UONG')" class="mr-1" small> Uống Sữa </v-btn>
-              </v-col>
-              <v-col cols="12" md="2" sm="2">
                 
-                <v-btn :color="nguThucModal.code=='N' ? 'info' : 'warning'" @click="updateNgu('OPEN')" small>
-                  {{nguThucModal.name}} ({{nguThucModal.code=='N' ?  'Ngủ lúc:' : 'Thức lúc:' }} {{nguThucModal.lastTime}})</v-btn>
+              </v-btn-toggle>
               </v-col>
-              <v-col cols="12" md="2" sm="2" v-show="false">
-                <v-btn color="info" @click="insert('THUC')" small>
-                    Hoạt động</v-btn>
+              <v-col cols="12" md="7" sm="12" class="text-right">
+                <v-btn-toggle v-model="toggle_exclusive">
+                  <v-btn :color="nguThucModal.code=='N' ? 'info' : 'warning'" @click="updateNgu('OPEN')" small class="mr-1">
+                      {{nguThucModal.name}} ({{nguThucModal.code=='N' ?  'Ngủ lúc:' : 'Thức lúc:' }} {{nguThucModal.lastTime}})
+                    </v-btn>
+
+                    <v-btn color="info" @click="insert('WC')" small>
+                        WC ({{be_wc_model.ngay_thuc_hien_gan_nhat }})
+                    </v-btn>
+                    
+                    
+
+                  </v-btn-toggle>
               </v-col>
-              <v-col cols="12" md="4" sm="4" class="text-right">
-                <v-btn color="warning" @click="insert('WC')" small>
-                    WC ({{be_wc_model.ngay_thuc_hien_gan_nhat }})
-                </v-btn>
-              </v-col>
-              <v-col cols="12" md="12" sm="12" class="text-right">
-                <v-btn color="warning" @click="updateNgu()" small>
-                    Refesh button
-                </v-btn>
-              </v-col>
+            
             </v-row>
           </v-col>
           <v-col cols="12">
@@ -933,7 +939,8 @@ import {
   mdiMinus, mdiOneUp, mdiPlus, mdiDeleteOutline, mdiCircleEditOutline, mdiSleep, mdiConsoleNetworkOutline,
   mdiMagnifyPlusOutline, 
   mdiMagnifyMinusOutline,
-  mdiHistory
+  mdiHistory,
+  mdiReload
 } from '@mdi/js'
 import { reactive } from '@vue/composition-api'
 
@@ -961,7 +968,8 @@ export default {
         mdiSleep,
         mdiMagnifyPlusOutline, 
         mdiMagnifyMinusOutline,
-        mdiHistory
+        mdiHistory,
+        mdiReload
       },
       be_wc_model: {
         so_lan_i: 0,
@@ -2089,8 +2097,10 @@ export default {
       nguThucModal: {
         name: 'Ngủ',
         code: 'T',
-        lastTime: moment(new Date()).format(config.DATE_TIME_FM)
-      }
+        orgDate: new Date(),
+        lastTime: moment(new Date()).format(config.DATE_TIME_FM_1)
+      },
+      toggle_exclusive: 2,
         
     }
   },
@@ -2193,7 +2203,7 @@ export default {
         // seft.hotSettings.data = response.data.data;
 
         self.be_wc_model.so_lan_i = response.data.data[0]._count;
-        self.be_wc_model.ngay_thuc_hien_gan_nhat =  moment(response.data.data[0].ngay_thuc_hien_gan_nhat).format(config.DATE_TIME_FM);
+        self.be_wc_model.ngay_thuc_hien_gan_nhat =  moment(response.data.data[0].ngay_thuc_hien_gan_nhat).format(config.DATE_TIME_FM_1);
       })
     },
 
@@ -3455,7 +3465,8 @@ export default {
         self.nguThucModal.ten_cv = data[0].ten_cv;
         self.nguThucModal.data = data[0];
         self.nguThucModal.code = data[0].status;
-        self.nguThucModal.lastTime = moment(data[0].gio_bat_dau).format(config.DATE_TIME_FM);
+        self.nguThucModal.orgDate = data[0].gio_bat_dau;
+        self.nguThucModal.lastTime = moment(data[0].gio_bat_dau).format(config.DATE_TIME_FM_1);
         
         // self.modal.duration = Math.floor((durationTM._milliseconds / (1000 * 60)));
       })

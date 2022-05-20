@@ -643,7 +643,7 @@
                 clearable
             ></v-text-field>
             </v-col> -->
-            <v-col cols="12" md="12" class="pb-0 pt-0 mt-0 mb-0">
+            <v-col cols="12" md="12" class="pb-0 pt-0 mt-0 mb-0" v-show="cuSuaModel.showTheTich">
               <v-slider
                 inverse-label
                 v-model="cuSuaModel.the_tich_sua_new"
@@ -662,7 +662,7 @@
                 </template>
               </v-slider>
             </v-col>
-            <v-col cols="12" md="12">
+            <v-col cols="12" md="12" v-show="cuSuaModel.showTheTich">
               <v-combobox
                 v-model="cuSuaModel.the_tich_sua_new"
                 :items="items"
@@ -701,7 +701,7 @@
                 :items="items_ghichu"
                 :search-input.sync="search"
                 hide-selected
-                label="Ghi chú thêm"
+                :label="cuSuaModel.showTheTich ? 'Ghi chú thêm' : 'Thông tin bệnh'"
                 persistent-hint
                 small-chips
                 clearable
@@ -2004,7 +2004,8 @@ export default {
         gio_bat_dau: new Date(),
         the_tich_sua: 0,
         the_tich_sua_new: 100,
-        ghi_chu_them: 'Sữa mẹ'
+        ghi_chu_them: 'Sữa mẹ',
+        showTheTich: true,
       },
       tichSuaType: [
         {
@@ -2133,13 +2134,14 @@ export default {
         orgDate: new Date(),
         lastTime: moment(new Date()).format(config.DATE_TIME_FM_1)
       },
-      toggle_exclusive: 2,
+      toggle_exclusive: [],
       lstDetail: {
           title:"DETAIL",
           date: moment(new Date()).format(config.DATE_FM),
           item: {},
           vmodel:true,
         },
+
     }
   },
   created() {
@@ -2168,7 +2170,6 @@ export default {
      
   },
   mounted() {
-   
     // this.loadingChart();
   },
   computed: {
@@ -2194,7 +2195,24 @@ export default {
     },
     wcCountDay() {
       return 1000;
-    }
+    },
+    // showTheTich:{
+    //   get() {
+    //     console.log("newvalueget", this.cuSuaModel);
+    //     return true;
+    //   },
+    //   // setter
+    //   set(newValue) {
+    //     // Note: we are using destructuring assignment syntax here.
+    //     console.log("newvalue", newValue);
+    //     return newValue;
+    //   }
+    // },
+      
+    //  {
+    //   console.log("thể tích");
+    //   return false;
+    // }
   }, // end method
   methods: {
     formatPrice(value, tofix) {
@@ -2361,6 +2379,7 @@ export default {
       let gio_bat_dau = moment(currentDate).format('YYYY-MM-DD');
       let thong_tin_them = '';
       let congviec = null;
+      this.showTheTich = true;
       switch (code_cv) {
         case 'NGU':
           var timeAndDate = moment(gio_bat_dau + ' ' + self.ngu_model.timeNgu);
@@ -2400,6 +2419,7 @@ export default {
           
           this.cuSuaModel.title = "Tích sữa";
           this.cuSuaModel.ma_cv = 'BSB_HUT';
+          this.cuSuaModel.showTheTich = true;
           this.dialogSua = true;
 
           break;
@@ -2425,13 +2445,16 @@ export default {
           // this.cuSuaModel.the_tich_sua = the_tich_sua;
           this.cuSuaModel.ma_cv = 'BSB_UONG';
           this.cuSuaModel.title = "Uống sữa";
+          this.cuSuaModel.showTheTich = true;
           this.dialogSua = true;
 
           break;
           case 'BENH':
+          this.showTheTich = false;
           var timeAndDate = moment(gio_bat_dau + ' ' + self.ti_me_model.timeTiBinh);
           this.cuSuaModel.ma_cv = 'BENH';
           this.cuSuaModel.title = "GHI CHÚ BỆNH";
+          this.cuSuaModel.showTheTich = false;
           this.dialogSua = true;
 
           break;

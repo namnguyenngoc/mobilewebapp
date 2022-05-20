@@ -27,16 +27,26 @@
 
                 <v-btn color="success" @click="insert('BSB_UONG')" class="mr-1" small>Sữa </v-btn>
                 
-                <v-btn color="error" @click="insert('BENH')" class="mr-1" small> Bệnh </v-btn>
+                <v-btn color="error" @click="insert('BENH')" class="mr-1" small> 
+                    <v-icon dark>
+                      {{ icons.mdiHospitalBoxOutline  }}
+                    </v-icon>
+                </v-btn>
 
               </v-btn-toggle>
               </v-col>
               <v-col cols="12" md="7" sm="12" class="text-left">
                 <v-btn-toggle v-model="toggle_exclusive">
-                  <v-btn :color="nguThucModal.code=='N' ? 'info' : 'warning'" @click="updateNgu('OPEN')" small class="mr-1">
-                      {{nguThucModal.name}} ({{nguThucModal.code=='N' ?  'Ngủ:' : 'Thức:' }} {{nguThucModal.lastTime}})
-                    </v-btn>
-
+                  <v-btn-toggle class="mr-1">
+                      <v-btn :color="nguThucModal.code=='N' ? 'info' : 'warning'" @click="updateNgu('OPEN')" small>
+                        {{nguThucModal.name}} ({{nguThucModal.code=='N' ?  'Ngủ:' : 'Thức:' }} {{nguThucModal.lastTime}})
+                      </v-btn>
+                      <v-btn color="success" @click="loadListDetail('NGU')" small> 
+                        <v-icon dark>
+                          {{ icons.mdiFormatListBulleted   }}
+                        </v-icon>
+                      </v-btn>
+                    </v-btn-toggle>
                     <v-btn color="info" @click="insert('WC')" small>
                         WC ({{be_wc_model.ngay_thuc_hien_gan_nhat }})
                     </v-btn>
@@ -926,6 +936,16 @@
       @updateStatusBtn="updateNgu()"
     />
     </v-col>
+    <v-col cols="12">
+      <ChamConListDialog
+        ref="chamConListDialog"
+        :title="lstDetail.title"
+        :date="lstDetail.date"
+        :item="lstDetail.item"
+        :v-model="lstDetail.vmodel"
+        @refeshList="showChartKCBS()"
+      />
+    </v-col>
   </v-row>
   
 </template>
@@ -936,13 +956,17 @@ import moment from 'moment'
 import ChartComponent from '../../components/ChartComponent.vue'
 import ChamConThongTin from './ChamConThongTin.vue'
 import DialogHoatDong from './DialogHoatDong.vue'
+import ChamConListDialog from './ChamConListDialog.vue'
+
 
 import { 
   mdiMinus, mdiOneUp, mdiPlus, mdiDeleteOutline, mdiCircleEditOutline, mdiSleep, mdiConsoleNetworkOutline,
   mdiMagnifyPlusOutline, 
   mdiMagnifyMinusOutline,
   mdiHistory,
-  mdiReload
+  mdiReload,
+  mdiHospitalBoxOutline,
+  mdiFormatListBulleted 
 } from '@mdi/js'
 import { reactive } from '@vue/composition-api'
 
@@ -951,7 +975,8 @@ export default {
   components: {
     ChartComponent,
     ChamConThongTin,
-    DialogHoatDong
+    DialogHoatDong,
+    ChamConListDialog
   },
   data() {
     return {
@@ -971,7 +996,9 @@ export default {
         mdiMagnifyPlusOutline, 
         mdiMagnifyMinusOutline,
         mdiHistory,
-        mdiReload
+        mdiReload,
+        mdiHospitalBoxOutline ,
+        mdiFormatListBulleted 
       },
       be_wc_model: {
         so_lan_i: 0,
@@ -2107,7 +2134,12 @@ export default {
         lastTime: moment(new Date()).format(config.DATE_TIME_FM_1)
       },
       toggle_exclusive: 2,
-        
+      lstDetail: {
+          title:"DETAIL",
+          date: moment(new Date()).format(config.DATE_FM),
+          item: {},
+          vmodel:true,
+        },
     }
   },
   created() {
@@ -3504,6 +3536,35 @@ export default {
 
       }
     },
+    async loadListDetail(type) {
+        console.log('loadListDetail');
+        let self = this;
+        await axios
+          .get(`${config.API_URL}/selectCongViecByDate/'${type}'/${moment(this.lstDetail.date).format(config.DATE_FM)}`)
+          .then(response => {
+            // seft.hotSettings.data = response.data.data;
+            let data = response.data.data;
+            let arr = [];
+            for(let i = 0; i < data.length; i ++){
+              data[i].item_time_lbl = data[i].ma_cv == 'BSB_UONG' ? `${data[i].the_tich_sua} ml` : `${Math.floor(data[i].working_time / 60) } giờ ${(Math.floor(data[i].working_time / 60)) % 24} phút`;
+              arr.push(data[i]);
+              console.log('data[i]', data[i]);
+            }
+            self.lstDetail = {
+              title: type,
+              date: moment(new Date()).format(config.DATE_FM),
+              item: {
+                tblDataCongViec: arr
+              }
+            }
+            self.$refs.chamConListDialog.dialog = true;
+            
+            // self.tblDataCongViec = data;
+            console.log('item-data', data);
+          });
+          
+        this.$refs.chamConListDialog.dialog = true;
+      },
   },
 }
 </script>

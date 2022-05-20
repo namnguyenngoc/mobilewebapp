@@ -77,14 +77,25 @@
               </v-time-picker>
             </v-dialog>
           </v-col>
-          <v-col cols="12" md="12">
-            <v-text-field 
-              label="Tổng thời gian" 
-              v-model="modal.duration" 
-              :disabled="!((typeof modal.loaiHoatDong === 'object' && modal.loaiHoatDong.code == 'THUC') ||  modal.loaiHoatDong == 'THUC')"
-              hide-details 
-              clearable></v-text-field>
-          </v-col>
+          <v-row>
+            <v-col cols="12" md="6">
+              <v-text-field 
+                label="Tổng thời gian" 
+                v-model="modal.duration" 
+                :disabled="!((typeof modal.loaiHoatDong === 'object' && modal.loaiHoatDong.code == 'THUC') ||  modal.loaiHoatDong == 'THUC')"
+                hide-details 
+                clearable></v-text-field>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-text-field 
+                label=" " 
+                v-model="modal.durationStr" 
+                disabled
+                class="text-right"
+                hide-details 
+                clearable></v-text-field>
+            </v-col>
+          </v-row>
           <v-col cols="12" md="12">
             <v-text-field label="Ghi chú thêm" v-model="modal.ghi_chu_them" hide-details clearable></v-text-field>
           </v-col>
@@ -153,6 +164,7 @@ export default {
         thoi_gian_gan_nhat_uong: new Date(),
         thoi_gian_gan_nhat_hut: new Date(),
         duration: null,
+        durationStr: "",
       },
       icons: {
         mdiMinus,
@@ -212,6 +224,7 @@ export default {
         ghi_chu_them: '',
         response: undefined,
         duration: 0,
+        durationStr: "",
 
       },
       congviecParam: {}
@@ -288,7 +301,10 @@ export default {
           console.log('durationTM', durationTM);
           console.log('durationTM', durationTM._milliseconds);
           self.modal.duration = Math.floor((durationTM._milliseconds / (1000 * 60)));
+          self.modal.durationStr  = `${ Math.floor(self.modal.duration / 60) } giờ ${ (self.modal.duration % 60)} phút`
         })
+      } else {
+        self.modal.durationStr = "";
       }
       
     },

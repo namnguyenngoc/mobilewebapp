@@ -3471,7 +3471,9 @@ export default {
           };
           var durationTM = moment.duration(moment(new Date()).diff(moment(this.nguThucModal.data.gio_bat_dau)));
           //  let duration = moment.duration(moment(new Date()).diff(moment(response.data.data[0].ngay_thuc_hien_gan_nhat)));
-          this.$refs.dialogHoatDong.modal.duration = Math.floor((durationTM._milliseconds / (1000 * 60)));
+          let value =  Math.floor((durationTM._milliseconds / (1000 * 60)));
+          this.$refs.dialogHoatDong.modal.duration = value;
+          this.$refs.dialogHoatDong.modal.durationStr = `${ Math.floor(value / 60) } giờ ${ (value % 60)} phút`
       }
       if('OPEN' == type){
         this.$refs.dialogHoatDong.dialog = true;

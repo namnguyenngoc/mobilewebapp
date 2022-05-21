@@ -1,12 +1,36 @@
 <template>
   <v-row class="mb-0">
-    <v-col cols="12" md="12" class="pa-0 ma-0 text-right">
-      <v-icon dark @click="getLastChiTieu()">
-        {{ icons.mdiHistory }}
-      </v-icon>
-      <span>
-       Chi gần nhất({{model.ngay_chi}}): {{model.noi_dung}} ({{formatPrice(model.so_tien, 0)}})
-      </span>
+    <v-col cols="12" md="12" sm="12" class="pa-0 ma-0 text-right mb-1">
+      <v-btn-toggle class="">
+        <v-btn color="info" small class="pl-1 pr-1" 
+          style="min-width: 310px; 
+                  max-width: 310px;
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  justify-content: right;">
+          {{model.ngay_chi}}: {{model.noi_dung}} ({{formatPrice(model.so_tien, 0)}})  
+        </v-btn>
+        <v-btn color="success" @click="getLastChiTieu()" small class="pl-1 pr-1"> 
+          <v-icon dark>
+            {{ icons.mdiFormatListBulleted }}
+          </v-icon>
+        </v-btn>
+      </v-btn-toggle>
+    </v-col>
+
+    <v-col cols="12" md="4" sm="4" class="pa-0 ma-0 text-right">
+    <v-btn-toggle class="">
+        <v-btn color="info" small class="pl-1 pr-1">
+          HSBC  (10.000.000)
+        </v-btn>
+        <v-btn color="primary" small class="pl-1 pr-1">
+          SC  (10.000.000)
+        </v-btn>
+        <v-btn color="success" small class="pl-1 pr-1">
+          VIB  (10.000.000)
+        </v-btn>
+      </v-btn-toggle>
     </v-col>
   </v-row>
 </template>
@@ -24,6 +48,7 @@
     , mdiSleep
     , mdiConsoleNetworkOutline
     , mdiHistory
+    , mdiFormatListBulleted
   } from '@mdi/js'
 
   export default {
@@ -61,7 +86,8 @@
           mdiDeleteOutline,
           mdiCircleEditOutline,
           mdiSleep,
-          mdiHistory
+          mdiHistory,
+          mdiFormatListBulleted   
         },
         allStatusChecked: false,
         includeGop: "WO_GOP",

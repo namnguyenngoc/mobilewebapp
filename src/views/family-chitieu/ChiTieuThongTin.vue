@@ -21,7 +21,7 @@
 
     <v-col cols="12" md="12" sm="12" class="pa-0 ma-0 text-right">
     <v-btn-toggle class="">
-        <v-btn color="info" small class="mr-1" v-for="item in cskEmailCSK">
+        <v-btn color="info" small class="mr-1" v-for="(item, idx) in cskEmailCSK" :key="item.id">
           {{item.bank_code}} ({{formatPrice(item.so_tien,0)}}) 
         </v-btn>
       </v-btn-toggle>
@@ -175,7 +175,7 @@
             }
           }
           self.cskEmailCSK  = cskEmailCSKResponse;
-          console.log('cskEmailCSK', cskEmailCSK);
+          console.log('cskEmailCSK', response.data.data[0].ngay_chi);
           self.model.ngay_chi =  moment(response.data.data[0].ngay_chi).format(config.DATE_TIME_FM_1);
 
         });

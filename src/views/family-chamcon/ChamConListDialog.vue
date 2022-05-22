@@ -5,7 +5,7 @@
       v-model="dialog"
       fullscreen>
       <v-card>
-        <v-card-title>Chăm con {{title}} ngày {{date}}</v-card-title>
+        <v-card-title>Chăm con {{title}} ngày {{date}} ({{total}})</v-card-title>
         <v-card-text>
           <v-col cols="12" md="12" v-show="false">
             <v-menu
@@ -118,6 +118,10 @@ export default {
       type: String,
       default: 'Test',
     },
+    total: {
+      type: String,
+      default: '0',
+    },
     item: {
       type: Object,
       default: () => ({}),
@@ -229,7 +233,9 @@ export default {
           label: 'Thời gian (ngủ)',
           field: 'item_time_lbl',
           sortable: false,
+          type: 'number',
           thClass: 'text-right',
+          headerField: this.sumWorkingTime,
         },
         {
           label: 'Ghi chú',
@@ -373,7 +379,15 @@ export default {
       }
 //  moment.tz(new Date(), tzString).format("YYYY-MM-DD HH:mm:ss"),
       this.$refs.chamConDetail2.dialog = true;
-    }
+    },
+    sumWorkingTime(rowObj) {
+    	console.log('sumWorkingTime', rowObj);
+    	let sum = 0;
+      for (let i = 0; i < rowObj.children.length; i++) {
+        sum += parseFloat(rowObj.children[i].working_time);
+      }
+      return sum;
+    },
     
   }, // end created
 } // End exxport default

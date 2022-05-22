@@ -1,7 +1,7 @@
 <template>
-  <v-row class="mb-0">
+  <v-row class="mb-0 text-right">
     <v-col cols="12" md="12" sm="12" class="pa-0 ma-0 text-right mb-1">
-      <v-btn-toggle class="">
+      <v-btn-toggle class="text-right">
         <v-btn color="info" small class="pl-1 pr-1" 
           style="min-width: 310px; 
                   max-width: 310px;
@@ -19,16 +19,10 @@
       </v-btn-toggle>
     </v-col>
 
-    <v-col cols="12" md="4" sm="4" class="pa-0 ma-0 text-right">
+    <v-col cols="12" md="12" sm="12" class="pa-0 ma-0 text-right">
     <v-btn-toggle class="">
-        <v-btn color="info" small class="pl-1 pr-1">
-          HSBC  (10.000.000)
-        </v-btn>
-        <v-btn color="primary" small class="pl-1 pr-1">
-          SC  (10.000.000)
-        </v-btn>
-        <v-btn color="success" small class="pl-1 pr-1">
-          VIB  (10.000.000)
+        <v-btn color="info" small class="mr-1" v-for="item in cskEmailCSK">
+          {{item.bank_code}} ({{formatPrice(item.so_tien,0)}}) 
         </v-btn>
       </v-btn-toggle>
     </v-col>
@@ -97,11 +91,32 @@
           start: moment().subtract(24, 'months').format(config.DATE_FM),
           end: moment().subtract(-5, 'days').format(config.DATE_FM),
         },
+        cskLsData: [
+         
+        ],
+        cskEmailCSK: [],
+        
+        buttonColor: ['info', 'primary', 'warning']
       }
     },
     computed: {
       propsChiTieu: function(item) {
         return item;
+      },
+      total: function() {
+        if(this.cskLsData != undefined && this.cskLsData != null && this.cskLsData.length > 0){
+          console.log("this.cskLsData", this.cskLsData);
+          return this.cskLsData;
+
+        }
+        return 0;
+      },
+      randomIdx: function() {
+        return Math.floor(Math.random() * (2 - 0 + 1)) + 0;
+      },
+      buttonColor: function() {
+        let idx =  Math.floor(Math.random() * (2 - 0 + 1)) + 0;
+        return buttonColor[idx];
       }
     },
     async mounted () {
@@ -132,7 +147,35 @@
         .get(`${config.API_FAMILY}/api/chitieus/${JSON.stringify(kyChi)}/${this.allStatusChecked}/${this.includeGop}/${this.trip.start}/${this.trip.end}`)
         .then(response => {
           let data = response.data.data;
-          self.model = response.data.data [0];
+          //REMOVE CHOT SAO KE.
+          let lstSelected = response.data.data.filter(function (item) {
+              if (item.status !== 'EMAIL_CSK') return true
+          })
+          self.model = lstSelected[0];
+          let cskResponse = response.data.data.filter(function (item) {
+              if (item.status !== 'EMAIL_CSK') return true
+          })
+
+          let cskEmailCSKResponse = response.data.data.filter(function (item) {
+              if (item.status == 'EMAIL_CSK') return true
+          })
+
+          console.log('cskResponse',cskResponse);
+          if(cskResponse != undefined && cskResponse != null && cskResponse.length > 0){
+            self.cskLsData = [];
+            for(let i = 0; i < cskResponse.length; i ++){
+              let obj = {
+                bank: cskResponse[i].bank_code,
+                kyChi: cskResponse[i].ky_chi,
+                total: cskResponse[i].so_tien,
+                status: cskResponse[i].status,
+                dueDate: cskResponse[i].ngay_thanh_toan
+              }
+              self.cskLsData.push(obj);
+            }
+          }
+          self.cskEmailCSK  = cskEmailCSKResponse;
+          console.log('cskEmailCSK', cskEmailCSK);
           self.model.ngay_chi =  moment(response.data.data[0].ngay_chi).format(config.DATE_TIME_FM_1);
 
         });

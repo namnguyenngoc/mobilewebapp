@@ -3,7 +3,7 @@
     <v-col cols="12" md="6" sm="12" class="pa-0 ma-0 text-right mb-1 pr-2">
       <v-btn-toggle class="text-right">
         <v-btn color="info" small class="pl-1 pr-1"> 
-          {{model.bank_code }} - {{model.ky_chi}}] {{formatPrice(model.totalByBank, 0)}}
+          [{{model.bank_code }} - {{model.ky_chi}}] {{formatPrice(model.totalByBank, 0)}}
         </v-btn>
         <v-btn color="success" @click="routerLink('chitieu-list')" small class="pl-1 pr-1"> 
           <v-icon dark>

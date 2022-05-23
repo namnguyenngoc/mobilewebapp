@@ -5,6 +5,7 @@ const API_URL = 'http://ec2-3-85-219-4.compute-1.amazonaws.com'; //  platform se
 // Only developing application connect to local ip ,another applications connect to developement server ip.
 const config = {
   API_URL: `${API_URL}:81/api/appsuckhoe`,
+  HOME_PAGE:  `${API_URL}:82`,
   API_FAMILY: `${API_URL}:81/api`,
   API_WORKING: {
     JR_API_JIRA: `${API_URL}:81/workingapi`,

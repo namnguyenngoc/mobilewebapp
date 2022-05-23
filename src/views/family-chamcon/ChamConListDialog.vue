@@ -5,7 +5,7 @@
       v-model="dialog"
       fullscreen>
       <v-card>
-        <v-card-title>Chăm con {{title}} ngày {{date}} ({{total}})</v-card-title>
+        <v-card-title>Chăm con {{title}} ngày {{date}} ({{item.total}})</v-card-title>
         <v-card-text>
           <v-col cols="12" md="12" v-show="false">
             <v-menu
@@ -120,7 +120,7 @@ export default {
     },
     total: {
       type: String,
-      default: '0',
+      default: '',
     },
     item: {
       type: Object,
@@ -264,10 +264,20 @@ export default {
     propsChiTieu: function (item) {
       return item
     },
+    total: function() {
+       
+      // if(this.tblDataCongViec != undefined && this.tblDataCongViec != null && this.tblDataCongViec.length > 0){
+      //   return 1000;
+
+      // }
+      // return new Date;
+    },
   },
   async mounted() {
     //  await this.countWorkInDay2();
+     console.log("this.tblDataCongViec", this.tblDataCongViec);
   }, // end method
+
   created() {
     // this.countWorkInDay2();
     this.getGioBatDau();

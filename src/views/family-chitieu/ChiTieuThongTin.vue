@@ -1,7 +1,19 @@
 <template>
   <v-row class="mb-0 text-right">
-    <v-col cols="12" md="12" sm="12" class="pa-0 ma-0 text-right mb-1">
+    <v-col cols="12" md="6" sm="12" class="pa-0 ma-0 text-right mb-1 pr-2">
       <v-btn-toggle class="text-right">
+        <v-btn color="info" small class="pl-1 pr-1"> 
+          {{model.bank_code }} - {{model.ky_chi}}] {{formatPrice(model.totalByBank, 0)}}
+        </v-btn>
+        <v-btn color="success" @click="routerLink('chitieu-list')" small class="pl-1 pr-1"> 
+          <v-icon dark>
+            {{ icons.mdiFormatListBulleted }}
+          </v-icon>
+        </v-btn>
+      </v-btn-toggle>
+    </v-col>
+    <v-col cols="12" md="6" sm="12" class="pa-0 ma-0 text-left mb-1">
+      <v-btn-toggle class="text-left">
         <v-btn color="info" small class="pl-1 pr-1" 
           style="min-width: 310px; 
                   max-width: 310px;
@@ -19,9 +31,9 @@
       </v-btn-toggle>
     </v-col>
 
-    <v-col cols="12" md="12" sm="12" class="pa-0 ma-0 text-right">
+    <v-col cols="12" md="12" sm="12" class="pa-0 ma-0 text-left">
     <v-btn-toggle class="">
-        <v-btn color="info" small class="mr-1" v-for="(item, idx) in cskEmailCSK" :key="item.id">
+        <v-btn color="info" small class="mr-1 pr-1 pl-1" v-for="(item, idx) in cskEmailCSK" :key="item.id">
           {{item.bank_code}} ({{formatPrice(item.so_tien,0)}}) 
         </v-btn>
       </v-btn-toggle>
@@ -151,7 +163,17 @@
           let lstSelected = response.data.data.filter(function (item) {
               if (item.status !== 'EMAIL_CSK') return true
           })
+          
+
+          let chiTieubyBank = response.data.data.filter(function (item) {
+              if (item.bank_code == lstSelected[0].bank_code && item.ky_chi == lstSelected[0].ky_chi) return true
+          });
+
+          let totalByBank =  chiTieubyBank.reduce((r, {so_tien, bank_code}) => r+= parseFloat(so_tien), 0)
+
           self.model = lstSelected[0];
+          self.model.totalByBank = totalByBank;
+
           let cskResponse = response.data.data.filter(function (item) {
               if (item.status !== 'EMAIL_CSK') return true
           })
@@ -179,6 +201,12 @@
           self.model.ngay_chi =  moment(response.data.data[0].ngay_chi).format(config.DATE_TIME_FM_1);
 
         });
+      },
+      routerLink(param){
+        // let route = this.$router.resolve({path: `${config.JR_PIM_URL}/${jiraTicket}`});
+        // let route = this.$router.resolve('/link/to/page'); // This also works.
+        console.log(param);
+        window.open('./chitieu-list', '_blank');
       },
       
     }, // end created

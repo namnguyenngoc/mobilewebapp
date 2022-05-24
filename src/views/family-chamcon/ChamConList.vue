@@ -1,5 +1,5 @@
 <template>
-  <v-row>
+  <v-row class="match-height">
     <v-col>
       <v-card>
         <v-card-title class="pt-5 pb-2 mr-0 pr-2">
@@ -79,9 +79,7 @@
         @refeshList="showChartKCBS()"
       />
     </v-col>
-   
   </v-row>
-
 </template>
 <script>
 import axios from 'axios';

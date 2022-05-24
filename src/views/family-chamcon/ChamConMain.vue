@@ -16,6 +16,8 @@
         
         </v-btn-toggle>
       </v-col>
+    </v-row>
+    <v-row>
       <v-col md="12" sm="12">
         <v-row>
           <v-col md="12" sm="12" v-show="!isShow">
@@ -27,7 +29,6 @@
         </v-row>
       </v-col>
     </v-row>
-    
   </v-row>
 </template>
 

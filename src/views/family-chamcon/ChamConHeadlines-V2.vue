@@ -3577,8 +3577,13 @@ export default {
               title: type,
               date: moment(new Date()).format(config.DATE_FM),
               item: {
-                tblDataCongViec: arr
+                tblDataCongViec: [
+                  {
+                    children: arr,
+                  }
+                ]
               }
+              
             }
             self.$refs.chamConListDialog.dialog = true;
             
@@ -3591,7 +3596,7 @@ export default {
   },
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 .custom-row {
   height: 35px !important;
   button {
@@ -3610,5 +3615,12 @@ export default {
 // @import './Bebidas.scss';
 .countdown {
   float: right;
+}
+
+.row-total span{
+  color:#606266;
+}
+.vgt-table.bordered th.vgt-row-header{
+  color: #606266;
 }
 </style>

@@ -53,6 +53,15 @@
                    Process
                   </v-btn>
                 </span>
+                <span v-else-if="props.column.field == 'id'">
+                  <v-btn
+                    v-if="!(props.formattedRow[props.column.field] == undefined || props.formattedRow[props.column.field] == null) && props.formattedRow['trang_thai'] != 'KT' "
+                    color="success light-1"
+                    @click="updateGopStatus(props, 'KT')"
+                  >
+                    Hoàn thành
+                  </v-btn>
+                </span>
                 <span v-else>
                   {{props.formattedRow[props.column.field]}}
                 </span>
@@ -251,7 +260,7 @@ export default {
         },
         {
           label: 'Action',
-          field: 'chitieulist',
+          field: 'id',
           filterable: false,
           // filterOptions: {
           //   styleClass: 'class1', // class to be added to the parent th element
@@ -483,10 +492,23 @@ export default {
           // seft.$emit('refeshList')
           self.loadData();
         })
-    }
-
-    
-    
+    },
+    async updateGopStatus(props, status){
+        //FN:  Finished
+        const self = this;
+        let param = props.row;
+        param.type = status;
+        await axios
+          .post(config.API_FAMILY + '/api/updateGopStatus', param)
+          .then(function (response) {
+            // seft.dialog = false
+            // console.log('Valid store ok')
+            console.log("Gops", response.data.data)
+            // self.chiTieuModel = []
+            // seft.$emit('refeshList')
+            self.loadData();
+          })
+      },
    
   },
 }

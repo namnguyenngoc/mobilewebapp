@@ -62,6 +62,10 @@
                 enabled: true,
                 placeholder: 'Search this table',
               }"
+              :group-options="{
+                enabled: true,
+                headerPosition: 'top',
+              }"
               @on-cell-click="onRowDoubleClick"
               max-height="700px"
               
@@ -230,11 +234,12 @@ export default {
            sortable: false,
         },
         {
-          label: 'Thời gian (ngủ)',
+          label: 'Thể tích/Thời gian',
           field: 'item_time_lbl',
           sortable: false,
           type: 'number',
-          thClass: 'text-right',
+          thClass: 'text-right row-total',
+          filterable: true,
           headerField: this.sumWorkingTime,
         },
         {
@@ -264,14 +269,7 @@ export default {
     propsChiTieu: function (item) {
       return item
     },
-    total: function() {
-       
-      // if(this.tblDataCongViec != undefined && this.tblDataCongViec != null && this.tblDataCongViec.length > 0){
-      //   return 1000;
-
-      // }
-      // return new Date;
-    },
+    
   },
   async mounted() {
     //  await this.countWorkInDay2();
@@ -393,10 +391,21 @@ export default {
     sumWorkingTime(rowObj) {
     	console.log('sumWorkingTime', rowObj);
     	let sum = 0;
+
       for (let i = 0; i < rowObj.children.length; i++) {
-        sum += parseFloat(rowObj.children[i].working_time);
+        console.log('rowObj.children[i]', rowObj.children[i]);
+        if('BSB_UONG' == rowObj.children[i].ma_cv){
+          sum += parseFloat(rowObj.children[i].the_tich_sua);
+
+        }else {
+          sum += parseFloat(rowObj.children[i].working_time);
+        }
       }
-      return sum;
+      if('BSB_UONG' == rowObj.children[0].ma_cv){
+        return sum;
+      } else {
+        return `${Math.floor(sum / 60) } giờ ${sum % 60} phút`
+      }
     },
     
   }, // end created
@@ -407,5 +416,8 @@ export default {
   height: 700px;
   max-height: 700px;
   overflow-y: auto;
+}
+.vgt-right-align > span{
+  color:#606266;
 }
 </style>

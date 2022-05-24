@@ -182,7 +182,11 @@
               title: 'Uống sữa',
               date: moment(new Date()).format(config.DATE_FM),
               item: {
-                tblDataCongViec: arr,
+                tblDataCongViec: [
+                  {
+                    children: arr,
+                  }
+                ]
               },
               
             }

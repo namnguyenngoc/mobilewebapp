@@ -48,6 +48,7 @@
     "vue-crontab": "0.0.4",
     "vue-easytable": "^2.12.2",
     "vue-good-table": "^2.21.11",
+    "vue-grid-layout": "^2.3.12",
     "vue-router": "^3.2.0",
     "vue-timer-hook": "0.0.22",
     "vuetify": "^2.4.0",

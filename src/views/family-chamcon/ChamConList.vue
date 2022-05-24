@@ -212,9 +212,9 @@ export default {
     }
   },
   created() {
-    if(this.isMobile()){
-      this.layoutSize.col_num = 1;
-    }
+    // if(this.isMobile()){
+    //   this.layoutSize.col_num = 1;
+    // }
     this.loadData();
   },
   computed: {

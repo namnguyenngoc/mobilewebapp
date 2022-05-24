@@ -19,9 +19,9 @@
           </v-col>
         </v-card-title>
         
-        <v-card-text>
+        <v-card-text class="mt-0 mb-0 pt-1 pb-1 ma-0 pa-0">
           <!-- Row 1 -->
-          <v-col cols="12" md="12">
+          <v-col cols="12" md="12" class="ma-0 pa-0" >
             <vue-good-table
               title="Công việc chăm con"
               styleClass="vgt-table bordered"
@@ -40,7 +40,6 @@
               }"
               @on-row-dblclick="onRowDoubleClick"
               max-height="700px"
-              
             >
               <template slot="table-header-row" slot-scope="props">
                 <div v-if="props.column.field == 'ten_cong_viec'">

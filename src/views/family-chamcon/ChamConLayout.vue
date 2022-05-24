@@ -1,12 +1,12 @@
 <template>
-  <v-row class="match-height">
+  <v-row>
     <v-col>
       <v-card>
         <v-card-title class="pt-5 pb-2 mr-0 pr-2">
           <v-col cols="10" md="10" class="pa-0 ma-0">
-            Danh sách công việc [Layout]
+            CHĂM CON LAYOUT
           </v-col>
-          <v-col cols="2" md="2" class="pa-0 ma-0 text-right">
+          <v-col cols="12" md="12" class="pa-0 ma-0 text-right">
             <v-btn
               color="info"
               icon
@@ -19,40 +19,36 @@
           </v-col>
         </v-card-title>
         
-        <v-card-text class="mt-0 mb-0 pt-1 pb-1 ma-0 pa-0">
           <!-- Row 1 -->
-          <v-col cols="12" md="12" class="ma-0 pa-0" >
-            <vue-good-table
-              title="Công việc chăm con"
-              styleClass="vgt-table bordered"
-              :columns="colCongViec"
-              :rows="tblDataCongViec"
-              :paginate="true"
-              :lineNumbers="true"
-              :search-options="{
-                enabled: true,
-                placeholder: 'Search this table',
-              }"
-              :group-options="{
-                enabled: true,
-                headerPosition: 'top',
-                collapsable: false
-              }"
-              @on-row-dblclick="onRowDoubleClick"
-              max-height="700px"
-              
+          <v-col cols="12" md="12">
+            <grid-layout
+              :layout="layout"
+              :col-num="layoutSize.col_num"
+              :row-height="30"
+              :is-draggable="false"
+              :is-resizable="false"
+              :vertical-compact="true"
+              :margin="[5, 5]"
+              :use-css-transforms="true"
             >
-              <template slot="table-header-row" slot-scope="props">
-                <div v-if="props.column.field == 'ten_cong_viec'">
-                  <v-btn text color="primary" class="text-bold" @click="openDetail(props.formattedRow['ngay_group'])">
-                  Ngày {{props.formattedRow['ngay_group']}}
-                  </v-btn>
-                </div>
-                <!-- <div v-else>
-                  {{ props.formattedRow }}
-                </div> -->
-              </template>
-            </vue-good-table>
+
+              <grid-item v-for="item in layout" :key="item.i"
+                  :x="item.x"
+                  :y="item.y"
+                  :w="item.w"
+                  :h="item.h"
+                  :i="item.i"
+                  :object="item.object">
+                  <v-row>
+                    <v-col cols="12" class="mt-2 pb-0 mb-0">
+                      {{item.object.ngay_group}}
+                    </v-col>
+                    <v-col cols="12" class="mt-0 pt-0">
+                      {{item.object.ten_cong_viec}}
+                    </v-col>
+                  </v-row>
+              </grid-item>
+            </grid-layout>
           </v-col>
            <v-col cols="12">
             <chamConDetail
@@ -66,30 +62,7 @@
           <!-- Row 3 -->
         </v-card-text>
         <v-divider class="mx-4"></v-divider>
-       
       </v-card>
-    </v-col>
-     <v-col cols="12">
-        <grid-layout
-          :layout="layout"
-          :col-num="layoutSize.col_num"
-          :row-height="30"
-          :is-draggable="false"
-          :is-resizable="false"
-          :vertical-compact="true"
-          :margin="[10, 10]"
-          :use-css-transforms="true"
-        >
-
-          <grid-item v-for="item in layout"
-              :x="item.x"
-              :y="item.y"
-              :w="item.w"
-              :h="item.h"
-              :i="item.i">
-              {{item.i}}
-          </grid-item>
-        </grid-layout>
     </v-col>
     <v-col cols="12">
       <ChamConListDialog
@@ -101,9 +74,7 @@
         @refeshList="showChartKCBS()"
       />
     </v-col>
-   
   </v-row>
-
 </template>
 <script>
 import axios from 'axios';
@@ -139,84 +110,7 @@ export default {
     return {
       loadingInstance: null,
       chamConListDialog: false,
-      colCongViec: [
-        {
-          label: 'Ngày',
-          field: 'ngay_group',
-          filterable: true,
-          type: 'date',
-          formatFn: function (value) {
-            return value != null ? moment(value).format(config.DATE_FM) : null
-          },
-          hidden: true,
-        },
-        {
-          label: 'Công việc',
-          field: 'ten_cong_viec',
-          filterable: true,
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Mã CV', // placeholder for filter input
-              filterValue: '',
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
-        },
-        {
-          label: 'Ngủ',
-          field: 'working_time',
-          type: 'number',
-          filterable: true,
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Tổng', // placeholder for filter input
-              filterValue: '',
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
-          formatFn: function (val) {
-            return `${Math.floor(val / 60) } giờ ${val % 60} phút`
-          },
-        },
-        {
-          label: 'Bú',
-          field: 'the_tich_sua',
-          type: 'number',
-          filterable: true,
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Tổng', // placeholder for filter input
-              filterValue: '',
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
-          formatFn: function (value) {
-            return `${value} ml`
-          },
-        },
-        {
-          label: 'Số cữ',
-          field: 'count_ma_cv',
-          type: 'number',
-          filterable: true,
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Tổng', // placeholder for filter input
-              filterValue: '',
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
-        },
-        
-      ],
+      
       tblDataCongViec: [
       ],
       chamConTitle: '',
@@ -239,18 +133,18 @@ export default {
       },
       layout: [
         // https://github.com/jbaysolutions/vue-grid-layout
-        {"x":0,"y":0,"w":2,"h":2,"i":"H2"},
-        {"x":2,"y":0,"w":2,"h":2,"i":"H4"},
-        {"x":4,"y":0,"w":2,"h":2,"i":"2"},
-        {"x":6,"y":0,"w":2,"h":2,"i":"3"},
-        {"x":8,"y":0,"w":2,"h":2,"i":"4"},
-        {"x":10,"y":0,"w":2,"h":2,"i":"5"},
-        {"x":0,"y":5,"w":2,"h":2,"i":"6"},
-        {"x":2,"y":5,"w":2,"h":2,"i":"7"},
-        {"x":4,"y":5,"w":2,"h":2,"i":"8"},
-        {"x":6,"y":4,"w":2,"h":2,"i":"9"},
-        {"x":8,"y":4,"w":2,"h":2,"i":"10"},
-        {"x":10,"y":10,"w":2,"h":2,"i":"5"},
+        // {"x":0,"y":0,"w":2,"h":2,"i":"H2"},
+        // {"x":2,"y":0,"w":2,"h":2,"i":"H4"},
+        // {"x":4,"y":0,"w":2,"h":2,"i":"2"},
+        // {"x":6,"y":0,"w":2,"h":2,"i":"3"},
+        // {"x":8,"y":0,"w":2,"h":2,"i":"4"},
+        // {"x":10,"y":0,"w":2,"h":2,"i":"5"},
+        // {"x":0,"y":5,"w":2,"h":2,"i":"6"},
+        // {"x":2,"y":5,"w":2,"h":2,"i":"7"},
+        // {"x":4,"y":5,"w":2,"h":2,"i":"8"},
+        // {"x":6,"y":4,"w":2,"h":2,"i":"9"},
+        // {"x":8,"y":4,"w":2,"h":2,"i":"10"},
+        // {"x":10,"y":10,"w":2,"h":2,"i":"5"},
       ]
     }
   },
@@ -311,16 +205,33 @@ export default {
         const unique = [...new Set(data.map(item => item.ngay_group))]; // [ 'A', 'B']
         console.log('selectChamConGroup-unique', unique);
         if(undefined != unique){
+          let x = 0;
+          let y = 0;
+          let ifor = 0;
           for(let i = 0; i < unique.length; i ++){
             let arr = data.filter(function(item){
               if(item.ngay_group == unique[i]) return true;
             });
-            self.tblDataCongViec.push({
-              // mode: "span",
-              ngay_group:  moment(unique[i]).format(config.DATE_FM),
-              total: 0,
-              children: arr, 
-            });
+            for(let j = 0; j < arr.length; j ++){
+              let item = {
+                "x":x,
+                "y":y,
+                "w":2,
+                "h":2,
+                "i": ifor++,
+                "object": arr[j]
+              };
+              self.layout.push(item);
+              
+              x += 2;
+             
+            }            
+            // self.tblDataCongViec.push({
+            //   // mode: "span",
+            //   ngay_group:  moment(unique[i]).format(config.DATE_FM),
+            //   total: 0,
+            //   children: arr, 
+            // });
           }
         }
         self.close();

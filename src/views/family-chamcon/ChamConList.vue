@@ -1,10 +1,10 @@
 <template>
-  <v-row class="match-height">
+  <v-row>
     <v-col>
       <v-card>
         <v-card-title class="pt-5 pb-2 mr-0 pr-2">
           <v-col cols="10" md="10" class="pa-0 ma-0">
-            Danh sách công việc [Layout]
+            CHĂM CON LIST
           </v-col>
           <v-col cols="2" md="2" class="pa-0 ma-0 text-right">
             <v-btn
@@ -19,9 +19,9 @@
           </v-col>
         </v-card-title>
         
-        <v-card-text class="mt-0 mb-0 pt-1 pb-1 ma-0 pa-0">
+        <v-card-text>
           <!-- Row 1 -->
-          <v-col cols="12" md="12" class="ma-0 pa-0" >
+          <v-col cols="12" md="12">
             <vue-good-table
               title="Công việc chăm con"
               styleClass="vgt-table bordered"
@@ -69,28 +69,6 @@
        
       </v-card>
     </v-col>
-     <v-col cols="12">
-        <grid-layout
-          :layout="layout"
-          :col-num="layoutSize.col_num"
-          :row-height="30"
-          :is-draggable="false"
-          :is-resizable="false"
-          :vertical-compact="true"
-          :margin="[10, 10]"
-          :use-css-transforms="true"
-        >
-
-          <grid-item v-for="item in layout"
-              :x="item.x"
-              :y="item.y"
-              :w="item.w"
-              :h="item.h"
-              :i="item.i">
-              {{item.i}}
-          </grid-item>
-        </grid-layout>
-    </v-col>
     <v-col cols="12">
       <ChamConListDialog
         ref="chamConListDialog"
@@ -113,7 +91,6 @@ import "vue-easytable/libs/theme-dark/index.css";
 import { VueGoodTable } from 'vue-good-table';
 import chamConDetail from "./ChamConDetail";
 import ChamConListDialog from './ChamConListDialog.vue'
-import VueGridLayout from 'vue-grid-layout';
 
 import {
   mdiMinus,
@@ -132,8 +109,6 @@ export default {
     VueGoodTable,
     chamConDetail,
     ChamConListDialog,
-    GridLayout: VueGridLayout.GridLayout,
-    GridItem: VueGridLayout.GridItem,
   },
   data() {
     return {
@@ -234,24 +209,6 @@ export default {
       rowSelected: [],
       titleList: "",
       dateList: "",
-      layoutSize: {
-        col_num: 12,
-      },
-      layout: [
-        // https://github.com/jbaysolutions/vue-grid-layout
-        {"x":0,"y":0,"w":2,"h":2,"i":"H2"},
-        {"x":2,"y":0,"w":2,"h":2,"i":"H4"},
-        {"x":4,"y":0,"w":2,"h":2,"i":"2"},
-        {"x":6,"y":0,"w":2,"h":2,"i":"3"},
-        {"x":8,"y":0,"w":2,"h":2,"i":"4"},
-        {"x":10,"y":0,"w":2,"h":2,"i":"5"},
-        {"x":0,"y":5,"w":2,"h":2,"i":"6"},
-        {"x":2,"y":5,"w":2,"h":2,"i":"7"},
-        {"x":4,"y":5,"w":2,"h":2,"i":"8"},
-        {"x":6,"y":4,"w":2,"h":2,"i":"9"},
-        {"x":8,"y":4,"w":2,"h":2,"i":"10"},
-        {"x":10,"y":10,"w":2,"h":2,"i":"5"},
-      ]
     }
   },
   created() {

@@ -156,4 +156,17 @@ export default {
     }
   },
 }
+var ws = new WebSocket('ws://localhost:8019');
+
+  ws.onopen = function () {
+      console.log('websocket is connected ...')
+      ws.send('connected')
+  }
+// setInterval(
+//       () => ws.send(`${new Date()}`),
+//       1000
+//     )
+  ws.onmessage = function (ev) {
+      console.log(JSON.parse(ev.data))
+  }
 </script>

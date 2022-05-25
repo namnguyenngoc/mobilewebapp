@@ -20,13 +20,16 @@
         </v-card-title>
         <v-card-text class="mt-0 mb-0 pt-1 pb-1 ma-0 pa-0">
           <!-- Row 1 -->
+          <div class="layout-ls">
             <grid-layout
-              :layout="layout"
+              :responsive-layouts="layout"
+              :layout.sync="layout"
               :col-num="layoutSize.col_num"
               :row-height="50"
               :is-draggable="true"
               :is-resizable="true"
               :vertical-compact="true"
+              :responsive="true"
               :margin="[10, 10]"
               :use-css-transforms="true"
             >
@@ -45,6 +48,7 @@
                     </v-col>
                 </grid-item>
               </grid-layout>
+            </div>
           </v-card-text>
            <v-col cols="12">
             <chamConDetail
@@ -147,11 +151,11 @@ export default {
       lsCongViec: []
     }
   },
-  created() {
-    if(this.isMobile()){
-      this.layoutSize.col_num = 1;
-    }
-    this.loadData();
+  async created() {
+    // if(this.isMobile()){
+    //   this.layoutSize.col_num = 1;
+    // }
+    await this.loadData();
   },
   computed: {
      
@@ -189,13 +193,13 @@ export default {
 
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     },
-    loadData(){
+    async loadData(){
       let self = this;
       let param = {
         ma_cv: ['WC'],
 
       }
-      axios
+      await axios
       .post(`${config.API_URL}/selectChamConGroup`, param)
       .then(response => {
         // seft.hotSettings.data = response.data.data;
@@ -345,5 +349,14 @@ export default {
   .theme--light .cssTransforms{
     // background: #E6E6FA;
     border-color: #dcdcdc !important
+  }
+
+  .layout-ls{
+    width:100%;
+    margin-top: 10px;
+    height:700px;
+    min-height:100px;
+    max-height: 700px;
+    overflow: auto; 
   }
 </style>

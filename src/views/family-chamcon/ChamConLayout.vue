@@ -18,38 +18,34 @@
             </v-btn>
           </v-col>
         </v-card-title>
-        
+        <v-card-text class="mt-0 mb-0 pt-1 pb-1 ma-0 pa-0">
           <!-- Row 1 -->
-          <v-col cols="12" md="12">
             <grid-layout
               :layout="layout"
               :col-num="layoutSize.col_num"
-              :row-height="30"
-              :is-draggable="false"
-              :is-resizable="false"
+              :row-height="50"
+              :is-draggable="true"
+              :is-resizable="true"
               :vertical-compact="true"
-              :margin="[5, 5]"
+              :margin="[10, 10]"
               :use-css-transforms="true"
             >
-
-              <grid-item v-for="item in layout" :key="item.i"
-                  :x="item.x"
-                  :y="item.y"
-                  :w="item.w"
-                  :h="item.h"
-                  :i="item.i"
-                  :object="item.object">
-                  <v-row>
-                    <v-col cols="12" class="mt-2 pb-0 mb-0">
-                      {{item.object.ngay_group}}
+                <grid-item v-for="item in layout" :key="item.i"
+                    :x="item.x"
+                    :y="item.y"
+                    :w="item.w"
+                    :h="item.h"
+                    :i="item.i"
+                    :object="item.object">
+                    <v-col cols="12" sm="12" class="ma-0 pa-0 pl-1 pr-1 mt-1 ml-1">
+                      <h4>{{item.object.ngay.split(",")[0]}}</h4>
                     </v-col>
-                    <v-col cols="12" class="mt-0 pt-0">
-                      {{item.object.ten_cong_viec}}
+                    <v-col cols="12" sm="12" class="ma-0 pa-0 pl-1 pr-1 mt-1 ml-1" v-for="item2 in item.object.item" :key="item2.ma_cv">
+                      <div>{{item2.ten_cong_viec}}: {{'BSB_UONG' == item2.ma_cv ? `${item2.the_tich_sua}ml` : `${Math.floor(item2.working_time / 60) } giờ ${item2.working_time % 60} phút`}}</div>
                     </v-col>
-                  </v-row>
-              </grid-item>
-            </grid-layout>
-          </v-col>
+                </grid-item>
+              </grid-layout>
+          </v-card-text>
            <v-col cols="12">
             <chamConDetail
               ref="chamConDetail"
@@ -85,6 +81,8 @@ import { VueGoodTable } from 'vue-good-table';
 import chamConDetail from "./ChamConDetail";
 import ChamConListDialog from './ChamConListDialog.vue'
 import VueGridLayout from 'vue-grid-layout';
+// import { GridLayout } from 'vue-grid-layout';
+// import { GridItem } from 'vue-grid-layout';
 
 import {
   mdiMinus,
@@ -133,19 +131,20 @@ export default {
       },
       layout: [
         // https://github.com/jbaysolutions/vue-grid-layout
-        // {"x":0,"y":0,"w":2,"h":2,"i":"H2"},
-        // {"x":2,"y":0,"w":2,"h":2,"i":"H4"},
-        // {"x":4,"y":0,"w":2,"h":2,"i":"2"},
-        // {"x":6,"y":0,"w":2,"h":2,"i":"3"},
-        // {"x":8,"y":0,"w":2,"h":2,"i":"4"},
-        // {"x":10,"y":0,"w":2,"h":2,"i":"5"},
-        // {"x":0,"y":5,"w":2,"h":2,"i":"6"},
-        // {"x":2,"y":5,"w":2,"h":2,"i":"7"},
-        // {"x":4,"y":5,"w":2,"h":2,"i":"8"},
-        // {"x":6,"y":4,"w":2,"h":2,"i":"9"},
-        // {"x":8,"y":4,"w":2,"h":2,"i":"10"},
-        // {"x":10,"y":10,"w":2,"h":2,"i":"5"},
-      ]
+        // {"x":0,"y":0,"w":2,"h":2,"i":"1"},
+        // {"x":2,"y":0,"w":2,"h":2,"i":"2"},
+        // {"x":4,"y":0,"w":2,"h":2,"i":"3"},
+        // {"x":6,"y":0,"w":2,"h":2,"i":"4"},
+        // {"x":8,"y":0,"w":2,"h":2,"i":"5"},
+        // {"x":10,"y":0,"w":2,"h":2,"i":"6"},
+        // {"x":0,"y":5,"w":2,"h":2,"i":"7"},
+        // {"x":2,"y":5,"w":2,"h":2,"i":"8"},
+        // {"x":4,"y":5,"w":2,"h":2,"i":"9"},
+        // {"x":6,"y":4,"w":2,"h":2,"i":"11"},
+        // {"x":8,"y":4,"w":2,"h":2,"i":"12"},
+        // {"x":10,"y":10,"w":2,"h":2,"i":"13"},
+      ],
+      lsCongViec: []
     }
   },
   created() {
@@ -190,13 +189,13 @@ export default {
 
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     },
-    async loadData(){
+    loadData(){
       let self = this;
       let param = {
         ma_cv: ['WC'],
 
       }
-      await axios
+      axios
       .post(`${config.API_URL}/selectChamConGroup`, param)
       .then(response => {
         // seft.hotSettings.data = response.data.data;
@@ -204,36 +203,45 @@ export default {
         console.log('selectChamConGroup-data', data);
         const unique = [...new Set(data.map(item => item.ngay_group))]; // [ 'A', 'B']
         console.log('selectChamConGroup-unique', unique);
+        let arrA = [];
         if(undefined != unique){
           let x = 0;
-          let y = 0;
+          let k = 0;
           let ifor = 0;
-          for(let i = 0; i < unique.length; i ++){
+          let yIndex = 0;
+          let obj = {};
+          let item2 = {};
+          
+          for(let i = 6; i < unique.length; i ++){
             let arr = data.filter(function(item){
               if(item.ngay_group == unique[i]) return true;
             });
-            for(let j = 0; j < arr.length; j ++){
-              let item = {
-                "x":x,
-                "y":y,
+           
+            obj = {};
+            item2 = {
+                "x": i % 6 * 2,
+                "y": k,
                 "w":2,
                 "h":2,
                 "i": ifor++,
-                "object": arr[j]
+                "object": {
+                  ngay: moment(unique[i]).format(config.DATE_TIME_FM_1),
+                  item: arr,
+                }
               };
-              self.layout.push(item);
-              
-              x += 2;
-             
-            }            
-            // self.tblDataCongViec.push({
-            //   // mode: "span",
-            //   ngay_group:  moment(unique[i]).format(config.DATE_FM),
-            //   total: 0,
-            //   children: arr, 
-            // });
+
+            console.log(item2, item2);
+              arrA.push(item2);
+            self.layout.push(item2);
+            if(i % 6 * 2 == 10){
+              k ++;
+            }    
+           
           }
         }
+        console.log(`self.arrA`, arrA.toString());
+
+        
         self.close();
       });
     },
@@ -326,6 +334,16 @@ export default {
   }
   
   .cssTransforms{
-    background: #ff0000;
+    border: 1px solid;
+    border-radius: 5px;
+  }
+  .theme--dark .cssTransforms{
+    // background: #E6E6FA;
+    
+    border-color: rgba(231, 227, 252, 0.14) !important
+  }
+  .theme--light .cssTransforms{
+    // background: #E6E6FA;
+    border-color: #dcdcdc !important
   }
 </style>

@@ -355,14 +355,14 @@ export default {
     border-color: #dcdcdc !important
   }
 
-  .layout-ls{
-    width:100%;
-    margin-top: 10px;
-    height:700px;
-    min-height:100px;
-    max-height: 700px;
-    overflow: auto; 
-  }
+  // .layout-ls{
+  //   width:100%;
+  //   margin-top: 10px;
+  //   height:700px;
+  //   min-height:100px;
+  //   max-height: 700px;
+  //   overflow: auto; 
+  // }
 
 
   .vue-grid-layout {

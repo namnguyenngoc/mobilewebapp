@@ -149,13 +149,12 @@ export default {
         // {"x":8,"y":4,"w":2,"h":2,"i":"12"},
         // {"x":10,"y":10,"w":2,"h":2,"i":"13"},
       ],
-      lsCongViec: []
+      lsCongViec: [],
+      is_Mobile: false,
     }
   },
   async created() {
-    // if(this.isMobile()){
-    //   this.layoutSize.col_num = 1;
-    // }
+    this.is_Mobile = this.isMobile();
     await this.loadData();
   },
   computed: {
@@ -217,14 +216,15 @@ export default {
           let obj = {};
           let item2 = {};
           
-          for(let i = 6; i < unique.length; i ++){
+          for(let i = 0; i < unique.length; i ++){
             let arr = data.filter(function(item){
               if(item.ngay_group == unique[i]) return true;
             });
            
             obj = {};
             item2 = {
-                "x": i % 6 * 2,
+                "x": self.is_Mobile ? 0 : i % 6 * 2,
+                // "x": i % 6 * 2,
                 "y": k,
                 "w":2,
                 "h":2,
@@ -351,7 +351,7 @@ export default {
     border-color: rgba(231, 227, 252, 0.14) !important
   }
   .theme--light .cssTransforms{
-    // background: #E6E6FA;
+    background: #E6E6FA;
     border-color: #dcdcdc !important
   }
 
@@ -365,53 +365,53 @@ export default {
   // }
 
 
-  .vue-grid-layout {
-    background: #312d4b;
-  }
-  .vue-grid-item:not(.vue-grid-placeholder) {
-      background:#312d4b;
-      border: 1px solid black;
-  }
-  .vue-grid-item .resizing {
-      opacity: 0.9;
-  }
-  .vue-grid-item .static {
-      background: #cce;
-  }
-  .vue-grid-item .text {
-      font-size: 24px;
-      text-align: center;
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      margin: auto;
-      height: 100%;
-      width: 100%;
-  }
-  .vue-grid-item .no-drag {
-      height: 100%;
-      width: 100%;
-  }
-  .vue-grid-item .minMax {
-      font-size: 12px;
-  }
-  .vue-grid-item .add {
-      cursor: pointer;
-  }
-  .vue-draggable-handle {
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      top: 0;
-      left: 0;
-      background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10'><circle cx='5' cy='5' r='5' fill='#999999'/></svg>") no-repeat;
-      background-position: bottom right;
-      padding: 0 8px 8px 0;
-      background-repeat: no-repeat;
-      background-origin: content-box;
-      box-sizing: border-box;
-      cursor: pointer;
-  }
+  // .vue-grid-layout {
+  //   background: #312d4b;
+  // }
+  // .vue-grid-item:not(.vue-grid-placeholder) {
+  //     background:#312d4b;
+  //     border: 1px solid black;
+  // }
+  // .vue-grid-item .resizing {
+  //     opacity: 0.9;
+  // }
+  // .vue-grid-item .static {
+  //     background: #cce;
+  // }
+  // .vue-grid-item .text {
+  //     font-size: 24px;
+  //     text-align: center;
+  //     position: absolute;
+  //     top: 0;
+  //     bottom: 0;
+  //     left: 0;
+  //     right: 0;
+  //     margin: auto;
+  //     height: 100%;
+  //     width: 100%;
+  // }
+  // .vue-grid-item .no-drag {
+  //     height: 100%;
+  //     width: 100%;
+  // }
+  // .vue-grid-item .minMax {
+  //     font-size: 12px;
+  // }
+  // .vue-grid-item .add {
+  //     cursor: pointer;
+  // }
+  // .vue-draggable-handle {
+  //     position: absolute;
+  //     width: 20px;
+  //     height: 20px;
+  //     top: 0;
+  //     left: 0;
+  //     background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10'><circle cx='5' cy='5' r='5' fill='#999999'/></svg>") no-repeat;
+  //     background-position: bottom right;
+  //     padding: 0 8px 8px 0;
+  //     background-repeat: no-repeat;
+  //     background-origin: content-box;
+  //     box-sizing: border-box;
+  //     cursor: pointer;
+  // }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <v-row class="mb-0 pb-0 mr-1 pr-1">
+  <v-row class="mb-0 pb-0 mr-1 pr-1 ml-1">
     <v-col cols="12" md="6" sm="12" class="pa-0 ma-0 text-left pr-1">
       <v-btn-toggle class="mr-1">
         <v-btn color="success" @click="countWorkInDay2()" small class="pl-1 pr-1 btn-style-1"> 

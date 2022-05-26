@@ -8,10 +8,10 @@
           </v-icon>
         </v-btn>
         <v-btn color="info" small class="pl-1 pr-1">
-          Ti [{{model.thoi_gian_gan_nhat_uong}}] [{{model.the_tich_sua_uong }} / {{model.sum_uong }}ml] [{{model.duration}}]
+        [{{model.thoi_gian_gan_nhat_uong}}][{{model.the_tich_sua_uong }}/{{model.sum_uong }}ml][{{model.duration}}]
         </v-btn>
         <v-btn color="success" @click="loadListDetail()" small class="pl-1 pr-1"> 
-          <v-icon dark>
+          <v-icon dark class="pl-1 pr-1">
             {{ icons.mdiFormatListBulleted }}
           </v-icon>
         </v-btn>

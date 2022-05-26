@@ -21,13 +21,13 @@
                       {{ icons.mdiReload }}
                     </v-icon>
                   </v-btn>
-                <v-btn color="info" @click="insert('CN')" class="mr-1" small>S.KHÓE </v-btn>
+                <v-btn color="info" @click="insert('CN')" class="mr-1 pl-1 pr-1" small>S.KHÓE </v-btn>
 
-                <v-btn color="warning" @click="insert('BSB_HUT')" class="mr-1" small> T.SỮA </v-btn>
+                <v-btn color="warning" @click="insert('BSB_HUT')" class="mr-1 pl-1 pr-1" small> T.SỮA </v-btn>
 
-                <v-btn color="success" @click="insert('BSB_UONG')" class="mr-1" small>Sữa </v-btn>
+                <v-btn color="success" @click="insert('BSB_UONG')" class="mr-1 pl-1 pr-1" small>Sữa </v-btn>
                 
-                <v-btn color="error" @click="insert('BENH')" class="mr-1" small> 
+                <v-btn color="error" @click="insert('BENH')" class="mr-1 pl-1 pr-1" small> 
                     <v-icon dark>
                       {{ icons.mdiHospitalBoxOutline  }}
                     </v-icon>
@@ -39,10 +39,10 @@
                 <v-btn-toggle v-model="toggle_exclusive">
                   <v-btn-toggle class="mr-1">
                       <v-btn :color="nguThucModal.code=='N' ? 'info' : 'warning'" @click="updateNgu('OPEN')" small class="pl-1 pr-1">
-                        {{nguThucModal.name}} ({{nguThucModal.code=='N' ?  'Ngủ:' : 'Thức:' }} {{nguThucModal.lastTime}})
+                        {{nguThucModal.name}} ({{nguThucModal.code=='N' ?  'N:' : 'T:' }} {{nguThucModal.lastTime}})
                       </v-btn>
                       <v-btn color="success" @click="loadListDetail('NGU')" small class="pl-1 pr-1"> 
-                        <v-icon dark>
+                        <v-icon dark  class="mr-1 pl-1 pr-1">
                           {{ icons.mdiFormatListBulleted   }}
                         </v-icon>
                       </v-btn>

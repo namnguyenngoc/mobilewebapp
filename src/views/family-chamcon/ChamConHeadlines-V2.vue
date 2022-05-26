@@ -1094,6 +1094,7 @@ export default {
     dialogInformation
   },
   data() {
+    let seftMain = this;
     return {
       // satisfactionEmojis: [1,2,3],
       selfGlobal: this,
@@ -2209,6 +2210,7 @@ export default {
               tickPlacement: 'between',
               labels: {
                 formatter: function (value) {
+                  if(seftMain.chartKCBS.selected.code != 'NGAY') return value;
                   return `${value}`;
                 }
               }
@@ -2245,11 +2247,13 @@ export default {
             enabled: true,
             enabledOnSeries: [0,1,2],
             formatter: function(value, { seriesIndex, dataPointIndex, w}) {
+              if(seftMain.chartKCBS.selected.code != 'NGAY') return value;
               if(seriesIndex == 0){
+                
                 let value2 = `${Math.floor(value  / 60) } giờ ${value  % 60} phút`
                 return value2;
               }
-              return value
+              return value;
             },
            
             offsetY: 0,

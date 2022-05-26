@@ -1,6 +1,6 @@
 <template>
-  <v-row>
-    <v-col>
+  <v-col cols="12" class="ma-0 pa-0">
+    <v-col cols="12" class="ma-0 pa-0">
       <v-card>
         <v-card-title class="pt-5 pb-2 mr-0 pr-2">
           <v-col cols="10" md="10" class="pa-0 ma-0">
@@ -73,7 +73,7 @@
         :v-model="lstDetail.vmodel"
       />
     </v-col>
-  </v-row>
+  </v-col>
 </template>
 <script>
 import axios from 'axios';

@@ -19,14 +19,12 @@
     </v-card-title>
     <v-card-text class="ma-0 pa-0">
       <v-col md="12" sm="12" class="ma-0 pa-0">
-        <v-row>
           <v-col md="12" sm="12" v-show="!isShow">
             <ChamConList/>
           </v-col>
           <v-col md="12" sm="12" v-show="isShow">
             <ChamConLayout  />
           </v-col>
-        </v-row>
       </v-col>
     </v-card-text>
   </v-card>

@@ -1,16 +1,16 @@
 <template>
-  <v-row class="mb-0 pb-0 text-center">
-    <v-col cols="12" md="6" sm="12" class="pa-0 ma-0 text-left mb-1">
-      <v-btn-toggle class="">
-        <v-btn color="success" @click="countWorkInDay2()" small class="pl-1 pr-1"> 
-          <v-icon dark class="pl-1 pr-1">
+  <v-row class="mb-0 pb-0 mr-1 pr-1">
+    <v-col cols="12" md="6" sm="12" class="pa-0 ma-0 text-left pr-1">
+      <v-btn-toggle class="mr-1">
+        <v-btn color="success" @click="countWorkInDay2()" small class="pl-1 pr-1 btn-style-1"> 
+          <v-icon dark class="pl-0 pr-0">
             {{ icons.mdiHistory }}
           </v-icon>
         </v-btn>
-        <v-btn color="info" small class="pl-1 pr-1">
-        [{{model.thoi_gian_gan_nhat_uong}}][{{model.the_tich_sua_uong }}/{{model.sum_uong }}ml][{{model.duration}}]
+        <v-btn color="info" small class="pl-1 pr-1 btn-style-full-width">
+        {{model.thoi_gian_gan_nhat_uong}} [{{model.the_tich_sua_uong }}/{{model.sum_uong }}ml][{{model.duration}}]
         </v-btn>
-        <v-btn color="success" @click="loadListDetail()" small class="pl-1 pr-1"> 
+        <v-btn color="success" @click="loadListDetail()" small class="pl-1 pr-1 btn-style-1"> 
           <v-icon dark class="pl-1 pr-1">
             {{ icons.mdiFormatListBulleted }}
           </v-icon>

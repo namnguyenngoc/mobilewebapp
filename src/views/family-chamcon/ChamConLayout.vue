@@ -6,7 +6,7 @@
           <v-col cols="10" md="10" class="pa-0 ma-0">
             CHĂM CON LAYOUT
           </v-col>
-          <v-col cols="12" md="12" class="pa-0 ma-0 text-right">
+          <v-col cols="12" md="2" class="pa-0 ma-0 text-right">
             <v-btn
               color="info"
               icon

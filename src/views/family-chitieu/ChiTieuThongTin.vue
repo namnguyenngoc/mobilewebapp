@@ -107,8 +107,7 @@
          
         ],
         cskEmailCSK: [],
-        
-        buttonColor: ['info', 'primary', 'warning']
+      
       }
     },
     computed: {

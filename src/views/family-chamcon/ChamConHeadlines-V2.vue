@@ -1,8 +1,11 @@
 <template>
   <v-row class="match-height">
-    <v-card-title class="pb-0" style="word-break: break-word;">
-      Đăng Khôi &nbsp
-      <h5 color="warning">{{ tuan_tuoi }}</h5>
+    <v-card-title class="mx-auto pb-0 font-normal match-width" style="width: 100%">
+      <v-row class="full-width mb-0 mt-1"> 
+        <v-col md="4" sm="4" xs="12" class="mb-0 mt-0 pb-0 pt-1 bold" @click="openDetail()"><h3>Đăng Khôi</h3></v-col>
+        <v-col md="8" sm="8" xs="12" class="mb-0 mt-0 pb-0 pt-0 text-right">{{ tuan_tuoi.date }}</v-col>
+      </v-row>
+
     </v-card-title>
     <!-- Theo doi suc khoe -->
    
@@ -16,7 +19,7 @@
             <v-row>
               <v-col cols="12" md="5" sm="12" class="text-left">
                 <v-btn-toggle v-model="toggle_exclusive">
-                  <v-btn color="warning" @click="updateNgu()" class="mr-1" small>
+                  <v-btn color="warning" @click="updateNgu()" class="pl-1 pr-1 btn-style-1 mr-1" small>
                     <v-icon dark>
                       {{ icons.mdiReload }}
                     </v-icon>
@@ -35,13 +38,13 @@
 
               </v-btn-toggle>
               </v-col>
-              <v-col cols="12" md="7" sm="12" class="text-left">
+              <v-col cols="12" md="7" sm="12" class="text-center">
                 <v-btn-toggle v-model="toggle_exclusive">
                   <v-btn-toggle class="mr-1">
                       <v-btn :color="nguThucModal.code=='N' ? 'info' : 'warning'" @click="updateNgu('OPEN')" small class="pl-1 pr-1">
                         {{nguThucModal.name}} ({{nguThucModal.code=='N' ?  'N:' : 'T:' }} {{nguThucModal.lastTime}})
                       </v-btn>
-                      <v-btn color="success" @click="loadListDetail('NGU')" small class="pl-1 pr-1"> 
+                      <v-btn color="success" @click="loadListDetail('NGU')" small class="pl-1 pr-1 btn-style-1"> 
                         <v-icon dark  class="mr-1 pl-1 pr-1">
                           {{ icons.mdiFormatListBulleted   }}
                         </v-icon>
@@ -946,6 +949,15 @@
         @refeshList="showChartKCBS()"
       />
     </v-col>
+    <v-col cols="12">
+      <dialogInformation
+          ref="dialogInformation"
+          :dialog="tuan_tuoi.dialog"
+          :title="tuan_tuoi.date"
+          :message="tuan_tuoi.value"
+          @agree="tuan_tuoi.dialog=true"
+        />
+    </v-col>
   </v-row>
   
 </template>
@@ -957,7 +969,7 @@ import ChartComponent from '../../components/ChartComponent.vue'
 import ChamConThongTin from './ChamConThongTin.vue'
 import DialogHoatDong from './DialogHoatDong.vue'
 import ChamConListDialog from './ChamConListDialog.vue'
-
+import dialogInformation from '../../components/DialogInformation'
 
 import { 
   mdiMinus, mdiOneUp, mdiPlus, mdiDeleteOutline, mdiCircleEditOutline, mdiSleep, mdiConsoleNetworkOutline,
@@ -976,7 +988,8 @@ export default {
     ChartComponent,
     ChamConThongTin,
     DialogHoatDong,
-    ChamConListDialog
+    ChamConListDialog,
+    dialogInformation
   },
   data() {
     return {
@@ -984,7 +997,7 @@ export default {
       selfGlobal: this,
       slider: 3,
       desserts: [],
-      tuan_tuoi: '',
+      tuan_tuoi: {dialog:false},
       items: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200],
       items_ghichu: ["Sữa mẹ", "Sữa CT"],
       icons: {
@@ -2232,7 +2245,14 @@ export default {
       await axios.get(`${config.API_URL}/getCurrentDate/2021-11-30`).then(response => {
         // seft.hotSettings.data = response.data.data;
 
-        self.tuan_tuoi = response.data.data[0].ngay_bat_dau_group
+        self.tuan_tuoi.value = response.data.data[0].ngay_bat_dau_group;
+        let dateString = response.data.data[0].group_date;
+        if(undefined != dateString && parseInt(dateString.split(" ")[0]) > 0){
+          self.tuan_tuoi.date = response.data.data[0].group_date;
+        } else{
+          self.tuan_tuoi.date = (response.data.data[0].group_date).replace("0 năm", "");
+        }
+        
       })
     },
     async loadDataCongViec(){
@@ -3593,6 +3613,11 @@ export default {
           
         this.$refs.chamConListDialog.dialog = true;
       },
+
+      openDetail(){
+        console.log('item-tuan_tuoi', this.tuan_tuoi);
+        this.$refs.dialogInformation.dialog = true;
+      }
   },
 }
 </script>

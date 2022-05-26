@@ -9,10 +9,7 @@
         <v-card class="auth-card">
           <!-- logo -->
           <v-card-title class="d-flex align-center justify-center py-7">
-            <router-link
-              to="/"
-              class="d-flex align-center"
-            >
+            
               <v-img
                 :src="require('@/assets/images/logos/logo.svg')"
                 max-height="30px"
@@ -25,7 +22,6 @@
               <h2 class="text-2xl font-weight-semibold">
                 Family
               </h2>
-            </router-link>
           </v-card-title>
 
           <!-- title -->
@@ -126,27 +122,6 @@
       </div>
     </v-form>
     <!-- background triangle shape  -->
-    <img
-      class="auth-mask-bg"
-      height="173"
-      :src="require(`@/assets/images/misc/mask-${$vuetify.theme.dark ? 'dark':'light'}.png`)"
-    >
-
-    <!-- tree -->
-    <v-img
-      class="auth-tree"
-      width="247"
-      height="185"
-      src="@/assets/images/misc/tree.png"
-    ></v-img>
-
-    <!-- tree  -->
-    <v-img
-      class="auth-tree-3"
-      width="377"
-      height="289"
-      src="@/assets/images/misc/tree-3.png"
-    ></v-img>
   </div>
 </template>
 

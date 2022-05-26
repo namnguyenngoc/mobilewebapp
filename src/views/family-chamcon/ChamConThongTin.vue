@@ -7,8 +7,8 @@
             {{ icons.mdiHistory }}
           </v-icon>
         </v-btn>
-        <v-btn color="info" small class="pl-1 pr-1 btn-style-full-width">
-        {{model.thoi_gian_gan_nhat_uong}} [{{model.the_tich_sua_uong }}/{{model.sum_uong }}ml][{{model.duration}}]
+        <v-btn color="info" small class="pl-1 pr-1 btn-style-full-width" @click="insert()">
+         [Ăn] {{model.thoi_gian_gan_nhat_uong}} [{{model.the_tich_sua_uong }}/{{model.sum_uong }}ml][{{model.duration}}]
         </v-btn>
         <v-btn color="success" @click="loadListDetail()" small class="pl-1 pr-1 btn-style-1"> 
           <v-icon dark class="pl-1 pr-1">
@@ -198,6 +198,11 @@
           
         this.$refs.chamConListDialog.dialog = true;
       },
+
+      insert() {
+        console.log('insert')
+        this.$emit('insert');
+      }
       
     }, // end created
   } // End exxport default

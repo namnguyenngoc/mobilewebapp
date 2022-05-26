@@ -13,10 +13,28 @@
       <v-card>
         <v-card-title class="pa-0 pt-5 pb-2 ma-0">
           <v-col cols="12" md="12" class="ma-0 pt-1 pb-2 mb-0">
-            <ChamConThongTin ref="ChamConThongTin2" />
+            <ChamConThongTin ref="ChamConThongTin2"
+            @insert="insert('BSB_UONG')" />
           </v-col>
           <v-col cols="12">
             <v-row>
+              <v-col cols="12" md="7" sm="12" class="text-left">
+                <v-btn-toggle v-model="toggle_exclusive">
+                  <v-btn :color="nguThucModal.code=='N' ? 'info' : 'warning'" @click="updateNgu('OPEN')" small class="pl-1 pr-1">
+                      {{nguThucModal.name}} ({{nguThucModal.code=='N' ?  'N:' : 'T:' }} {{nguThucModal.lastTime}})
+                    </v-btn>
+                    <v-btn color="success" @click="loadListDetail('NGU')" small class="pl-1 pr-1 btn-style-1 mr-2"> 
+                      <v-icon dark  class="mr-1 pl-1 pr-1">
+                        {{ icons.mdiFormatListBulleted   }}
+                      </v-icon>
+                    </v-btn>
+                      <v-btn color="info" @click="insert('WC')" small class="pl-1 pr-1">
+                      WC ({{be_wc_model.ngay_thuc_hien_gan_nhat }})
+                  </v-btn>
+
+                
+                </v-btn-toggle>
+              </v-col>
               <v-col cols="12" md="5" sm="12" class="text-left">
                 <v-btn-toggle v-model="toggle_exclusive">
                   <v-btn color="warning" @click="updateNgu()" class="pl-1 pr-1 btn-style-1 mr-1" small>
@@ -28,7 +46,6 @@
 
                 <v-btn color="warning" @click="insert('BSB_HUT')" class="mr-1 pl-1 pr-1" small> T.SỮA </v-btn>
 
-                <v-btn color="success" @click="insert('BSB_UONG')" class="mr-1 pl-1 pr-1" small>Sữa </v-btn>
                 
                 <v-btn color="error" @click="insert('BENH')" class="mr-1 pl-1 pr-1" small> 
                     <v-icon dark>
@@ -38,26 +55,7 @@
 
               </v-btn-toggle>
               </v-col>
-              <v-col cols="12" md="7" sm="12" class="text-center">
-                <v-btn-toggle v-model="toggle_exclusive">
-                  <v-btn-toggle class="mr-1">
-                      <v-btn :color="nguThucModal.code=='N' ? 'info' : 'warning'" @click="updateNgu('OPEN')" small class="pl-1 pr-1">
-                        {{nguThucModal.name}} ({{nguThucModal.code=='N' ?  'N:' : 'T:' }} {{nguThucModal.lastTime}})
-                      </v-btn>
-                      <v-btn color="success" @click="loadListDetail('NGU')" small class="pl-1 pr-1 btn-style-1"> 
-                        <v-icon dark  class="mr-1 pl-1 pr-1">
-                          {{ icons.mdiFormatListBulleted   }}
-                        </v-icon>
-                      </v-btn>
-                    </v-btn-toggle>
-                    <v-btn color="info" @click="insert('WC')" small class="pl-1 pr-1">
-                        WC ({{be_wc_model.ngay_thuc_hien_gan_nhat }})
-                    </v-btn>
-                    
-                    
-
-                  </v-btn-toggle>
-              </v-col>
+              
             
             </v-row>
           </v-col>
@@ -3617,6 +3615,11 @@ export default {
       openDetail(){
         console.log('item-tuan_tuoi', this.tuan_tuoi);
         this.$refs.dialogInformation.dialog = true;
+      },
+
+      insertBSB(){
+        console.log('insertBSB');
+        this.insert('BSB_UONG');
       }
   },
 }

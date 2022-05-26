@@ -22,10 +22,9 @@
           <!-- Row 1 -->
           <div class="layout-ls">
             <grid-layout
-              :responsive-layouts="layout"
               :layout.sync="layout"
               :col-num="layoutSize.col_num"
-              :row-height="50"
+              :row-height="60"
               :is-draggable="false"
               :is-resizable="false"
               :vertical-compact="true"
@@ -45,7 +44,7 @@
                       <h4>{{item.object.ngay.split(",")[0]}}</h4>
                     </v-col>
                     <v-col cols="12" sm="12" class="ma-0 pa-0 pl-1 pr-1 mt-1 ml-1" v-for="item2 in item.object.item" :key="item2.ma_cv">
-                      <div>{{item2.ten_cong_viec}}: {{'BSB_UONG' == item2.ma_cv ? `${item2.the_tich_sua}ml` : `${Math.floor(item2.working_time / 60) } giờ ${item2.working_time % 60} phút`}}</div>
+                      <div @click="onRowDoubleClick(item2)">{{item2.ten_cong_viec}}: {{'BSB_UONG' == item2.ma_cv ? `${item2.the_tich_sua}ml` : `${Math.floor(item2.working_time / 60) } giờ ${item2.working_time % 60} phút`}}</div>
                     </v-col>
                 </grid-item>
               </grid-layout>
@@ -68,11 +67,10 @@
     <v-col cols="12">
       <ChamConListDialog
         ref="chamConListDialog"
-        :title="titleList"
-        :date="dateList"
-        :item="chamConItem"
-        :v-model="chamConListDialog"
-        @refeshList="showChartKCBS()"
+        :title="lstDetail.title"
+        :date="lstDetail.date"
+        :item="lstDetail.item"
+        :v-model="lstDetail.vmodel"
       />
     </v-col>
   </v-row>
@@ -151,6 +149,13 @@ export default {
       ],
       lsCongViec: [],
       is_Mobile: false,
+      lstDetail: {
+        title:"DETAIL",
+        date: moment(new Date()).format(config.DATE_FM),
+        item: {},
+        vmodel:true,
+      },
+
     }
   },
   async created() {
@@ -264,20 +269,20 @@ export default {
     // params.event - click event
       this.rowSelected = [];
       let self = this;
-      console.log('row', params.row);
-      this.rowSelected =  params.row;
+      console.log('row', params);
+      this.rowSelected =  params;
       this.chamConItem = {
-        ma_cv: params.row.ma_cv,
-        gio_bat_dau:  moment(params.row.ngay_group).format(config.DATE_TIME_FULL_FM),
-        status: params.row.status,
-        working_time: params.row.working_time,
-        the_tich_sua: params.row.the_tich_sua,
-        item_time_lbl: params.row.ma_cv == 'BSB_UONG' ? `${params.row.the_tich_sua} ml` : `${Math.floor(params.row.working_time / 60) } giờ ${(Math.floor(params.row.working_time / 60)) % 24} phút`,
-        row_item: params.row,
+        ma_cv: params.ma_cv,
+        gio_bat_dau:  moment(params.ngay_group).format(config.DATE_TIME_FULL_FM),
+        status: params.status,
+        working_time: params.working_time,
+        the_tich_sua: params.the_tich_sua,
+        item_time_lbl: params.ma_cv == 'BSB_UONG' ? `${params.the_tich_sua} ml` : `${Math.floor(params.working_time / 60) } giờ ${(Math.floor(params.working_time / 60)) % 24} phút`,
+        row_item: params,
       }
       // this.chamConTitle = `${params.row.ten_cong_viec} ngày ${moment(params.row.ngay_thuc_hien).format(config.DATE_TIME_FM)}`;
-      this.titleList = params.row.ten_cong_viec;
-      this.dateList = moment(params.row.ngay_group).format(config.DATE_FM);
+      this.titleList = params.ten_cong_viec;
+      this.dateList = moment(params.ngay_group).format(config.DATE_FM);
       await axios
       .get(`${config.API_URL}/selectCongViecByDate/'${self.chamConItem.ma_cv}'/${moment(self.chamConItem.gio_bat_dau).format(config.DATE_FM)}`)
       .then(response => {
@@ -291,11 +296,26 @@ export default {
           arr.push(data[i]);
            console.log('data[i]', data[i]);
         }
-        self.chamConItem = {
-          tblDataCongViec: arr,
-         
-        }
-        self.$refs.chamConListDialog.total  =  params.row.ma_cv == 'BSB_UONG' ? `${total} ml` : `${Math.floor(total / 60) } giờ ${total % 60} phút`;
+        // self.chamConItem = [
+        //   {
+        //     children: arr,
+        //   }
+        // ]
+
+        self.lstDetail = {
+              title:params.ma_cv ,
+              date: moment(new Date()).format(config.DATE_FM),
+              item: {
+                tblDataCongViec: [
+                  {
+                    children: arr,
+                  }
+                ]
+              }
+              
+            }
+        
+        self.$refs.chamConListDialog.total  =  params.ma_cv == 'BSB_UONG' ? `${total} ml` : `${Math.floor(total / 60) } giờ ${total % 60} phút`;
         self.$refs.chamConListDialog.dialog = true;
         
         // self.tblDataCongViec = data;

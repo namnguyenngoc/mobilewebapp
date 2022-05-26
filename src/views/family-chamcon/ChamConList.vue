@@ -206,6 +206,12 @@ export default {
       rowSelected: [],
       titleList: "",
       dateList: "",
+      lstDetail: {
+        title:"DETAIL",
+        date: moment(new Date()).format(config.DATE_FM),
+        item: {},
+        vmodel:true,
+      },
     }
   },
   created() {
@@ -321,9 +327,17 @@ export default {
           arr.push(data[i]);
            console.log('data[i]', data[i]);
         }
-        self.chamConItem = {
-          tblDataCongViec: arr,
-         
+        self.lstDetail = {
+          title: params.row.ma_cv ,
+          date: moment(new Date()).format(config.DATE_FM),
+          item: {
+            tblDataCongViec: [
+              {
+                children: arr,
+              }
+            ]
+          }
+          
         }
         self.$refs.chamConListDialog.total  =  params.row.ma_cv == 'BSB_UONG' ? `${total} ml` : `${Math.floor(total / 60) } giờ ${total % 60} phút`;
         self.$refs.chamConListDialog.dialog = true;

@@ -71,11 +71,10 @@
     <v-col cols="12">
       <ChamConListDialog
         ref="chamConListDialog"
-        :title="titleList"
-        :date="dateList"
-        :item="chamConItem"
-        :v-model="chamConListDialog"
-        @refeshList="showChartKCBS()"
+        :title="lstDetail.title"
+        :date="lstDetail.date"
+        :item="lstDetail.item"
+        :v-model="lstDetail.vmodel"
       />
     </v-col>
   </v-row>
@@ -320,10 +319,10 @@ export default {
         // seft.hotSettings.data = response.data.data;
         let data = response.data.data;
         let arr = [];
-        let total = 0;
+        let total2 = 0;
         for(let i = 0; i < data.length; i ++){
           data[i].item_time_lbl = data[i].ma_cv == 'BSB_UONG' ? `${data[i].the_tich_sua} ml` : `${Math.floor(data[i].working_time / 60) } giờ ${data[i].working_time % 60} phút`;
-          total += data[i].ma_cv == 'BSB_UONG' ? data[i].the_tich_sua : data[i].working_time;
+          total2 += data[i].ma_cv == 'BSB_UONG' ? data[i].the_tich_sua : data[i].working_time;
           arr.push(data[i]);
            console.log('data[i]', data[i]);
         }
@@ -339,11 +338,11 @@ export default {
           }
           
         }
-        self.$refs.chamConListDialog.total  =  params.row.ma_cv == 'BSB_UONG' ? `${total} ml` : `${Math.floor(total / 60) } giờ ${total % 60} phút`;
+        // self.$refs.chamConListDialog.total  =  params.row.ma_cv == 'BSB_UONG' ? `${total2} ml` : `${Math.floor(total2 / 60) } giờ ${total2 % 60} phút`;
         self.$refs.chamConListDialog.dialog = true;
         
         // self.tblDataCongViec = data;
-        console.log('item-data', data);
+        console.log('item-data', arr);
       });
       
 //  moment.tz(new Date(), tzString).format("YYYY-MM-DD HH:mm:ss"),

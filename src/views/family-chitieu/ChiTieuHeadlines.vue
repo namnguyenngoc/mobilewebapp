@@ -375,12 +375,12 @@ export default {
             enabledOnSeries: [0,1,2],
             formatter: function(value, { seriesIndex, dataPointIndex, w}) {
               let indices = w.config.series.map((item, i) => i);
-              console.log("seriesIndex", seriesIndex);
-              console.log("dataPointIndex", dataPointIndex);
-              console.log("w", w);
+              // console.log("seriesIndex", seriesIndex);
+              // console.log("dataPointIndex", dataPointIndex);
+              // console.log("w", w);
               indices = indices.filter(i => !w.globals.collapsedSeriesIndices.includes(i) 
                 && _.get(w.config.series, `${i}.data.${dataPointIndex}`) > 0);
-              console.log("indices", indices);
+              // console.log("indices", indices);
               if (seriesIndex == _.max(indices)){
                 const totalFm = (w.globals.stackedSeriesTotals[dataPointIndex] / 1).toFixed(0).replace(',', '.');
                 return totalFm.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');

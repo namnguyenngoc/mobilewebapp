@@ -60,7 +60,111 @@
             </v-row>
           </v-col>
           <v-col cols="12">
-            <h4>Số ngày hiển thị (BÚ SỮA)</h4>
+            <v-row>
+              <v-col cols="12" md="4" sm="12" class="pb-0 mt-3 mb-0">
+                <h4>Số ngày hiển thị (BÚ SỮA)</h4>
+              </v-col>
+              
+              <v-col cols="12" md="6" class="pb-0 mt-3 mb-0 text-right" >
+                <v-row>
+                  <v-col cols="12" md="6" sm="6" class="mt-0 mb-1 pt-0 pb-0">
+                    <v-menu
+                      ref="startMenu"
+                      :close-on-content-click="false"
+                      :return-value.sync="chartKCBS.condition.startDate"
+                      offset-y
+                      min-width="290px"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="chartKCBS.condition.startDate"
+                          label="Start date"
+                          prepend-icon="mdi-calendar"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="chartKCBS.condition.vmodelStart"
+                        no-title
+                        scrollable
+                      >
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.startMenu.isActive = false"
+                        >
+                          Cancel
+                        </v-btn>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.startMenu.save(chartKCBS.condition.vmodelStart)"
+                        >
+                          OK
+                        </v-btn>
+                      </v-date-picker>
+                    </v-menu>
+                  </v-col>
+
+                  <v-col cols="12" md="6" sm="6" class="mt-0 mb-1 pt-0 pb-0">
+                    <v-menu
+                      ref="endMenu"
+                      :close-on-content-click="false"
+                      :return-value.sync="chartKCBS.condition.endDate"
+                      offset-y
+                      min-width="290px"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="chartKCBS.condition.endDate"
+                          label="End date"
+                          prepend-icon="mdi-calendar"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="chartKCBS.condition.vmodeldate"
+                        no-title
+                        scrollable
+                      >
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.endMenu.isActive = false"
+                        >
+                          Cancel
+                        </v-btn>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.endMenu.save(chartKCBS.condition.vmodeldate)"
+                        >
+                          OK
+                        </v-btn>
+                      </v-date-picker>
+                    </v-menu>
+                  </v-col>
+                </v-row>
+              </v-col>
+                
+              <v-col cols="12" md="2" sm="2" class="pb-0 mt-0 mb-0 text-right">
+                <v-select
+                  v-model="chartKCBS.selected"
+                  :items="chartKCBS.items"
+                  item-text="name"
+                  item-value="code"
+                  label="Hiển thị chart"
+                  return-object
+                  @change="showChartKCBS()"
+                ></v-select>
+              </v-col>
+            </v-row>
           </v-col>
           <v-col cols="12" md="12" class="ma-0 text-right pt-1">
             <v-slider
@@ -1764,6 +1868,37 @@ export default {
         }
       ],
 
+      chartKCBS: {
+        selected:{
+          code: 'NGAY',
+          name: 'Ngày',
+          sql: '',
+        },
+        items: [
+        {
+          code: 'NGAY',
+          name: 'Ngày',
+          sql: '',
+        },
+        {
+          code: 'TB_THANG',
+          name: 'TB Tháng',
+          sql: 'YY-Mon',
+        },
+        {
+          code: 'TB_NGAY',
+          name: 'TB Ngày',
+          sql: 'Mon-DD',
+        },
+       
+        ],
+        condition: {
+          startDate: moment().subtract(6, 'month').format(config.DATE_FM),
+          endDate:  moment().subtract(0, 'days').format(config.DATE_FM),
+          vmodeldate: null,
+        }
+      },
+
       sliderWC: 2,
       seriesTotalWC: [],
       chartTotalOptionsWC: {
@@ -2032,15 +2167,15 @@ export default {
           name: 'Bệnh'
         }
       ],
-      sliderKCBS: 2, //// KHOANG CACH BU SUA
+      sliderKCBS: 5, //// KHOANG CACH BU SUA
       seriesTotalKCBS: [],
       chartTotalOptionsKCBS: {
         ...this.chartTotalOptionsKCBS,
         ...{
             colors: [function({ value, seriesIndex, w }) {
-              console.log('colors', value)    ;      
-              console.log('seriesIndex', seriesIndex)    ;    
-              console.log('w', w)    ;     
+              // console.log('colors', value)    ;      
+              // console.log('seriesIndex', seriesIndex)    ;    
+              // console.log('w', w)    ;     
               if (value < 55) {
                   return '#8A2BE2'
               } else {
@@ -2360,7 +2495,7 @@ export default {
               },
             ],
           }
-        console.log('summarySuckhoeByCongViec', wc);
+        // console.log('summarySuckhoeByCongViec', wc);
       })
     },
 
@@ -2370,7 +2505,7 @@ export default {
         // seft.hotSettings.data = response.data.data;
 
         self.desserts = response.data.data
-        console.log('jiraBoards', response.data)
+        // console.log('jiraBoards', response.data)
       })
     },
     async insert_thong_tin_sk(code){
@@ -2485,7 +2620,7 @@ export default {
           //   gio_bat_dau = moment(timeAndDate).format('YYYY-MM-DD HH:mm:ss');
           // }
           // code_cv = self.ti_me_model.loai_sua;
-          console.log("TEXXXXXXXXXXX", this.cuSuaModel);
+          // console.log("TEXXXXXXXXXXX", this.cuSuaModel);
           congviec = {
             ten_cv: this.tichSuaType.find(({ code }) => code == this.cuSuaModel.ma_cv).name,
             ma_cv: this.cuSuaModel.ma_cv,
@@ -2531,7 +2666,7 @@ export default {
           self.loadingChartSK();
           break;
         case 'THUC':
-          console.log('THUC');
+          // console.log('THUC');
           this.$refs.dialogHoatDong.dialog = true;
           break;
 
@@ -2554,7 +2689,7 @@ export default {
       let currentDate = moment()
       let start = moment(this.cong_viec_model.gio_bat_dau)
       let workingTime = currentDate.diff(start, 'minutes')
-      console.log('workingTime', workingTime + 'm') // "7m"
+      // console.log('workingTime', workingTime + 'm') // "7m"
 
       let chamsocModal = {
         id: ma_cv == 'NGU' ? this.ngu_model.id : this.cong_viec_model.id,
@@ -2563,7 +2698,7 @@ export default {
         working_time: workingTime,
       }
 
-      console.log('ngu_model', this.cong_viec_model)
+      // console.log('ngu_model', this.cong_viec_model)
       const self = this
       await axios.post(config.API_URL + '/updateChamCon', chamsocModal).then(async function (response) {
         // await axios
@@ -2602,7 +2737,7 @@ export default {
         self.ti_me_model.timeTiBinh1Org = data[0].gio_ke_tiep
         self.ti_me_model.the_tich_sua = data[0].the_tich_sua
         self.ti_me_model.the_tich_sua_new = data[0].the_tich_sua
-        console.log('data[0].gio_bat_dau', moment(data[0].gio_bat_dau._i))
+        // console.log('data[0].gio_bat_dau', moment(data[0].gio_bat_dau._i))
         self.cong_viec_model.id = data[0].id
         self.cong_viec_model.ma_cv = data[0].ma_cv
         self.cong_viec_model.status = data[0].status
@@ -2904,7 +3039,7 @@ export default {
                   //     //Số lần ti
                   //     so_lan_ti.push(parseInt(element.so_lan));
                   //     break;
-                  //   case 'NG':
+                  //   case 'NG':seleted
                   //     //  //Tổng thời gian ngủ
                   //     // self.seriesTotal[2].data.push(parseInt(element.total_time_ngu));
                   //     // //TB mỗi lần ngủ
@@ -3088,6 +3223,7 @@ export default {
     async showChartKCBS(){
       const self = this;
       this.seriesTotalKCBS = [];
+      console.log('showChartKCBS', this.chartKCBS)
       // this.chartTotalOptionsWC.xaxis.categories = [];
       while (this.chartTotalOptionsKCBS.xaxis.categories.length) {
         this.chartTotalOptionsKCBS.xaxis.categories.pop();
@@ -3096,99 +3232,197 @@ export default {
         ma_cv: 'BSB_UONG',
         ho_ten: 'NGUYEN DANG KHOI',
         limit: this.sliderKCBS,
+        startDate: this.chartKCBS.condition.startDate,
+        endDate: this.chartKCBS.condition.endDate,
+        type: this.chartKCBS.selected.sql
       }
-      
-      await axios
-        .post(`${config.API_URL}/selectKhoangThoiGianTheoCongViec`, param)
-        .then(function (response){
-          console.log('reponse', response);
-          let arr = response.data.data;
-          let dataChart = []  ;
-          let categories = [];
-          let arr_THOI_GIAN_CHO = [];
-          let arr_THE_TICH = [];
-          let yaxisArr = [];
-          for(let i = 0; i < arr.length; i++){
-            arr_THOI_GIAN_CHO.push(Math.round(arr[i].thoi_gian_cho_hour));
-            arr_THE_TICH.push(Math.round(arr[i].the_tich_sua));
-            // dataChart.push([
-            //   Math.round(arr[i].thoi_gian_cho_hour),
-            //   Math.round(arr[i].the_tich_sua)
-            // ]);
-            // dataChart.push(arr[i].thoi_gian_cho);
-            // categories.push(arr[i].ngay_thuc_hien);
-            self.chartTotalOptionsKCBS.xaxis.categories.push(moment(arr[i].gio_bat_dau).format('YYYY-MM-DD HH:mm'));
-          }
-          
-          yaxisArr.push( {
-            seriesName: 'thoi_gian_cho_hour',
-            show: true,
-            axisTicks: {
+      if(this.chartKCBS.selected.code != 'NGAY'){
+        param.ma_cv = ['BSB_UONG', 'BSM'];
+        await axios
+          .post(`${config.API_URL}/selectKhoangThoiGianTheoCongViecByDate`, param)
+          .then(function (response){
+              console.log('selectKhoangThoiGianTheoCongViecByDate', response.data.data);
+              console.log('reponse', response);
+              let arr = response.data.data;
+              let dataChart = []  ;
+              let categories = [];
+              let arr_the_tich = [];
+              let arr_so_cu = [];
+              let yaxisArr = [];
+              for(let i = 0; i < arr.length; i++){
+                arr_so_cu.push(Math.round(arr[i].so_cu));
+                arr_the_tich.push(Math.round(arr[i].the_tich_sua));
+                // dataChart.push([
+                //   Math.round(arr[i].thoi_gian_cho_hour),
+                //   Math.round(arr[i].the_tich_sua)
+                // ]);
+                // dataChart.push(arr[i].thoi_gian_cho);
+                // categories.push(arr[i].ngay_thuc_hien);
+                self.chartTotalOptionsKCBS.xaxis.categories.push(arr[i].year_month);
+              }
+              
+              yaxisArr.push( {
+                seriesName: 'Tổng số cữ',
+                show: true,
+                axisTicks: {
+                  show: true,
+                },
+                axisBorder: {
+                  show: true,
+                  color: '#00E396',
+                },
+                labels: {
+                  style: {
+                    colors: '#FF0000',
+                  },
+                },
+                title: {
+                  text: 'lần',
+                  style: {
+                    color: '#00E396',
+                  },
+                },
+                tooltip: {
+                  enabled: true,
+                },
+              });
+              self.seriesTotalKCBS.push({
+                name: 'Số cữ',
+                type: 'column',
+                data: arr_so_cu,
+                enabled:true,
+              });
+
+              yaxisArr.push( {
+                seriesName: 'the_tich_sua',
+                opposite: true,
+                show: true,
+                axisTicks: {
+                  show: true,
+                },
+                axisBorder: {
+                  show: true,
+                  color: '#00E396',
+                },
+                labels: {
+                  style: {
+                    colors: '#FF0000',
+                  },
+                },
+                title: {
+                  text: 'ml',
+                  style: {
+                    color: '#00E396',
+                  },
+                },
+                tooltip: {
+                  enabled: true,
+                },
+            });
+
+            self.seriesTotalKCBS.push({
+              name: 'Thể tích TB',
+              type: 'line',
+              data: arr_the_tich,
+              enabled:true,
+            });
+            console.log('dataChart', dataChart);
+            self.$refs.chartTotalOptionsKCBS.updateOptions({ yaxis: yaxisArr,});
+    
+          });
+      }else {
+        await axios
+          .post(`${config.API_URL}/selectKhoangThoiGianTheoCongViec`, param)
+          .then(function (response){
+            console.log('reponse', response);
+            let arr = response.data.data;
+            let dataChart = []  ;
+            let categories = [];
+            let arr_THOI_GIAN_CHO = [];
+            let arr_THE_TICH = [];
+            let yaxisArr = [];
+            for(let i = 0; i < arr.length; i++){
+              arr_THOI_GIAN_CHO.push(Math.round(arr[i].thoi_gian_cho_hour));
+              arr_THE_TICH.push(Math.round(arr[i].the_tich_sua));
+              // dataChart.push([
+              //   Math.round(arr[i].thoi_gian_cho_hour),
+              //   Math.round(arr[i].the_tich_sua)
+              // ]);
+              // dataChart.push(arr[i].thoi_gian_cho);
+              // categories.push(arr[i].ngay_thuc_hien);
+              self.chartTotalOptionsKCBS.xaxis.categories.push(moment(arr[i].gio_bat_dau).format('YYYY-MM-DD HH:mm'));
+            }
+            
+            yaxisArr.push( {
+              seriesName: 'thoi_gian_cho_hour',
               show: true,
-            },
-            axisBorder: {
-              show: true,
-              color: '#00E396',
-            },
-            labels: {
-              style: {
-                colors: '#FF0000',
+              axisTicks: {
+                show: true,
               },
-            },
-            title: {
-              text: 'ml',
-              style: {
+              axisBorder: {
+                show: true,
                 color: '#00E396',
               },
-            },
-            tooltip: {
-              enabled: true,
-            },
+              labels: {
+                style: {
+                  colors: '#FF0000',
+                },
+              },
+              title: {
+                text: 'ml',
+                style: {
+                  color: '#00E396',
+                },
+              },
+              tooltip: {
+                enabled: true,
+              },
+            });
+            self.seriesTotalKCBS.push({
+              name: 'Thời gian cách nhau',
+              type: 'column',
+              data: arr_THOI_GIAN_CHO,
+              enabled:true,
+            });
+
+            yaxisArr.push( {
+              seriesName: 'the_tich_sua',
+              opposite: true,
+              show: true,
+              axisTicks: {
+                show: true,
+              },
+              axisBorder: {
+                show: true,
+                color: '#00E396',
+              },
+              labels: {
+                style: {
+                  colors: '#FF0000',
+                },
+              },
+              title: {
+                text: 'Thể tích sữa',
+                style: {
+                  color: '#00E396',
+                },
+              },
+              tooltip: {
+                enabled: true,
+              },
           });
+
           self.seriesTotalKCBS.push({
-            name: 'Thời gian cách nhau',
-            type: 'column',
-            data: arr_THOI_GIAN_CHO,
+            name: 'Thể tích',
+            type: 'line',
+            data: arr_THE_TICH,
             enabled:true,
           });
-
-          yaxisArr.push( {
-            seriesName: 'the_tich_sua',
-            opposite: true,
-            show: true,
-            axisTicks: {
-              show: true,
-            },
-            axisBorder: {
-              show: true,
-              color: '#00E396',
-            },
-            labels: {
-              style: {
-                colors: '#FF0000',
-              },
-            },
-            title: {
-              text: 'Thể tích sữa',
-              style: {
-                color: '#00E396',
-              },
-            },
-            tooltip: {
-              enabled: true,
-            },
+          console.log('dataChart', dataChart);
+          self.$refs.chartTotalOptionsKCBS.updateOptions({ yaxis: yaxisArr,});
+  
         });
-
-        self.seriesTotalKCBS.push({
-          name: 'Thể tích',
-          type: 'line',
-          data: arr_THE_TICH,
-          enabled:true,
-        });
-        console.log('dataChart', dataChart);
-        self.$refs.chartTotalOptionsKCBS.updateOptions({ yaxis: yaxisArr,});
- 
-      });
+      }
     },
     async showChartWC(){
       const self = this;

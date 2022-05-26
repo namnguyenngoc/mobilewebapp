@@ -1871,9 +1871,9 @@ export default {
 
       chartKCBS: {
         selected:{
-          code: 'NGAY',
+          code: ' TB_NGAY',
           name: 'Ngày',
-          sql: '',
+          sql: 'Mon-dd',
         },
         items: [
         {
@@ -3262,7 +3262,7 @@ export default {
                 // ]);
                 // dataChart.push(arr[i].thoi_gian_cho);
                 // categories.push(arr[i].ngay_thuc_hien);
-                self.chartTotalOptionsKCBS.xaxis.categories.push(arr[i].year_month);
+                self.chartTotalOptionsKCBS.xaxis.categories.push(arr[i].year_month.replace("'","").replace("'",""));
               }
               
               yaxisArr.push( {

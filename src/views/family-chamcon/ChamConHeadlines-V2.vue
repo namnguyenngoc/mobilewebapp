@@ -1873,7 +1873,7 @@ export default {
         selected:{
           code: ' TB_NGAY',
           name: 'Ngày',
-          sql: 'Mon-dd',
+          sql: 'day',
         },
         items: [
         {
@@ -1884,12 +1884,12 @@ export default {
         {
           code: 'TB_THANG',
           name: 'TB Tháng',
-          sql: 'YY-Mon',
+          sql: 'month',
         },
         {
           code: 'TB_NGAY',
           name: 'TB Ngày',
-          sql: 'Mon-DD',
+          sql: 'day',
         },
        
         ],
@@ -3262,7 +3262,7 @@ export default {
                 // ]);
                 // dataChart.push(arr[i].thoi_gian_cho);
                 // categories.push(arr[i].ngay_thuc_hien);
-                self.chartTotalOptionsKCBS.xaxis.categories.push(arr[i].year_month.replace("'","").replace("'",""));
+                self.chartTotalOptionsKCBS.xaxis.categories.push(moment(arr[i].year_month).format(config.DATE_FM));
               }
               
               yaxisArr.push( {

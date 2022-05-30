@@ -387,8 +387,8 @@
 </script>
 <style scoped>
   .v-scroll{
-    height: 700px;
-    max-height: 700px;
+    height: 500px;
+    max-height: 500px;
     overflow-y: auto;
   }
 </style>

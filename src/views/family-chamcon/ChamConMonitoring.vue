@@ -4,44 +4,78 @@
     <v-col cols="12" class="ma-0 pa-0">
       <v-card height="100%">
         <v-card-title class="pt-5 pb-2 mr-0 pr-2">
-          <v-col md="10" sm="10" class="pa-0 ma-0">
-            ĐĂNG KHÔI
-          </v-col>
-          <v-col md="2" sm="2" class="pa-0 ma-0 text-right">
-            <v-btn
-              color="info"
-              icon
-              @click="loadData()"
-            >
-              <v-icon>
-                  {{ icons.mdiReload }}
-                </v-icon>
-            </v-btn>
+          <v-col md="12" sm="12" class="pa-0 ma-0">
+            <v-row class="full-width mb-0 mt-1"> 
+              <v-col md="4" sm="4" xs="12" class="mb-0 mt-0 pb-0 pt-1 bold" @click="openDetail()"><h3>Đăng Khôi</h3></v-col>
+              <v-col md="8" sm="8" xs="12" class="mb-0 mt-0 pb-0 pt-0 text-right">{{ tuan_tuoi.date }}</v-col>
+            </v-row>
           </v-col>
           
         </v-card-title>
-        <v-card-text class="mt-0 mb-0 pt-1 pb-1 ma-0 pa-0" height="100%">
+        <v-card-text class="mt-0 mb-0 pt-1 pb-0 ma-0 pa-0" height="100%">
           <!-- Row 1 -->
-          <v-col cols="12" class="mt-0 pt-0 mb-0 pb-0">
-            <v-subheader>Trước mấy ngày?</v-subheader>
-            <v-slider
-              inverse-label
-              v-model="itemMonitoring.slider.model"
-              :thumb-size="30"
-              thumb-label="always"
-              :max="itemMonitoring.slider.max"
-              :min="itemMonitoring.slider.min"
-              class="pt-0 pb-0 mb-0"
-              :append-icon="icons.mdiMagnifyPlusOutline"
-              :prepend-icon="icons.mdiMagnifyMinusOutline"
-              @click:append="nextDate"
-              @click:prepend="preDate"
-            >
-              <template v-slot:thumb-label="{ value }">
-                {{ value }}
-              </template>
-            </v-slider>
+          <v-col cols="12" class="mb-0 pb-0">
+            <v-btn-toggle v-model="toggle_exclusive">
+              <v-btn
+                @click="preDate()">
+                <v-icon>
+                  {{ icons.mdiArrowLeft }}
+                </v-icon>
+              </v-btn>
+              <v-menu
+                ref="startMenu"
+                :close-on-content-click="false"
+                :return-value.sync="lstDetail.date"
+                offset-yaxi
+                class="new_calendar"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="lstDetail.date"
+                    :prepend-icon="icons.mdiCalendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    dense
+                    class="new_calendar"
+                    hide-details
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="itemMonitoring.condition.vmodelStart"
+                  no-title
+                  scrollable
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.startMenu.isActive = false"
+                  >
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.startMenu.save(itemMonitoring.condition.vmodelStart)"
+                  >
+                    OK
+                  </v-btn>
+                </v-date-picker>
+              </v-menu>
+              <v-btn
+                @click="nextDate()">
+                <v-icon>
+                  {{ icons.mdiArrowRight }}
+                </v-icon>
+              </v-btn>
+
+              <v-btn color="success" @click="today()">
+                TODAY
+              </v-btn>
+            </v-btn-toggle>
           </v-col>
+         
           <div class="layout-ls">
             <grid-layout
               :layout.sync="layout"
@@ -65,6 +99,7 @@
                     <itemList 
                       :item="item.object"
                       @loadItemDetail="loadItemDetail(item.object.ma_cv)"
+                      @openPopup="insert(item.object.ma_cv)"
                       />
                     
                 </grid-item>
@@ -78,6 +113,7 @@
               :item="chamConItem"
               :v-model="chamConDetaillDialog"
               @refeshList="loadData()"
+              
             />
                 </v-col>
           <!-- Row 3 -->
@@ -93,6 +129,11 @@
         :item="lstDetail.item"
         :v-model="lstDetail.vmodel"
       />
+      <SinhHoatAddDialog
+        ref="SinhHoatAddDialog"
+        @saveBSB="insert('BSB_UONG_SAVE')"
+      />
+      
     </v-col>
   </v-col>
 </template>
@@ -104,6 +145,7 @@ import "vue-easytable/libs/theme-dark/index.css";
 import { VueGoodTable } from 'vue-good-table';
 import chamConDetail from "./ChamConDetail";
 import ChamConListDialog from './ChamConListDialog.vue'
+import SinhHoatAddDialog from './SinhHoatAddDialog.vue'
 import VueGridLayout from 'vue-grid-layout';
 
 import itemList from '../../layouts/components/family/itemList.vue'
@@ -119,7 +161,10 @@ import {
   mdiSleep,
   mdiReload,
   mdiMagnifyPlusOutline,
-  mdiMagnifyMinusOutline
+  mdiMagnifyMinusOutline,
+  mdiArrowLeft,
+  mdiArrowRight ,
+  mdiCalendar
 } from '@mdi/js';
 import { reactive } from '@vue/composition-api';
 
@@ -131,13 +176,14 @@ export default {
     ChamConListDialog,
     GridLayout: VueGridLayout.GridLayout,
     GridItem: VueGridLayout.GridItem,
-    itemList
+    itemList,
+    SinhHoatAddDialog
   },
   data() {
     return {
       loadingInstance: null,
       chamConListDialog: false,
-      
+      tuan_tuoi: {dialog:false},
       tblDataCongViec: [
       ],
       chamConTitle: '',
@@ -152,7 +198,10 @@ export default {
         mdiSleep,
         mdiReload,
         mdiMagnifyPlusOutline,
-        mdiMagnifyMinusOutline
+        mdiMagnifyMinusOutline,
+        mdiArrowLeft,
+        mdiArrowRight ,
+        mdiCalendar
       },
       rowSelected: [],
       titleList: "",
@@ -178,9 +227,59 @@ export default {
           max:30,
           min:0,
 
+        },
+        condition: {
+          startDate: moment().subtract(0, 'month').format(config.DATE_FM),
+          endDate:  moment().subtract(0, 'days').format(config.DATE_FM),
+          vmodeldate: null,
         }
-      }
-
+      },
+      toggle_exclusive: [1,2,3],
+      ti_me_model: {
+        ti_binh_gan_nhat: '',
+        timeTiBinh: null,
+        menuTiBinh: false,
+        modalTiBinh: false,
+        timeTiBinh1: null,
+        timeTiBinh1Org: null,
+        menuTiBinh1: false,
+        modalTiBinh1: false,
+        the_tich_sua: '',
+        the_tich_sua_new: '',
+        loai_sua: 'BSB',
+        isEditTimeTiBinh: false
+      },
+      tichSuaType: [
+        {
+          code: 'BSB_UONG',
+          name: 'Uống sữa'
+        },
+        {
+          code: 'BSB_HUT',
+          name: 'Tích sữa'
+        },
+        {
+          code: 'BENH',
+          name: 'Bệnh'
+        }
+      ],
+      cuSuaModel: {
+        title: 'Uống sữa',
+        ma_cv: 'BSB_UONG', //
+        gio_thuc_hien: moment(new Date()).format('HH:mm:ss'),
+        ngay_thuc_hien: moment(new Date()).format("YYYY-MM-DD"),
+        gio_bat_dau: new Date(),
+        the_tich_sua: 0,
+        the_tich_sua_new: 100,
+        ghi_chu_them: 'Sữa mẹ',
+        showTheTich: true,
+      },
+      emptyRules: {
+        text:   [v => !!v || "Item is required"],
+        select: [(v) => !!v || "Item is required"],
+        can_nang: [(v) =>  v > 0 || "Cân nặng phải lón hơn 0"],
+        chieu_cao: [(v) =>  v > 0 || "Chiều cao lón hơn 0"],
+      },
     }
   },
   async created() {
@@ -193,6 +292,7 @@ export default {
     this.is_Mobile = this.isMobile();
     // await this.loadData();
     await this.loadingData();
+    await this.getCurrentDate();
   },
   computed: {
      
@@ -397,6 +497,12 @@ export default {
       }
     },
 
+    today() {
+      this.itemMonitoring.slider.model = 0;
+      this.loadingData();
+
+    },
+
     async loadItemDetail(ma_cv) {
       console.log('loadListDetail');
       let self = this;
@@ -430,6 +536,138 @@ export default {
         });
         
       this.$refs.chamConListDialog.dialog = true;
+    },
+     async getCurrentDate() {
+      const self = this
+
+      await axios.get(`${config.API_URL}/getCurrentDate/2021-11-30`).then(response => {
+        // seft.hotSettings.data = response.data.data;
+
+        self.tuan_tuoi.value = response.data.data[0].ngay_bat_dau_group;
+        let dateString = response.data.data[0].group_date;
+        if(undefined != dateString && parseInt(dateString.split(" ")[0]) > 0){
+          self.tuan_tuoi.date = response.data.data[0].group_date;
+        } else{
+          self.tuan_tuoi.date = (response.data.data[0].group_date).replace("0 năm", "");
+        }
+        
+      })
+    },
+
+    async insert(ma_cv) {
+      console.log('MA_CV', ma_cv);
+      const self = this;
+      let code_cv = ma_cv;
+      let currentDate = new Date();
+      let gio_bat_dau = moment(currentDate).format('YYYY-MM-DD');
+      let thong_tin_them = '';
+      let congviec = null;
+      this.showTheTich = true;
+      switch (code_cv) {
+        case 'NGU':
+          var timeAndDate = moment(gio_bat_dau + ' ' + self.ngu_model.timeNgu);
+          if(!self.ngu_model.isEditTimeNgu){
+            gio_bat_dau =  moment(currentDate).format('YYYY-MM-DD HH:mm:ss');
+          } else {
+            gio_bat_dau = moment(timeAndDate).format('YYYY-MM-DD HH:mm:ss');
+          }
+          congviec = {
+            ma_cv: code_cv,
+            gio_bat_dau: gio_bat_dau,
+            the_tich_sua: this.ti_me_model.the_tich_sua_new[0],
+            thong_tin_them: thong_tin_them,
+          }
+          await axios.post(config.API_URL + '/insertChamCon', congviec).then(async function (response) {
+            await self.updateBtn()
+          })
+          break;
+        case 'BSB_HUT':
+         
+          this.cuSuaModel.title = "Tích sữa";
+          this.cuSuaModel.ma_cv = 'BSB_HUT';
+          this.cuSuaModel.showTheTich = true;
+          this.dialogSua = true;
+
+          break;
+        case 'BSB_UONG':
+          // var timeAndDate = moment(gio_bat_dau + ' ' + self.ti_me_model.timeTiBinh);
+          // this.cuSuaModel.ma_cv = 'BSB_UONG';
+          // this.cuSuaModel.title = "Uống sữa";
+          // this.cuSuaModel.showTheTich = true;
+          // this.dialogSua = true;
+          this.$refs.SinhHoatAddDialog.dialog = true;
+
+          break;
+          case 'BENH':
+          this.showTheTich = false;
+          var timeAndDate = moment(gio_bat_dau + ' ' + self.ti_me_model.timeTiBinh);
+          this.cuSuaModel.ma_cv = 'BENH';
+          this.cuSuaModel.title = "GHI CHÚ BỆNH";
+          this.cuSuaModel.showTheTich = false;
+          this.dialogSua = true;
+
+          break;
+        case 'BSB_UONG_SAVE':
+          var timeAndDate = moment(gio_bat_dau + ' ' + self.ti_me_model.timeTiBinh);
+          gio_bat_dau = moment(timeAndDate).format('YYYY-MM-DD HH:mm:ss');
+          congviec = {
+            ten_cv: this.tichSuaType.find(({ code }) => code == this.cuSuaModel.ma_cv).name,
+            ma_cv: this.cuSuaModel.ma_cv,
+            gio_bat_dau: moment(`${this.cuSuaModel.ngay_thuc_hien} ${this.cuSuaModel.gio_thuc_hien}`),
+            the_tich_sua: this.cuSuaModel.the_tich_sua_new,
+            thong_tin_them: this.cuSuaModel.ghi_chu_them,
+            
+          }
+          await axios.post(config.API_URL + '/insertChamCon', congviec).then(async function (response) {
+           
+            self.$refs.chamConListDialog.dialog = false;
+             await self.loadingData();
+          })
+          
+          // this.cuSuaModel.gio_bat_dau = gio_bat_dau;
+          // this.cuSuaModel.the_tich_sua = the_tich_sua;
+
+          break;
+        case 'WC':
+          self.dialogWC = true;
+          break;
+        case 'WC_INFO':
+           congviec = {
+            ma_cv: this.be_wc_model.hinhthuc_wc,
+            gio_bat_dau: moment(`${this.be_wc_model.ngay_thuc_hien} ${this.be_wc_model.gio_thuc_hien}`),
+            the_tich_sua: this.ti_me_model.the_tich_sua_new,
+            thong_tin_them:  this.be_wc_model.ghi_chu_them,
+            ten_cv:  this.wcItem.find(({ code }) => code == this.be_wc_model.hinhthuc_wc).name,
+          }
+          await axios.post(config.API_URL + '/insertChamCon', congviec).then(async function (response) {
+            self.dialogWC = false;
+            self.loadingChartSK();
+            self.countWorkInDay();
+            await self.updateBtn();
+          })
+          break;
+        case 'CN':
+          self.thong_tin_suc_khoe.dialogCN = true;
+          self.loadingChartSK();
+          break;
+        case 'THUC':
+          // console.log('THUC');
+          this.$refs.dialogHoatDong.dialog = true;
+          break;
+
+        default:
+          gio_bat_dau = moment(timeAndDate).format('YYYY-MM-DD HH:mm:ss');
+          break;
+      }
+
+      
+
+      if('WC' != code_cv){
+       
+      }
+      
+      this.$forceUpdate()
+      // self.nguCountDown.circles  = 3;
     },
   }
 };
@@ -532,4 +770,41 @@ export default {
   //     box-sizing: border-box;
   //     cursor: pointer;
   // }
+
+  .new_calendar.v-input.v-text-field{
+    border: 1px solid !important;
+    border-color: rgba(231, 227, 252, 0.14) !important;
+    height: 38px !important;
+    border-radius: 0px 0px 0 0 !important;
+    margin-top: 0px;
+    background: #312d4b
+   
+
+  }
+
+  .new-calendar > .v-input__control > 
+  .new_calendar .v-text-field__slot, .new_calendar > .v-input__slot{
+    height: 38px !important;
+     text-align:center
+  }
+
+  .new_calendar > .v-input__slot::before, new_calendar > .v-input__slot::after{
+    
+  }
+
+  .new_calendar.v-text-field > .v-input__control > .v-input__slot:before, 
+  .new_calendar.v-text-field > .v-input__control > .v-input__slot:after{
+    border: 0px none !important;
+    bottom: 0px;
+    text-align:center
+  }
+
+ .new_calendar.v-text-field > .v-input__control > .v-input__slot input{
+   text-align:center;
+   vertical-align: middle;
+   line-height: 38px;
+ }
+ .new_calendar > .v-input__prepend-outer{
+   display:none
+ }
 </style>

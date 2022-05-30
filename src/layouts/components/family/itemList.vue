@@ -29,6 +29,7 @@
             color="info"
             icon
             large
+            @click="openPopup()"
           >
             <v-icon large>
                 {{ icons.mdiPlus }}
@@ -127,6 +128,10 @@ export default {
   methods: {
     loadItemDetail(){
       this.$emit('loadItemDetail');
+    },
+
+    openPopup(){
+      this.$emit('openPopup');
     }
   }
 }

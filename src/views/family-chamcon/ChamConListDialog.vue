@@ -67,20 +67,12 @@
                 headerPosition: 'top',
               }"
               @on-cell-click="onRowDoubleClick"
-              max-height="700px"
+              max-height="500px"
               
             >
             </vue-good-table>
           </v-col>
-           <v-col cols="12">
-            <chamConDetail
-              ref="chamConDetail2"
-              :title="chamConTitle"
-              :item="chamConItem"
-              :v-model="chamConDetaillDialog"
-              @refeshList="loadData()"
-            />
-          </v-col>
+           
         </v-card-text>
         <v-card-actions>
           <v-btn color="error" text @click="dialog = false"> Close </v-btn>
@@ -88,6 +80,15 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-col cols="12">
+      <chamConDetail
+        ref="chamConDetail2"
+        :title="chamConTitle"
+        :item="chamConItem"
+        :v-model="chamConDetaillDialog"
+        @refeshList="loadData()"
+      />
+    </v-col>
   </v-row>
 </template>
 

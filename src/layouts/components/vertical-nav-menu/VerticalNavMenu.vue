@@ -124,6 +124,11 @@
         :icon="icons.mdiViewDashboard"
       ></nav-menu-link>
       <nav-menu-link
+        title="Dashboard New"
+        :to="{ name: 'chamcon-monitoring' }"
+        :icon="icons.mdiViewDashboard"
+      ></nav-menu-link>
+      <nav-menu-link
         title="Sinh hoạt"
         :to="{ name: 'chamcon-list' }"
         :icon="icons.mdiHandHeart"
@@ -155,6 +160,7 @@
           :to="{ name: 'chamcon-V2' }"
           :icon="icons.mdiViewDashboard"
         ></nav-menu-link>
+    
         <nav-menu-link
           title="Log Time"
           :to="{ name: 'jira-logtime-list' }"

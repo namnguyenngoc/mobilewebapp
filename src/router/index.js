@@ -123,7 +123,7 @@ const routes = [
   },
   {
     path: '/family/chamcon-monitoring',
-    name: 'chamcon-layout',
+    name: 'chamcon-monitoring',
     component: () => import('@/views/dashboard/MonitoringChamCon.vue'),
   },
   {

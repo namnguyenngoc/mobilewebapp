@@ -122,6 +122,11 @@ const routes = [
     component: () => import('@/views/family-chamcon/ChamConMain.vue'),
   },
   {
+    path: '/family/chamcon-monitoring',
+    name: 'chamcon-layout',
+    component: () => import('@/views/dashboard/MonitoringChamCon.vue'),
+  },
+  {
     path: '/family/chamcon-suckhoe-list',
     name: 'chamcon-suckhoe-list',
     component: () => import('@/views/family-chamcon/SucKhoeHeadlinesList.vue'),

@@ -97,6 +97,7 @@
                     :i="item.i"
                     :object="item.object">
                     <itemList 
+                      v-model="sinhhoat.selectedModel"
                       :item="item.object"
                       @loadItemDetail="loadItemDetail(item.object.ma_cv)"
                       @openPopup="insert(item.object.ma_cv)"
@@ -131,7 +132,8 @@
       />
       <SinhHoatAddDialog
         ref="SinhHoatAddDialog"
-        @saveBSB="insert('BSB_UONG_SAVE')"
+        :item="congviec"
+        @refesh="loadingData()"
       />
       
     </v-col>
@@ -280,6 +282,30 @@ export default {
         can_nang: [(v) =>  v > 0 || "Cân nặng phải lón hơn 0"],
         chieu_cao: [(v) =>  v > 0 || "Chiều cao lón hơn 0"],
       },
+      congviec: {
+        title: 'Uống sữa',
+        ma_cv: 'BSB_UONG', //
+        gio_thuc_hien: moment(new Date()).format('HH:mm:ss'),
+        ngay_thuc_hien: moment(new Date()).format("YYYY-MM-DD"),
+        gio_bat_dau: new Date(),
+        the_tich_sua: 0,
+        the_tich_sua_new: 100,
+        ghi_chu_them: 'Sữa mẹ',
+        showTheTich: true,
+      },
+      sinhhoat: {
+        selectedModel: {
+          title: 'Uống sữa',
+          ma_cv: 'BSB_UONG', //
+          gio_thuc_hien: moment(new Date()).format('HH:mm:ss'),
+          ngay_thuc_hien: moment(new Date()).format("YYYY-MM-DD"),
+          gio_bat_dau: new Date(),
+          the_tich_sua: 0,
+          the_tich_sua_new: 100,
+          ghi_chu_them: 'Sữa mẹ',
+          showTheTich: true,
+          }
+      }
     }
   },
   async created() {
@@ -420,11 +446,13 @@ export default {
       };
       let object = {};
       let sum = 0;
+      console.log('loadListDetail', type);
       await axios
         .get(`${config.API_URL}/selectCongViecByDate/'${type}'/${this.lstDetail.date}`)
         .then(response => {
           // seft.hotSettings.data = response.data.data;
           let data = response.data.data;
+          console.log('data[i]', data);
           if(data != undefined && data.length > 0){
             let arr = [];
             for(let i = 0; i < data.length; i ++){
@@ -435,13 +463,12 @@ export default {
                 sum += parseInt(data[i].working_time);
               }
               arr.push(data[i]);
-              console.log('data[i]', data[i]);
-            }
-            
+              
+            } 
             if(type == 'BSB_UONG') {
                 object = {
                 title: `${type} - ${data[0].the_tich_sua}ml`,
-                ma_cv: data[0].ma_cv,
+                ma_cv: data.length == 0 ? type : data[0].ma_cv,
                 total: sum,
                 total_lbl:  data[0].item_time_lbl,
                 type: "",
@@ -451,7 +478,7 @@ export default {
               if(type == 'NGU') {
                 object = {
                   title: type,
-                  ma_cv: data[0].ma_cv,
+                  ma_cv:  data.length == 0 ? type : data[0].ma_cv,
                   lastWorking: data[0].status, 
                   total: sum,
                   total_lbl:  data[0].item_time_lbl,
@@ -462,7 +489,7 @@ export default {
               } else{
                 object = {
                   title: type,
-                  ma_cv: data[0].ma_cv,
+                  ma_cv:  data.length == 0 ? type : data[0].ma_cv,
                   lastWorking: data[0].status, 
                   total: sum,
                   total_lbl:  data[0].item_time_lbl,
@@ -472,6 +499,18 @@ export default {
                 }
               }
             }
+          } else {
+             object = {
+                title: type,
+                ma_cv: type,
+                total: 0,
+                total_lbl:  "",
+                lastWorking: 0,
+                working_time_lbl: "",
+                type: "",
+                so_lan: 0,
+                last_time: moment().format(config.DATE_TIME_FM_1)
+              }
           }
           
         });
@@ -608,9 +647,10 @@ export default {
 
           break;
         case 'BSB_UONG_SAVE':
+          console.log('BSB_UONG_SAVE', this.sinhhoat);
           var timeAndDate = moment(gio_bat_dau + ' ' + self.ti_me_model.timeTiBinh);
           gio_bat_dau = moment(timeAndDate).format('YYYY-MM-DD HH:mm:ss');
-          congviec = {
+          this.congviec = {
             ten_cv: this.tichSuaType.find(({ code }) => code == this.cuSuaModel.ma_cv).name,
             ma_cv: this.cuSuaModel.ma_cv,
             gio_bat_dau: moment(`${this.cuSuaModel.ngay_thuc_hien} ${this.cuSuaModel.gio_thuc_hien}`),
@@ -618,11 +658,13 @@ export default {
             thong_tin_them: this.cuSuaModel.ghi_chu_them,
             
           }
-          await axios.post(config.API_URL + '/insertChamCon', congviec).then(async function (response) {
+
+
+          // await axios.post(config.API_URL + '/insertChamCon', this.congviec).then(async function (response) {
            
-            self.$refs.chamConListDialog.dialog = false;
-             await self.loadingData();
-          })
+          //   self.$refs.chamConListDialog.dialog = false;
+          //    await self.loadingData();
+          // })
           
           // this.cuSuaModel.gio_bat_dau = gio_bat_dau;
           // this.cuSuaModel.the_tich_sua = the_tich_sua;

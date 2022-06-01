@@ -247,7 +247,10 @@ export default {
           label: 'Ghi chú',
           field: 'thong_tin_them',
         },
-        
+         {
+          label: 'Server',
+          field: 'server_code',
+        },
       
         {
           label: 'id',

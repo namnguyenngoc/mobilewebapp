@@ -109,7 +109,7 @@
         </v-col>
         <v-col cols="12" md="12" class="pb-0 pt-0 mt-0 mb-0" v-show="item.showTheTich">
           <v-row>
-            <v-col cols="4" md="4">
+            <v-col cols="6" md="6">
               <v-switch
                 v-model="item.isTestSide"
                 label="Test Data"
@@ -118,7 +118,7 @@
                 hide-details
               ></v-switch>
             </v-col>
-            <v-col cols="8" md="8" v-show="item.showTheTich">
+            <v-col cols="6" md="6" v-show="item.showTheTich">
               <v-combobox
                 v-model="item.the_tich_sua_new"
                 :items="items"

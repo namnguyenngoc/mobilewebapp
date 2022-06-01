@@ -5,7 +5,7 @@
         <v-card-title>GHI CHÚ HOẠT ĐỘNG</v-card-title>
         <v-card-text>
            <v-row class="pa-4">
-            <v-col cols="4" md="4">
+            <v-col cols="7" md="7" class=" mt-3 pb-0">
               <v-autocomplete
                 label="Hình thức hoạt động"
                 v-model="modal.loaiHoatDong"
@@ -13,15 +13,23 @@
                 item-text="name"
                 item-value="code"
                 dense
+                hide-details
                 @change="getGioBatDau()"
               >
               </v-autocomplete>
             </v-col>
-            <v-col cols="8" md="8" class="text-right">
-              <v-icon dark @click="countWorkInDay2()">
+            <v-col cols="5" md="5" class="text-right">
+              <v-switch
+                v-model="item.isTestSide"
+                label="Test"
+                color="success"
+                value="success"
+                hide-details
+              ></v-switch>
+              <v-icon dark @click="countWorkInDay2()" v-show="false">
                 {{ icons.mdiHistory }}
               </v-icon>
-              <span v-if="modal.response != undefined">
+              <span v-if="modal.response != undefined" v-show="false">
                 <!-- <div class="counter">{{ counter }}</div> -->
                {{modal.loaiHoatDong}}: {{modal.response.gio_bat_dau}}
 
@@ -77,6 +85,32 @@
               </v-time-picker>
             </v-dialog>
           </v-col>
+
+          <v-row>
+            <v-col cols="6" md="6" v-show="item.showTheTich">
+              <v-combobox
+                v-model="item.the_tich_sua_new"
+                :items="items"
+                hide-selected
+                label="Thể tích"
+                persistent-hint
+                small-chips
+                clearable
+              >
+              <template v-slot:no-data>
+                <v-list-item>
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      No results matching "<strong>{{ search }}</strong>". Press <kbd>enter</kbd> to create a new one
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </template>
+              </v-combobox>
+            </v-col>
+            
+          </v-row>
+          
           <v-row>
             <v-col cols="12" md="6">
               <v-text-field 

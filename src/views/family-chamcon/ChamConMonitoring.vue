@@ -100,7 +100,7 @@
                       v-model="sinhhoat.selectedModel"
                       :item="item.object"
                       @loadItemDetail="loadItemDetail(item.object.ma_cv)"
-                      @openPopup="insert(item.object.ma_cv)"
+                      @openPopup="openpopup(item.object.ma_cv, item.object)"
                       />
                     
                 </grid-item>
@@ -135,6 +135,13 @@
         :item="congviec"
         @refesh="loadingData()"
       />
+
+      <DialogHoatDong
+        ref="dialogHoatDong"
+        :v-model="dialogHoatDong"
+        :item = "nguThucModal"
+        @updateStatusBtn="updateNgu()"
+      />
       
     </v-col>
   </v-col>
@@ -149,6 +156,8 @@ import chamConDetail from "./ChamConDetail";
 import ChamConListDialog from './ChamConListDialog.vue'
 import SinhHoatAddDialog from './SinhHoatAddDialog.vue'
 import VueGridLayout from 'vue-grid-layout';
+import DialogHoatDong from './DialogHoatDong.vue'
+
 
 import itemList from '../../layouts/components/family/itemList.vue'
 // import { GridLayout } from 'vue-grid-layout';
@@ -179,7 +188,8 @@ export default {
     GridLayout: VueGridLayout.GridLayout,
     GridItem: VueGridLayout.GridItem,
     itemList,
-    SinhHoatAddDialog
+    SinhHoatAddDialog,
+    DialogHoatDong
   },
   data() {
     return {
@@ -304,8 +314,15 @@ export default {
           the_tich_sua_new: 100,
           ghi_chu_them: 'Sữa mẹ',
           showTheTich: true,
-          }
-      }
+        }
+      },
+      dialogHoatDong: false,
+      nguThucModal: {
+        name: 'Ngủ',
+        code: 'T',
+        orgDate: new Date(),
+        lastTime: moment(new Date()).format(config.DATE_TIME_FM_1)
+      },
     }
   },
   async created() {
@@ -593,7 +610,7 @@ export default {
       })
     },
 
-    async insert(ma_cv) {
+    async openpopup(ma_cv, item) {
       console.log('MA_CV', ma_cv);
       const self = this;
       let code_cv = ma_cv;
@@ -604,21 +621,24 @@ export default {
       this.showTheTich = true;
       switch (code_cv) {
         case 'NGU':
-          var timeAndDate = moment(gio_bat_dau + ' ' + self.ngu_model.timeNgu);
-          if(!self.ngu_model.isEditTimeNgu){
-            gio_bat_dau =  moment(currentDate).format('YYYY-MM-DD HH:mm:ss');
-          } else {
-            gio_bat_dau = moment(timeAndDate).format('YYYY-MM-DD HH:mm:ss');
-          }
-          congviec = {
-            ma_cv: code_cv,
-            gio_bat_dau: gio_bat_dau,
-            the_tich_sua: this.ti_me_model.the_tich_sua_new[0],
-            thong_tin_them: thong_tin_them,
-          }
-          await axios.post(config.API_URL + '/insertChamCon', congviec).then(async function (response) {
-            await self.updateBtn()
-          })
+          // var timeAndDate = moment(gio_bat_dau + ' ' + self.ngu_model.timeNgu);
+          // if(!self.ngu_model.isEditTimeNgu){
+          //   gio_bat_dau =  moment(currentDate).format('YYYY-MM-DD HH:mm:ss');
+          // } else {
+          //   gio_bat_dau = moment(timeAndDate).format('YYYY-MM-DD HH:mm:ss');
+          // }
+          // congviec = {
+          //   ma_cv: code_cv,
+          //   gio_bat_dau: gio_bat_dau,
+          //   the_tich_sua: this.ti_me_model.the_tich_sua_new[0],
+          //   thong_tin_them: thong_tin_them,
+          // }
+          // await axios.post(config.API_URL + '/insertChamCon', congviec).then(async function (response) {
+          //   await self.updateBtn()
+          // })
+
+          this.nguProcess('OPEN', item);
+
           break;
         case 'BSB_HUT':
          
@@ -711,6 +731,51 @@ export default {
       this.$forceUpdate()
       // self.nguCountDown.circles  = 3;
     },
+    async nguProcess(type, item) {
+      console.log('Current status:', item);
+      // this.loadNguThuc();
+      if(item.lastWorking  == 'N'){
+          // this.$refs.dialogHoatDong.modal.duration = 100000;
+          this.$refs.dialogHoatDong.modal.loaiHoatDong = {
+            name: 'Thức',
+            code: 'THUC',
+          };
+          var durationTM = moment.duration(moment(new Date()).diff(moment(item.gio_bat_dau)));
+          //  let duration = moment.duration(moment(new Date()).diff(moment(response.data.data[0].ngay_thuc_hien_gan_nhat)));
+          let value =  Math.floor((durationTM._milliseconds / (1000 * 60)));
+          this.$refs.dialogHoatDong.modal.duration = value;
+          this.$refs.dialogHoatDong.modal.durationStr = `${ Math.floor(value / 60) } giờ ${ (value % 60)} phút`
+      }
+      if('OPEN' == type){
+        this.$refs.dialogHoatDong.dialog = true;
+
+      }
+    },
+
+    // async loadNguThuc(){
+    //   let self = this;
+    //   console.log('cron');
+    //   await axios.get(`${config.API_URL}/getGioBatDauByCV/NGU/COUNT_DOWN`).then(response => {
+    //     // seft.hotSettings.data = response.data.data;
+    //     let data = response.data.data;
+    //     // var durationTM = moment.duration(moment(gio_bat_dau).diff(moment(data[0].gio_bat_dau)));
+    //     //  let duration = moment.duration(moment(new Date()).diff(moment(response.data.data[0].ngay_thuc_hien_gan_nhat)));
+    //     console.log('data_THUC', data);
+    //     console.log('data.gio_bat_dau', moment(data[0].gio_bat_dau));
+    //     // console.log('gio_bat_dau', moment(gio_bat_dau));
+    //     // console.log('durationTM', durationTM);
+    //     // console.log('durationTM', durationTM._milliseconds);
+    //     self.nguThucModal.name = data[0].status  == 'N' ? 'Thức' : 'Ngủ';
+    //     self.nguThucModal.ten_cv = data[0].ten_cv;
+    //     self.nguThucModal.data = data[0];
+    //     self.nguThucModal.code = data[0].status;
+    //     self.nguThucModal.orgDate = data[0].gio_bat_dau;
+    //     self.nguThucModal.lastTime = moment(data[0].gio_bat_dau).format(config.DATE_TIME_FM_1);
+        
+    //     // self.modal.duration = Math.floor((durationTM._milliseconds / (1000 * 60)));
+    //   })
+    // },
+
   }
 };
 </script>

@@ -144,6 +144,7 @@
         :v-model="dialogHoatDong"
         :item = "nguThucModal"
         @updateStatusBtn="updateNgu()"
+        @refesh="loadingData()"
       />
       
     </v-col>

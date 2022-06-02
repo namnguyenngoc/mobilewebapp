@@ -378,6 +378,7 @@ export default {
       await axios.post(config.API_URL + '/insertChamCon',  congviec).then(async function (response) {
         console.log("TEXXXXXXXXXXX", 'DONE');
         self.$emit('updateStatusBtn');
+        self.$emit('refesh');
         self.dialog = false;
       })
       this.dialog = false;

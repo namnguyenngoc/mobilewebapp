@@ -17,7 +17,9 @@
           <v-col cols="12" class="mb-0 pb-0">
             <v-btn-toggle v-model="toggle_exclusive">
               <v-btn
-                @click="preDate()">
+                @click="preDate()"
+                :disabled="disabledPreDate"
+                >
                 <v-icon>
                   {{ icons.mdiArrowLeft }}
                 </v-icon>
@@ -64,7 +66,8 @@
                 </v-date-picker>
               </v-menu>
               <v-btn
-                @click="nextDate()">
+                @click="nextDate()"
+                :disabled="itemMonitoring.slider.model == undefined || itemMonitoring.slider.model <= 0">
                 <v-icon>
                   {{ icons.mdiArrowRight }}
                 </v-icon>
@@ -323,6 +326,7 @@ export default {
         orgDate: new Date(),
         lastTime: moment(new Date()).format(config.DATE_TIME_FM_1)
       },
+      layout_key: 0,
     }
   },
   async created() {
@@ -338,7 +342,20 @@ export default {
     await this.getCurrentDate();
   },
   computed: {
-     
+    disabledPreDate() {
+    //   if(this.itemMonitoring.slider.min <= this.itemMonitoring.slider.model){
+    //     return false;
+    //   }
+    //  return false;
+    },
+    disabledNextDate (){
+      console.log("disabledNextDate", this.itemMonitoring.slider.model);
+      if(this.itemMonitoring.slider.model == undefined || this.itemMonitoring.slider.model <= 0){
+        return true;
+      }
+      return false;
+    },
+    
   }, // end method
   mounted() {
     // this.loadingInstance = this.$veLoading({
@@ -349,6 +366,7 @@ export default {
     // });
     // this.show();
     this.loadingInstance.close();
+    
   }, // end method
   destroyed() {
     this.loadingInstance.destroy();
@@ -439,7 +457,7 @@ export default {
             "y": k,
             "w":2,
             "h":2,
-            "i": ifor++,
+            "i": this.layout_key++,
             "object":  arr[i],
             "moved": false
           };
@@ -455,6 +473,7 @@ export default {
     },
 
     async loadListDetail(type) {
+      let self = this;
       this.lstDetail = {
         title:"DETAIL",
         date: moment().subtract(this.itemMonitoring.slider.model, 'day').format(config.DATE_FM),
@@ -484,9 +503,9 @@ export default {
             } 
             if(type == 'BSB_UONG') {
                 object = {
-                title: `${type} - ${data[0].the_tich_sua}ml`,
+                title: `${this.tichSuaType.find(({ code }) => code == type).name} - ${this.calcWorkingTime(data[0])}`,
                 ma_cv: data.length == 0 ? type : data[0].ma_cv,
-                total: sum,
+                total: `${data[0].the_tich_sua}ml / ${sum}`,
                 total_lbl:  data[0].item_time_lbl,
                 type: "",
                 last_time: moment(data[0].gio_bat_dau).format(config.DATE_TIME_FM_1)
@@ -500,7 +519,7 @@ export default {
                   total: sum,
                   total_lbl:  data[0].item_time_lbl,
                   type: "",
-                  working_time_lbl: `${Math.floor(data[0].working_time / 60) } giờ ${(Math.floor(data[0].working_time / 60)) % 24} phút`,
+                  working_time_lbl: (data[0].ma_cv == 'NGU' && data[0].status == 'T') ? `${Math.floor(data[0].working_time / 60) } giờ ${(Math.floor(data[0].working_time % 60))} phút` :  self.calcWorkingTime(data[0]),
                   last_time: moment(data[0].gio_bat_dau).format(config.DATE_TIME_FM_1)
                 }
               } else{
@@ -537,20 +556,15 @@ export default {
     },
 
     nextDate() {
-      this.itemMonitoring.slider.model = (this.itemMonitoring.slider.model + 1) || this.itemMonitoring.slider.max;
-      if(this.itemMonitoring.slider.max >= this.itemMonitoring.slider.model){
-        this.loadingData();
-
-      }
+      this.itemMonitoring.slider.model = this.itemMonitoring.slider.model - 1;
       this.loadingData();
+       console.log('itemMonitoring.slider.model', this.itemMonitoring.slider.model);
 
     },
     preDate(){
-      this.itemMonitoring.slider.model = (this.itemMonitoring.slider.model - 1) || this.itemMonitoring.slider.min;
-      if(this.itemMonitoring.slider.min <= this.itemMonitoring.slider.model){
-        this.loadingData();
-
-      }
+      this.itemMonitoring.slider.model = this.itemMonitoring.slider.model + 1;
+      this.loadingData();
+      console.log('itemMonitoring.slider.model', this.itemMonitoring.slider.model);
     },
 
     today() {
@@ -558,6 +572,7 @@ export default {
       this.loadingData();
 
     },
+   
 
     async loadItemDetail(ma_cv) {
       console.log('loadListDetail');
@@ -751,6 +766,13 @@ export default {
 
       }
     },
+    calcWorkingTime(item){
+      console.log('calcWorkingTime', item);
+      var durationTM = moment.duration(moment(new Date()).diff(moment(item.gio_bat_dau)));
+      let value =  Math.floor((durationTM._milliseconds / (1000 * 60)));
+      let durationStr = `${ Math.floor(value / 60) } giờ ${ (value % 60)} phút`
+      return durationStr;
+    }
 
     // async loadNguThuc(){
     //   let self = this;

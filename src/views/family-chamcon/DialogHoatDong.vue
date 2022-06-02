@@ -90,7 +90,7 @@
             <v-col cols="6" md="6" v-show="item.showTheTich">
               <v-combobox
                 v-model="item.the_tich_sua_new"
-                :items="items"
+                :items="modal.items"
                 hide-selected
                 label="Thể tích"
                 persistent-hint

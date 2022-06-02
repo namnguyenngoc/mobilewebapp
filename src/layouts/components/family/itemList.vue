@@ -5,7 +5,7 @@
         <v-col cols="10" sm="10" class="pa-0 pt-1">
           <v-col cols="12" sm="12" class="ma-0 pa-0 pl-1 pr-1 mt-1 ml-1">
             <h3>{{ item.ma_cv != 'NGU' ? item.title : (item.lastWorking == 'T' ? 'Ngủ' : 'Thức'  ) }} 
-            {{item.ma_cv != 'NGU' ? item.lastWorking : '(' + item.working_time_lbl + ')'}}
+            {{item.ma_cv != 'NGU' ? item.lastWorking : `- ${(item.lastWorking == 'T' ? 'T' : 'N'  )}[${item.working_time_lbl}]`}}
             </h3>
           </v-col>
           <v-col cols="12" sm="12" class="ma-0 pa-0 pl-1 pr-1 mt-1 ml-1">

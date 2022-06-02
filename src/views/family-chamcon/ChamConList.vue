@@ -185,6 +185,26 @@ export default {
               // filterFn: this.columnFilterFn, //custom filter function that
               trigger: 'enter', //only trigger on enter not on keyup 
           },
+          formatFn: function (value) {
+            return `${value} ml`
+          },
+        },
+        {
+          label: 'Thông tin thêm',
+          field: 'str_thong_tin_them',
+          formatFn: function (value) {
+            if(value == undefined || value == null || value.trim().length == 8) return "";
+
+            let arr = value.split(',');
+            let uniqueNames = [];
+            arr.forEach((c) => {
+              if (!uniqueNames.includes(c)) {
+                  uniqueNames.push(c);
+              }
+            });
+            return uniqueNames.join(", ");
+          }
+          
         },
         
       ],

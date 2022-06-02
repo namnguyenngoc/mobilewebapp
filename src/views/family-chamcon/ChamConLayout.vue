@@ -39,12 +39,17 @@
                     :w="item.w"
                     :h="item.h"
                     :i="item.i"
-                    :object="item.object">
+                    :object="item.object"
+                    >
                     <v-col cols="12" sm="12" class="ma-0 pa-0 pl-1 pr-1 mt-1 ml-1">
                       <h4>{{item.object.ngay.split(",")[0]}}</h4>
                     </v-col>
                     <v-col cols="12" sm="12" class="ma-0 pa-0 pl-1 pr-1 mt-1 ml-1" v-for="item2 in item.object.item" :key="item2.ma_cv">
-                      <div @click="onRowDoubleClick(item2)">{{item2.ten_cong_viec}}: {{'BSB_UONG' == item2.ma_cv ? `${item2.the_tich_sua}ml` : `${Math.floor(item2.working_time / 60) } giờ ${item2.working_time % 60} phút`}}</div>
+                      <div @click="onRowDoubleClick(item2)" :class="'BENH' == item2.ma_cv ? 'warning text_warning': ''">
+                      {{item2.ten_cong_viec}} : 
+                      {{'BSB_UONG' == item2.ma_cv ? `${item2.the_tich_sua}ml` 
+                          : ('BENH' == item2.ma_cv ? item2.str_thong_tin_them 
+                          : ('WC' == item2.ma_cv ? item2.count_ma_cv : `${Math.floor(item2.working_time / 60) } giờ ${item2.working_time % 60} phút`))}}</div>
                     </v-col>
                 </grid-item>
               </grid-layout>
@@ -375,6 +380,9 @@ export default {
     border-color: #dcdcdc !important
   }
 
+  .text_warning {
+    color: #000000;
+  }
   // .layout-ls{
   //   width:100%;
   //   margin-top: 10px;

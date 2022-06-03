@@ -18,7 +18,7 @@
           </v-col>
           <v-col cols="12">
             <v-row>
-              <v-col cols="12" md="7" sm="12" class="text-left">
+              <v-col cols="12" md="6" sm="12" class="text-left">
                 <v-btn-toggle v-model="toggle_exclusive">
                   <v-btn :color="nguThucModal.code=='N' ? 'info' : 'warning'" @click="updateNgu('OPEN')" small class="pl-1 pr-1">
                       {{nguThucModal.name}} ({{nguThucModal.code=='N' ?  'N:' : 'T:' }} {{nguThucModal.lastTime}})
@@ -35,7 +35,7 @@
                 
                 </v-btn-toggle>
               </v-col>
-              <v-col cols="12" md="5" sm="12" class="text-left">
+              <v-col cols="12" md="4" sm="12" class="text-left">
                 <v-btn-toggle v-model="toggle_exclusive">
                   <v-btn color="warning" @click="updateNgu()" class="pl-1 pr-1 btn-style-1 mr-1" small>
                     <v-icon dark>
@@ -52,11 +52,18 @@
                       {{ icons.mdiHospitalBoxOutline  }}
                     </v-icon>
                 </v-btn>
-
-              </v-btn-toggle>
+                </v-btn-toggle>
+               
               </v-col>
-              
-            
+              <v-col cols="12" md="2" sm="12" class="text-left">
+                <v-switch
+                  v-model="isShowAllCharts"
+                  label="Show all charts"
+                  color="success"
+                  value="success"
+                  hide-details
+                ></v-switch>
+              </v-col>
             </v-row>
           </v-col>
           <v-col cols="12">
@@ -189,11 +196,11 @@
           <v-col cols="12" md="12" class="ma-0 text-right pa-0 pt-1 pb-0 mb-0">
             <apexchart type="line" :options="chartTotalOptionsKCBS" :series="seriesTotalKCBS" ref="chartTotalOptionsKCBS" ></apexchart>
           </v-col>
-          <v-col cols="12">
+          <v-col cols="12" v-show="isShowAllCharts">
             <h4>Thống kê sữa uống / tích</h4>
           </v-col>
           <!-- chart bu sua -->
-          <v-col cols="12" md="12" class="ma-0 pa-0">
+          <v-col cols="12" md="12" class="ma-0 pa-0" v-show="isShowAllCharts">
             <v-card>
               <v-card-text class="ma-0 pa-0 mt-0 mb-0 pt-0 pb-1">
 
@@ -225,12 +232,12 @@
             </v-card-text>
             </v-card>
           </v-col>
-          <v-divider class="mx-1 mb-5"></v-divider>
-          <v-col cols="12">
+          <v-divider class="mx-1 mb-5" v-show="isShowAllCharts"></v-divider>
+          <v-col cols="12" v-show="isShowAllCharts">
             <h4>THỐNG KÊ NGỦ</h4>
           </v-col>
           <!-- chart bu sua -->
-          <v-col cols="12" md="12" class="ma-0 pa-0">
+          <v-col cols="12" md="12" class="ma-0 pa-0" v-show="isShowAllCharts">
             <v-card>
               <v-card-text class="ma-0 pa-0 mt-0 mb-0 pt-0 pb-1">
                 <v-col cols="12" md="12" class="ma-0 pa-0">
@@ -240,11 +247,11 @@
             </v-card-text>
             </v-card>
           </v-col>
-          <v-divider class="mx-1 mb-5"></v-divider>
-          <v-col cols="12">
+          <v-divider class="mx-1 mb-5" v-show="isShowAllCharts"></v-divider>
+          <v-col cols="12" v-show="isShowAllCharts">
             <h4>Thống kê sức khỏe định kỳ</h4>
           </v-col>
-          <v-col cols="12" md="12" class="ma-0 text-right pt-4 pb-0 mb-0">
+          <v-col cols="12" md="12" class="ma-0 text-right pt-4 pb-0 mb-0" v-show="isShowAllCharts">
             <v-slider
               inverse-label
               v-model="sliderSK"
@@ -272,7 +279,7 @@
             </v-radio-group>
           </v-col> -->
           
-          <v-col cols="12" md="4" sm="4" class="pt-0 pb-0 mt-0 mb-0 text-right">
+          <v-col cols="12" md="4" sm="4" class="pt-0 pb-0 mt-0 mb-0 text-right" v-show="isShowAllCharts">
             <v-select
               v-model="chartOptionSelect"
               :items="chartOptionItems"
@@ -284,7 +291,7 @@
             ></v-select>
           </v-col>
           
-          <v-col cols="12" md="8" sm="8" class="pt-0 pb-0 mt-0 mb-0 text-right">
+          <v-col cols="12" md="8" sm="8" class="pt-0 pb-0 mt-0 mb-0 text-right" v-show="isShowAllCharts">
             <v-select
               v-model="chartSKColSelect"
               :items="chartSKItems"
@@ -299,8 +306,8 @@
             ></v-select>
           </v-col>
         </v-card-title>
-        <v-divider class="mx-4"></v-divider>
-        <v-card-text class="ma-0 pa-0">
+        <v-divider class="mx-4" v-show="isShowAllCharts"></v-divider>
+        <v-card-text class="ma-0 pa-0" v-show="isShowAllCharts">
           <v-row class="ma-0 pa-0">
             <v-col cols="12" md="12" class="pa-0 ma-0 text-right">
               <apexchart type="line" :options="chartSucKhoe" :series="serialsSucKhoe" ref="refChartSucKhoe" ></apexchart>
@@ -319,7 +326,7 @@
     </v-col>
     
     <!-- Bú sữa -->
-    <v-col cols="12" md="12" class="ma-0 pa-0">
+    <v-col cols="12" md="12" class="ma-0 pa-0" v-show="isShowAllCharts">
       <v-card>
         <v-card-text class="mt-0 mb-0 pt-0 pb-1">
           <v-col cols="12">
@@ -351,7 +358,7 @@
     </v-col>
 
     
-    <v-col cols="12" md="12" class="pa-2">
+    <v-col cols="12" md="12" class="pa-2" v-show="isShowAllCharts">
       <v-card>
         <v-card-title class="pt-5 pb-2">
           <v-col cols="5" md="5" class="pb-0 mb-0"> 
@@ -2291,6 +2298,7 @@ export default {
           item: {},
           vmodel:true,
         },
+      isShowAllCharts: false
 
     }
   },

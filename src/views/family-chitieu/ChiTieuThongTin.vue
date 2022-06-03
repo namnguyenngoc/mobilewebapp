@@ -21,7 +21,7 @@
                   overflow: hidden;
                   text-overflow: ellipsis;
                   justify-content: right;">
-          {{model.ngay_chi}}: {{model.noi_dung}} ({{formatPrice(model.so_tien, 0)}})  
+          {{model.ngay_chi}}: {{shortCutName(model.noi_dung)}} ({{formatPrice(model.so_tien, 0)}})  
         </v-btn>
         <v-btn color="success" @click="getLastChiTieu()" small class="pl-1 pr-1"> 
           <v-icon dark>
@@ -207,6 +207,15 @@
         console.log(param);
         window.open('./chitieu-list', '_blank');
       },
+      shortCutName(name){
+         console.log('shortCutName', name);
+        if(name == undefined || name == null || name.trim().length == 0) return "";
+        let arr = name.split('-');
+       
+        console.log('arr', arr);
+        if(arr.length == 0) return name;
+        return arr[0];
+      }
       
     }, // end created
   } // End exxport default

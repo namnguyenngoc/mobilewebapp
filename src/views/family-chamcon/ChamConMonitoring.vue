@@ -520,8 +520,7 @@ export default {
                   total: sum,
                   total_lbl:  data[0].item_time_lbl,
                   type: "",
-                  working_time_lbl: (data[0].ma_cv == 'NGU' && data[0].status == 'N') 
-                  ? `${Math.floor(data[0].working_time / 60) } giờ ${(Math.floor(data[0].working_time % 60))} phút` :  data[0].gio_bat_dau,
+                  working_time_lbl: self.lbl_ngu(data[0]),
                   last_time: moment(data[0].gio_bat_dau).format(config.DATE_TIME_FM_1)
                 }
               } else{
@@ -774,8 +773,20 @@ export default {
       let value =  Math.floor((durationTM._milliseconds / (1000 * 60)));
       let durationStr = `${ Math.floor(value / 60) } giờ ${ (value % 60)} phút`
       return durationStr;
-    }
+    },
+    lbl_ngu(item){
+      if(item.ma_cv != 'NGU'){
+        return item.gio_bat_dau;
+      }
 
+      return this.calcWorkingTime(item);
+      
+      // return item.gio_bat_dau;
+
+      // (data[0].ma_cv == 'NGU' && data[0].status == 'N') 
+      //             ? `${Math.floor(data[0].working_time / 60) } giờ ${(Math.floor(data[0].working_time % 60))} phút` :  data[0].gio_bat_dau,
+    }
+    
     // async loadNguThuc(){
     //   let self = this;
     //   console.log('cron');

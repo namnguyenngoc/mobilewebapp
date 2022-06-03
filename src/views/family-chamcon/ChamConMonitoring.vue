@@ -520,7 +520,8 @@ export default {
                   total: sum,
                   total_lbl:  data[0].item_time_lbl,
                   type: "",
-                  working_time_lbl: (data[0].ma_cv == 'NGU' && data[0].status == 'T') ? `${Math.floor(data[0].working_time / 60) } giờ ${(Math.floor(data[0].working_time % 60))} phút` :  self.calcWorkingTime(data[0]),
+                  working_time_lbl: (data[0].ma_cv == 'NGU' && data[0].status == 'N') 
+                  ? `${Math.floor(data[0].working_time / 60) } giờ ${(Math.floor(data[0].working_time % 60))} phút` :  data[0].gio_bat_dau,
                   last_time: moment(data[0].gio_bat_dau).format(config.DATE_TIME_FM_1)
                 }
               } else{

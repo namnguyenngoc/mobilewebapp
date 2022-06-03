@@ -148,7 +148,7 @@ export default {
           },
         },
         {
-          label: 'Số kỳ góp',
+          label: 'Số kỳ',
           field: 'tong_so_ky',
           filterable: true,
           type: 'number',
@@ -163,7 +163,7 @@ export default {
           },
         },
         {
-          label: 'Số kỳ còn lại',
+          label: 'Kỳ còn lại',
           field: '_ky_con_lai',
           filterable: true,
           type: 'number',
@@ -193,6 +193,23 @@ export default {
               trigger: 'enter', //only trigger on enter not on keyup 
           },
           headerField: this.sumCount,
+        },
+        {
+          label: 'Tổng tiền',
+          field: 'tong_tien',
+          type: 'number',
+          filterable: true,
+          formatFn: this.formatPrice,
+          filterOptions: {
+            styleClass: 'class1', // class to be added to the parent th element
+              enabled: true, // enable filter for this column
+              placeholder: 'Tổng Tiền', // placeholder for filter input
+              filterValue: '',
+              filterDropdownItems: [], // dropdown (with selected values) instead of text input
+              // filterFn: this.columnFilterFn, //custom filter function that
+              trigger: 'enter', //only trigger on enter not on keyup 
+          },
+          headerField: this.sumCount2,
         },
         {
           label: 'Sản phẩm',
@@ -438,6 +455,14 @@ export default {
     	let sum = 0;
       for (let i = 0; i < rowObj.children.length; i++) {
         sum += parseFloat(rowObj.children[i].moi_ky);
+      }
+      return sum;
+    },
+    sumCount2(rowObj) {
+    	console.log('sumCount2', rowObj);
+    	let sum = 0;
+      for (let i = 0; i < rowObj.children.length; i++) {
+        sum += parseFloat(rowObj.children[i].tong_tien);
       }
       return sum;
     },

@@ -162,30 +162,13 @@
                    <!-- && props.formattedRow['status'] == 'DN' -->
                   <v-btn
                     v-if="props.formattedRow['status'] == 'DN'"
-                    color="info"
-                    @click="confirmChangeStatus(props, 'CSK')"
+                    color="error"
+                    @click="confirmDelete()"
+                    icon
                   >
-                   <span>
-                    Chốt SK
-                   </span>
-                  </v-btn>
-                  <v-btn
-                    v-else-if="props.formattedRow['status'] == 'CSK'"
-                    color="primary"
-                    @click="confirmChangeStatus(props, 'DTCSK')"
-                  >
-                   <span>
-                    Gạch nợ
-                   </span>
-                  </v-btn>
-                  <v-btn
-                    v-else-if="props.formattedRow['id_tra_gop'] == undefined || props.formattedRow['id_tra_gop'] == null || props.formattedRow['id_tra_gop'] == ''"
-                    color="info"
-                    @click="addTraGop(props)"
-                  >
-                   <span>
-                    Chuyển đổi {{props.formattedRow['id_tra_gop']}}
-                   </span>
+                  <v-icon>
+                    {{icons.mdiDeleteAlertOutline }}
+                  </v-icon>
                   </v-btn>
                 </div>
                 <div v-else-if="props.column.field == 'email_content'">
@@ -246,7 +229,7 @@
         :item="itemGop"
         @refeshList="loadChiTieu()"
       />
-
+      <DialogConfirm ref="dialogConfirm" />
     </v-col>
   </v-row>
   
@@ -259,12 +242,16 @@ import moment from 'moment';
 import { VueGoodTable } from 'vue-good-table';
 
 
-import { mdiReload, mdiMinus, mdiOneUp, mdiPlus, mdiDeleteOutline, mdiCircleEditOutline, mdiSleep, mdiConsoleNetworkOutline } from '@mdi/js'
+import { mdiReload, mdiMinus, mdiOneUp
+, mdiPlus, mdiDeleteOutline
+, mdiCircleEditOutline,
+ mdiSleep, mdiConsoleNetworkOutline, mdiDeleteAlertOutline } from '@mdi/js'
 import { reactive } from '@vue/composition-api'
 import ChiTieuDetail from "./ChiTieuDetail";
 import ChiTieuChangeKyChi from "./ChiTieuChangeKyChi";
 import ChiTieuChangeStatus from "./ChiTieuChangeStatus";
 import TraGopAdd from "./TraGopAdd";
+import DialogConfirm from '../../components/DialogConfirm.vue';
 
 export default {
   name: 'ChiTieuGiaDinh',
@@ -274,7 +261,8 @@ export default {
     ChiTieuChangeKyChi,
     ChiTieuChangeStatus,
     TraGopAdd,
-    mdiReload
+    mdiReload,
+    DialogConfirm
   },
   data() {
     let self = this;
@@ -466,13 +454,14 @@ export default {
         mdiDeleteOutline,
         mdiCircleEditOutline,
         mdiSleep,
-        mdiReload
+        mdiReload,
+        mdiDeleteAlertOutline 
       },
       date: null,
       trip: {
         name: '',
         location: null,
-        start: moment().subtract(24, 'months').format(config.DATE_FM),
+        start: moment().subtract(3, 'months').format(config.DATE_FM),
         end: moment().subtract(-5, 'days').format(config.DATE_FM),
         // new Date().toISOString().substr(0, 10),
       },
@@ -717,6 +706,18 @@ export default {
     close() {
         this.loadingInstance.close();
     },
+
+    async confirmDelete () {
+        //  this.$refs.dialogConfirm.dialog = true
+        if (
+          await this.$refs.dialogConfirm.open(
+            "Confirm",
+            "Are you sure you want to delete this record?"
+          )
+        ){
+          // this.deleteChiTieu()
+        }
+      },
 
   },
 }

@@ -81,5 +81,12 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.theme--dark.error > .black--text{
+    color: #FFFFFF !important;
+}
+
+.v-dialog > .v-card > .v-card__text{
+
+}
 </style>

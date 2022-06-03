@@ -163,6 +163,21 @@ export default {
           },
         },
         {
+          label: 'Số kỳ còn lại',
+          field: '_ky_con_lai',
+          filterable: true,
+          type: 'number',
+          filterOptions: {
+            styleClass: 'class1', // class to be added to the parent th element
+              enabled: true, // enable filter for this column
+              placeholder: 'Kỳ Chi', // placeholder for filter input
+              // filterValue: ((new Date()).getMonth() + ((new Date()).getDate() > 27 ? 2 : 1)).toString().concat((new Date()).getFullYear()), // initial populated value for this filter
+              filterDropdownItems: [], // dropdown (with selected values) instead of text input
+              // filterFn: this.columnFilterFn, //custom filter function that
+              trigger: 'enter', //only trigger on enter not on keyup 
+          },
+        },
+        {
           label: 'Mỗi kỳ',
           field: 'moi_ky',
           type: 'number',

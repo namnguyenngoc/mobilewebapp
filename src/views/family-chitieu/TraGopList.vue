@@ -434,10 +434,10 @@ export default {
 
     },
     sumCount(rowObj) {
-    	console.log(rowObj);
+    	console.log('sumCount', rowObj);
     	let sum = 0;
       for (let i = 0; i < rowObj.children.length; i++) {
-        sum += parseFloat(rowObj.children[i].so_tien);
+        sum += parseFloat(rowObj.children[i].moi_ky);
       }
       return sum;
     },

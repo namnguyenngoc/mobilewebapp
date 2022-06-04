@@ -11,7 +11,7 @@ const routes = [
   {
     path: '/dashboard',
     name: 'dashboard',
-    component: () => import('@/views/dashboard/Dashboard.vue'),
+    component: () => import('@/views/dashboard/MonitoringChamCon.vue'),
   },
   {
     path: '/dashboard-ct',

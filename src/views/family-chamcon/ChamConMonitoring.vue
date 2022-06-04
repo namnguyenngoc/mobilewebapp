@@ -4,15 +4,13 @@
     <v-col cols="12" class="ma-0 pa-0">
       <v-card height="100%">
         <v-card-title class="pt-5 pb-2 mr-0 pr-2">
-          <v-col md="12" sm="12" class="pa-0 ma-0">
-            <v-row class="full-width mb-0 mt-1"> 
-              <v-col md="4" sm="4" xs="12" class="mb-0 mt-0 pb-0 pt-1 bold" @click="openDetail()"><h3>Đăng Khôi</h3></v-col>
-              <v-col md="8" sm="8" xs="12" class="mb-0 mt-0 pb-0 pt-0 text-right">{{ tuan_tuoi.date }}</v-col>
-            </v-row>
+          <v-col cols="12" class="mb-0 pl-0">
+            <ChamConTodoComponent />
           </v-col>
           
         </v-card-title>
         <v-card-text class="mt-0 mb-0 pt-1 pb-0 ma-0 pa-0" height="100%">
+         
           <!-- Row 1 -->
           <v-col cols="12" class="mb-0 pb-0">
             <v-btn-toggle v-model="toggle_exclusive">
@@ -164,6 +162,7 @@ import DialogHoatDong from './DialogHoatDong.vue'
 
 
 import itemList from '../../layouts/components/family/itemList.vue'
+import ChamConTodoComponent from './ChamConTodoComponent.vue'
 // import { GridLayout } from 'vue-grid-layout';
 // import { GridItem } from 'vue-grid-layout';
 
@@ -193,7 +192,8 @@ export default {
     GridItem: VueGridLayout.GridItem,
     itemList,
     SinhHoatAddDialog,
-    DialogHoatDong
+    DialogHoatDong,
+    ChamConTodoComponent
   },
   data() {
     return {

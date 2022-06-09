@@ -214,9 +214,9 @@ export default {
       .then(response => {
         // seft.hotSettings.data = response.data.data;
         let data = response.data.data;
-        console.log('selectChamConGroup-data', data);
+        // console.log('selectChamConGroup-data', data);
         const unique = [...new Set(data.map(item => item.ngay_group))]; // [ 'A', 'B']
-        console.log('selectChamConGroup-unique', unique);
+        // console.log('selectChamConGroup-unique', unique);
         let arrA = [];
         if(undefined != unique){
           let x = 0;
@@ -245,7 +245,7 @@ export default {
                 }
               };
 
-            console.log(item2, item2);
+            // console.log(item2, item2);
               arrA.push(item2);
             self.layout.push(item2);
             if(i % 6 * 2 == 10){
@@ -254,7 +254,7 @@ export default {
            
           }
         }
-        console.log(`self.arrA`, arrA.toString());
+        // console.log(`self.arrA`, arrA.toString());
 
         
         self.close();
@@ -274,7 +274,7 @@ export default {
     // params.event - click event
       this.rowSelected = [];
       let self = this;
-      console.log('row', params);
+      // console.log('row', params);
       this.rowSelected =  params;
       this.chamConItem = {
         ma_cv: params.ma_cv,
@@ -299,7 +299,7 @@ export default {
           data[i].item_time_lbl = data[i].ma_cv == 'BSB_UONG' ? `${data[i].the_tich_sua} ml` : `${Math.floor(data[i].working_time / 60) } giờ ${data[i].working_time % 60} phút`;
           total += data[i].ma_cv == 'BSB_UONG' ? data[i].the_tich_sua : data[i].working_time;
           arr.push(data[i]);
-           console.log('data[i]', data[i]);
+          //  console.log('data[i]', data[i]);
         }
         // self.chamConItem = [
         //   {
@@ -324,18 +324,18 @@ export default {
         self.$refs.chamConListDialog.dialog = true;
         
         // self.tblDataCongViec = data;
-        console.log('item-data', data);
+        // console.log('item-data', data);
       });
       
 //  moment.tz(new Date(), tzString).format("YYYY-MM-DD HH:mm:ss"),
       // this.$refs.chamConDetail.dialog = true;
     },
     openDetail(ngay){
-      console.log('ngày', ngay);
+      // console.log('ngày', ngay);
       this.$refs.chamConListDialog.dialog = true;
     },
     breakpointChangedEvent: function(newBreakpoint, newLayout){
-        console.log("BREAKPOINT CHANGED breakpoint=", newBreakpoint, ", layout: ", newLayout );
+        // console.log("BREAKPOINT CHANGED breakpoint=", newBreakpoint, ", layout: ", newLayout );
     }
     
   },

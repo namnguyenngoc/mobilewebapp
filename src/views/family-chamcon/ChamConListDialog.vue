@@ -277,7 +277,7 @@ export default {
   },
   async mounted() {
     //  await this.countWorkInDay2();
-     console.log("this.tblDataCongViec", this.tblDataCongViec);
+    //  console.log("this.tblDataCongViec", this.tblDataCongViec);
   }, // end method
 
   created() {
@@ -299,7 +299,7 @@ export default {
         self.model.sum_uong = response.data.data[0]._sum
         let duration = moment.duration(moment(new Date()).diff(moment(response.data.data[0].ngay_thuc_hien_gan_nhat)))
         self.model.duration = `${duration._data.hours}h ${duration._data.minutes}m`
-        console.log('duration', duration)
+        // console.log('duration', duration)
       })
       axios.get(`${config.API_URL}/countWorkInDay/BSB_HUT/now()`).then(response => {
         // seft.hotSettings.data = response.data.data;
@@ -318,7 +318,7 @@ export default {
       
       let loaiCongViec = this.modal.loaiHoatDong;
       let paramLoaiCV = typeof loaiCongViec === 'object' ? loaiCongViec.code.toString() : loaiCongViec;
-      console.log('loaiCongViec', this.modal);
+      // console.log('loaiCongViec', this.modal);
       let type = 'COUNT_DOWN';
       const  self = this;
       let gio_bat_dau = moment(`${this.modal.ngay_thuc_hien} ${this.modal.gio_thuc_hien}`);
@@ -326,7 +326,7 @@ export default {
         // seft.hotSettings.data = response.data.data;
         let data = response.data.data;
         self.modal.response = data[0];
-        console.log('data', data);
+        // console.log('data', data);
       })
 
       if( paramLoaiCV == 'THUC'){
@@ -335,11 +335,11 @@ export default {
           let data = response.data.data;
           var durationTM = moment.duration(moment(gio_bat_dau).diff(moment(data[0].gio_bat_dau)));
           //  let duration = moment.duration(moment(new Date()).diff(moment(response.data.data[0].ngay_thuc_hien_gan_nhat)));
-          console.log('data_THUC', data);
-          console.log('data.gio_bat_dau', moment(data[0].gio_bat_dau));
-          console.log('gio_bat_dau', moment(gio_bat_dau));
-          console.log('durationTM', durationTM);
-          console.log('durationTM', durationTM._milliseconds);
+          // console.log('data_THUC', data);
+          // console.log('data.gio_bat_dau', moment(data[0].gio_bat_dau));
+          // console.log('gio_bat_dau', moment(gio_bat_dau));
+          // console.log('durationTM', durationTM);
+          // console.log('durationTM', durationTM._milliseconds);
           self.modal.duration = Math.floor((durationTM._milliseconds / (1000 * 60)));
         })
       }
@@ -347,7 +347,7 @@ export default {
     },
     async insert() {
       // if() return;
-      console.log('item', this.item);
+      // console.log('item', this.item);
       let self = this;
       this.tblDataCongViec = [];
       this.tblDataCongViec = this.item.tblDataCongViec;
@@ -355,7 +355,7 @@ export default {
         this.tblDataCongViec.push(this.item.tblDataCongViec[i]);
       }
 
-       console.log(' this.tblDataCongViec',  this.tblDataCongViec);
+      //  console.log(' this.tblDataCongViec',  this.tblDataCongViec);
     },
     time(){},
     onRowDoubleClick(params) {
@@ -365,7 +365,7 @@ export default {
     // indicates selected or not
     // params.event - click event
 
-      console.log('row', params.row);
+      // console.log('row', params.row);
       this.chamConTitle = `${params.row.ten_cong_viec} ngày ${moment(params.row.ngay_thuc_hien).format(config.DATE_TIME_FM)}`;
       this.chamConItem = {
        	id: params.row.id,
@@ -393,11 +393,11 @@ export default {
       this.$refs.chamConDetail2.dialog = true;
     },
     sumWorkingTime(rowObj) {
-    	console.log('sumWorkingTime', rowObj);
+    	// console.log('sumWorkingTime', rowObj);
     	let sum = 0;
 
       for (let i = 0; i < rowObj.children.length; i++) {
-        console.log('rowObj.children[i]', rowObj.children[i]);
+        // console.log('rowObj.children[i]', rowObj.children[i]);
         if('BSB_UONG' == rowObj.children[i].ma_cv){
           sum += parseFloat(rowObj.children[i].the_tich_sua);
 

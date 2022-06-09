@@ -24,7 +24,7 @@
             <grid-layout
               :layout.sync="layout"
               :col-num="layoutSize.col_num"
-              :row-height="60"
+              :row-height="90"
               :is-draggable="false"
               :is-resizable="false"
               :vertical-compact="true"
@@ -41,10 +41,10 @@
                     :i="item.i"
                     :object="item.object"
                     >
-                    <v-col cols="12" sm="12" class="ma-0 pa-0 pl-1 pr-1 mt-1 ml-1">
+                    <v-col cols="12" sm="12" class="ma-0 pa-0 pl-1 pr-1 mt-1 ml-1 pt-1 pb-1 point">
                       <h4>{{item.object.ngay.split(",")[0]}}</h4>
                     </v-col>
-                    <v-col cols="12" sm="12" class="ma-0 pa-0 pl-1 pr-1 mt-1 ml-1" v-for="item2 in item.object.item" :key="item2.ma_cv">
+                    <v-col cols="12" sm="12" class="ma-0 pa-0 pl-1 pr-1 mt-1 ml-1 pt-1 pb-1" v-for="item2 in item.object.item" :key="item2.ma_cv">
                       <div @click="onRowDoubleClick(item2)" :class="'BENH' == item2.ma_cv ? 'warning text_warning': ''">
                       {{item2.ten_cong_viec}} : 
                       {{'BSB_UONG' == item2.ma_cv ? `${item2.the_tich_sua}ml` 
@@ -335,7 +335,7 @@ export default {
       this.$refs.chamConListDialog.dialog = true;
     },
     breakpointChangedEvent: function(newBreakpoint, newLayout){
-        // console.log("BREAKPOINT CHANGED breakpoint=", newBreakpoint, ", layout: ", newLayout );
+        console.log("BREAKPOINT CHANGED breakpoint=", newBreakpoint, ", layout: ", newLayout );
     }
     
   },
@@ -382,6 +382,10 @@ export default {
 
   .text_warning {
     color: #000000;
+  }
+
+  .cssTransforms > div {
+    cursor: pointer;
   }
   // .layout-ls{
   //   width:100%;

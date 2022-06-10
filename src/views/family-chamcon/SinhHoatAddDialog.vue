@@ -248,7 +248,7 @@
         //   ghi_chu_them: 'Sữa mẹ',
         //   showTheTich: true,
         // },
-        items_ghichu: ["Sữa mẹ", "Sữa CT"],
+        items_ghichu: ["Sữa mẹ", "Sữa CT Meiji 0-1 [Nhập khẩu]", "Sữa CT Meiji 0-1 [Nội địa]", "Sữa CT Morigana 0-6"],
         emptyRules: {
           text:   [v => !!v || "Item is required"],
           select: [(v) => !!v || "Item is required"],

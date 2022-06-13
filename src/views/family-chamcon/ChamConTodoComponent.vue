@@ -330,18 +330,16 @@
               </template>
               </v-combobox>
             </v-col>
-            <!-- <v-col cols="12" md="12">
-              <v-autocomplete
-                label="Tình trạng phân"
-                v-model="be_wc_model.selectModel"
-                :items="be_wc_model.items"
-                item-text="name"
-                item-value="code"
-                dense>
+            <v-col cols="12" md="12" v-show="!cuSuaModel.showTheTich">
+              <v-text-field
+                label="Thông tin bệnh"
+                v-model="cuSuaModel.ghi_chu_them"
+                clearable
+                hide-details
                 
-              </v-autocomplete>
-            </v-col> -->
-            <v-col cols="12" md="12">
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="12" v-show="cuSuaModel.showTheTich">
              <v-combobox
                 v-model="cuSuaModel.ghi_chu_them"
                 :items="items_ghichu"
@@ -604,7 +602,7 @@ export default {
       desserts: [],
       tuan_tuoi: {dialog:false},
       items: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200],
-      items_ghichu: ["Sữa mẹ", "Sữa CT Meiji 0-1 [Nhập khẩu]", "Sữa CT Meiji 0-1 [Nội địa]", "Sữa CT Morigana 0-6"],
+      items_ghichu:  ["Sữa mẹ", "Morigana 6-36", "Morigana 0-6", "Meiji 0-1 [Nhập khẩu]", "Meiji 0-1 [Nội địa]"],
       icons: {
         mdiMinus,
         mdiPlus,

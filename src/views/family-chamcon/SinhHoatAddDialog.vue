@@ -142,6 +142,14 @@
             
           </v-row>
         </v-col>
+         <v-col cols="12" md="12">
+          <v-text-field
+              label="Thông tin bệnh2"
+              v-model="item.ghi_chu_them"
+              clearable
+              hide-details
+          ></v-text-field>
+        </v-col>
         <v-col cols="12" md="12">
           <v-combobox
             v-model="item.ghi_chu_them"
@@ -248,7 +256,7 @@
         //   ghi_chu_them: 'Sữa mẹ',
         //   showTheTich: true,
         // },
-        items_ghichu: ["Sữa mẹ", "Sữa CT Meiji 0-1 [Nhập khẩu]", "Sữa CT Meiji 0-1 [Nội địa]", "Sữa CT Morigana 0-6"],
+        items_ghichu: ["Sữa mẹ", "Morigana 6-36", "Morigana 0-6", "Meiji 0-1 [Nhập khẩu]", "Meiji 0-1 [Nội địa]"],
         emptyRules: {
           text:   [v => !!v || "Item is required"],
           select: [(v) => !!v || "Item is required"],

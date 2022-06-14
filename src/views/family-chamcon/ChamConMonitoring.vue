@@ -2,7 +2,7 @@
   <v-col cols="12" class="ma-0 pa-0">
     
     <v-col cols="12" class="ma-0 pa-0">
-      <v-card height="100%">
+      <v-card height="100%" class="mb-0 pb-0">
         <v-card-title class="pt-5 pb-2 mr-0 pr-2">
           <v-col cols="12" class="mb-0 pl-0">
             <ChamConTodoComponent />
@@ -108,22 +108,11 @@
               </grid-layout>
             </div>
           </v-card-text>
-           <v-col cols="12">
-            <chamConDetail
-              ref="chamConDetail"
-              :title="chamConTitle"
-              :item="chamConItem"
-              :v-model="chamConDetaillDialog"
-              @refeshList="loadData()"
-              
-            />
-                </v-col>
           <!-- Row 3 -->
         </v-card-text>
-        <v-divider class="mx-4"></v-divider>
       </v-card>
     </v-col>
-    <v-col cols="12">
+    <v-col cols="12" class="ma-0 pa-0">
       <ChamConListDialog
         ref="chamConListDialog"
         :title="lstDetail.title"
@@ -143,6 +132,14 @@
         :item = "nguThucModal"
         @updateStatusBtn="updateNgu()"
         @refesh="loadingData()"
+      />
+      <chamConDetail
+        ref="chamConDetail"
+        :title="chamConTitle"
+        :item="chamConItem"
+        :v-model="chamConDetaillDialog"
+        @refeshList="loadData()"
+        
       />
       
     </v-col>
@@ -863,7 +860,7 @@ export default {
   .layout-ls{
     width:100%;
     margin-top: 0px;
-    height:100vh;
+    height: 40vh;
     min-height:100px;
     max-height: 100vh;
     overflow: auto; 
@@ -963,6 +960,9 @@ export default {
  }
 
  html{
+   overflow:hidden
+ }
+ body {
    overflow:hidden
  }
 </style>

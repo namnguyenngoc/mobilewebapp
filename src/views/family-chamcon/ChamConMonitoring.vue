@@ -962,7 +962,5 @@ export default {
    overflow: auto
  }
 
- html{
-   overflow:hidden
- }
+ 
 </style>

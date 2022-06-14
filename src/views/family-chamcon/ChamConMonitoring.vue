@@ -81,7 +81,7 @@
             <grid-layout
               :layout.sync="layout"
               :col-num="layoutSize.col_num"
-              :row-height="68"
+              :row-height="100"
               :is-draggable="false"
               :is-resizable="false"
               :vertical-compact="true"
@@ -430,7 +430,7 @@ export default {
       let buSuaItem = null;
       let nguItem = null;
       let wcItem = null;
-
+      let benhItem = null;
       // await axios.post(`${config.API_URL}/selectBuSua`, param)
       //   .then(async function (response){
           
@@ -445,10 +445,12 @@ export default {
       buSuaItem =  await this.loadListDetail('BSB_UONG');
       nguItem = await this.loadListDetail('NGU');
       wcItem = await this.loadListDetail('WC');
+      benhItem = await this.loadListDetail('BENH');
       let arr = [];
       arr.push(buSuaItem);
       arr.push(nguItem);
       arr.push(wcItem);
+      arr.push(benhItem);
       let k = 0;
       let ifor = 0;
       
@@ -499,6 +501,7 @@ export default {
               } else {
                 sum += parseInt(data[i].working_time);
               }
+              data[i].sum_desc = data[i].thong_tin_them;
               arr.push(data[i]);
               
             } 
@@ -509,7 +512,8 @@ export default {
                 total: `${data[0].the_tich_sua}ml / ${sum}`,
                 total_lbl:  data[0].item_time_lbl,
                 type: "",
-                last_time: moment(data[0].gio_bat_dau).format(config.DATE_TIME_FM_1)
+                last_time: moment(data[0].gio_bat_dau).format(config.DATE_TIME_FM_1),
+                sum_desc: data[0].sum_desc
               }
             } else {
               if(type == 'NGU') {
@@ -521,7 +525,8 @@ export default {
                   total_lbl:  data[0].item_time_lbl,
                   type: "",
                   working_time_lbl: self.lbl_ngu(data[0]),
-                  last_time: moment(data[0].gio_bat_dau).format(config.DATE_TIME_FM_1)
+                  last_time: moment(data[0].gio_bat_dau).format(config.DATE_TIME_FM_1),
+                  sum_desc: data[0].sum_desc
                 }
               } else{
                 object = {
@@ -532,7 +537,8 @@ export default {
                   total_lbl:  data[0].item_time_lbl,
                   so_lan: (arr == undefined || arr == null) ? 0 : arr.length,
                   type: "",
-                  last_time: moment(data[0].gio_bat_dau).format(config.DATE_TIME_FM_1)
+                  last_time: moment(data[0].gio_bat_dau).format(config.DATE_TIME_FM_1),
+                  sum_desc: data[0].sum_desc
                 }
               }
             }
@@ -546,7 +552,8 @@ export default {
                 working_time_lbl: "",
                 type: "",
                 so_lan: 0,
-                last_time: moment().format(config.DATE_TIME_FM_1)
+                last_time: moment().format(config.DATE_TIME_FM_1),
+                sum_desc:""
               }
           }
           

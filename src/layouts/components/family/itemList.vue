@@ -16,6 +16,9 @@
                 }}
             </v-col>
             <v-col cols="12" sm="12" class="ma-0 pa-0">
+              <div class="cut-text">{{ item.sum_desc == undefined ? "" :  item.sum_desc}}</div>
+            </v-col>
+            <v-col cols="12" sm="12" class="ma-0 pa-0">
               <div class="mt-2">
               <v-icon medium>
                 {{ icons.mdiProgressClock  }}
@@ -175,5 +178,10 @@ export default {
     background: #E6E6FA;
     border-color: #dcdcdc !important
   }
-
+  .cut-text { 
+    text-overflow: ellipsis;
+    overflow: hidden; 
+    width: 92%;  
+    white-space: nowrap;
+  }
 </style>

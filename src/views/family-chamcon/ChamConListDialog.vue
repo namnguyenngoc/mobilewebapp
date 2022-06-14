@@ -5,7 +5,11 @@
       v-model="dialog"
       fullscreen>
       <v-card>
-        <v-card-title>Chăm con {{title}} ngày {{date}} ({{item.total}})</v-card-title>
+        <v-card-title>
+          <span>{{title}} ngày {{date}}</span>
+          <v-spacer></v-spacer>
+          <v-btn color="error" text @click="dialog = false"> x </v-btn>
+        </v-card-title>
         <v-card-text>
           <v-col cols="12" md="12" v-show="false">
             <v-menu
@@ -74,10 +78,7 @@
           </v-col>
            
         </v-card-text>
-        <v-card-actions>
-          <v-btn color="error" text @click="dialog = false"> Close </v-btn>
-          <v-spacer></v-spacer>
-        </v-card-actions>
+       
       </v-card>
     </v-dialog>
     <v-col cols="12">

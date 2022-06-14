@@ -73,7 +73,7 @@
         <grid-layout
           :layout="layout"
           :col-num="layoutSize.col_num"
-          :row-height="30"
+          :row-height="100"
           :is-draggable="false"
           :is-resizable="false"
           :vertical-compact="true"

@@ -24,7 +24,7 @@
             <grid-layout
               :layout.sync="layout"
               :col-num="layoutSize.col_num"
-              :row-height="90"
+              :row-height="100"
               :is-draggable="false"
               :is-resizable="false"
               :vertical-compact="true"

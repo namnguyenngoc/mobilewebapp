@@ -47,13 +47,18 @@
                 <v-btn color="warning" @click="insert('BSB_HUT')" class="mr-1 pl-1 pr-1" small> T.SỮA </v-btn>
 
                 
-                <v-btn color="error" @click="insert('BENH')" class="mr-1 pl-1 pr-1" small> 
+                <v-btn color="error" @click="insert('BENH')" class="mr-0 pl-1 pr-0" small> 
                     <v-icon dark>
                       {{ icons.mdiHospitalBoxOutline  }}
                     </v-icon>
                 </v-btn>
+                <v-btn color="success" @click="loadListDetail('BENH')" small class="pl-1 pr-1 btn-style-1"> 
+                  <v-icon dark class="pl-0 pr-1">
+                    {{ icons.mdiFormatListBulleted }}
+                  </v-icon>
+                </v-btn>
                 </v-btn-toggle>
-               
+                
               </v-col>
               
             </v-row>

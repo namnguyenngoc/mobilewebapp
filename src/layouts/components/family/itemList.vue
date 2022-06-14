@@ -12,7 +12,7 @@
             <v-col cols="12" sm="12" class="ma-0 pa-0">
               Tổng {{ 
                 item.ma_cv == 'BSB_UONG' ? `${item.total} ml` 
-                : (item.ma_cv == 'NGU' ? `${Math.floor(item.total / 60) } giờ ${(Math.floor(item.total / 60)) % 24} phút` :  `${item.so_lan == undefined ? 0 : item.so_lan} lần`)
+                : (item.ma_cv == 'NGU' ? `${Math.floor(item.total / 60) } giờ ${(Math.floor(item.total % 60))} phút` :  `${item.so_lan == undefined ? 0 : item.so_lan} lần`)
                 }}
             </v-col>
             <v-col cols="12" sm="12" class="ma-0 pa-0">

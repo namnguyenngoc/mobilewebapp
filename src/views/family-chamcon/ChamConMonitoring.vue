@@ -81,7 +81,7 @@
             <grid-layout
               :layout.sync="layout"
               :col-num="layoutSize.col_num"
-              :row-height="100"
+              :row-height="70"
               :is-draggable="false"
               :is-resizable="false"
               :vertical-compact="true"
@@ -955,5 +955,14 @@ export default {
  }
  .new_calendar > .v-input__prepend-outer{
    display:none
+ }
+
+ .vue-grid-layout {
+   height: 50vh !important;
+   overflow: auto
+ }
+
+ html{
+   overflow:hidden
  }
 </style>

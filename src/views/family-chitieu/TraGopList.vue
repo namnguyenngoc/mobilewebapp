@@ -30,7 +30,7 @@
               @on-cell-click="onCellClick"
               >
               <template slot="table-row" slot-scope="props">
-                <span v-if="props.column.field == 'status' && props.formattedRow[props.column.field] == 'TG'">
+                <span v-if="props.column.field == 'trang_thai' && props.formattedRow[props.column.field] == 'TG'">
                   <v-btn
                     color="primary"
                     text
@@ -44,14 +44,16 @@
                 </span>
               </template>
               <template slot="table-row" slot-scope="props">
-                <span v-if="props.column.field == 'chitieulist'">
+                <span v-if="props.column.field == 'trang_thai' && props.formattedRow['chitieulist'] == null">
                   <v-btn
-                    v-if="(props.formattedRow[props.column.field] == undefined || props.formattedRow[props.column.field] == null) && props.formattedRow['trang_thai'] != 'KT' "
                     color="success light-1"
                     @click="processChiTieuGop(props)"
                   >
-                   Process
+                    Process
                   </v-btn>
+                </span>
+                <span v-else-if="props.column.field == 'chitieulist'">
+                  <div class="div-json">{{props.formattedRow['chitieulist']}} </div>
                 </span>
                 <span v-else-if="props.column.field == 'id'">
                   <v-btn
@@ -286,6 +288,18 @@ export default {
               placeholder: 'tatus', // placeholder for filter input
               filterValue: 'IN', // initial populated value for this filter
               filterDropdownItems: ['IN', 'KT'], // dropdown (with selected values) instead of text input
+              // // filterFn: this.columnFilterFn, //custom filter function that
+              trigger: 'enter', //only trigger on enter not on keyup 
+          },
+        },
+        {
+          label: 'Json',
+          field: 'chitieulist',
+          width: '120px',
+          filterable: true,
+          filterOptions: {
+            styleClass: 'class1', // class to be added to the parent th element
+              enabled: true, // enable filter for this column
               // // filterFn: this.columnFilterFn, //custom filter function that
               trigger: 'enter', //only trigger on enter not on keyup 
           },
@@ -576,5 +590,11 @@ export default {
 .vgt-table th.vgt-row-header.vgt-right-align{
   color: #606266 !important;
   font-weight: bold;
+}
+
+.div-json {
+  height: 100px;
+  max-height: 100px;
+  overflow: scroll;
 }
 </style>

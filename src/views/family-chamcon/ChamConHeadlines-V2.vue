@@ -1109,7 +1109,7 @@ export default {
       desserts: [],
       tuan_tuoi: {dialog:false},
       items: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200],
-      items_ghichu: ["Sữa mẹ", "Morigana 6-36", "Morigana 0-6", "Meiji 0-1 [Nhập khẩu]", "Meiji 0-1 [Nội địa]"],
+      items_ghichu: ["Sữa mẹ", "Morigana 6-36", "Morigana 0-6", "Ăn bột", "Ăn cháo", "Meiji 0-1 [Nhập khẩu]", "Meiji 0-1 [Nội địa]"],
       icons: {
         mdiMinus,
         mdiPlus,

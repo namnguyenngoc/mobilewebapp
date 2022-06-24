@@ -115,9 +115,6 @@
     <v-col cols="12" class="ma-0 pa-0">
       <ChamConListDialog
         ref="chamConListDialog"
-        :title="lstDetail.title"
-        :date="lstDetail.date"
-        :item="lstDetail.item"
         :v-model="lstDetail.vmodel"
       />
       <SinhHoatAddDialog
@@ -428,6 +425,7 @@ export default {
       let nguItem = null;
       let wcItem = null;
       let benhItem = null;
+      let eventItem = null;
       // await axios.post(`${config.API_URL}/selectBuSua`, param)
       //   .then(async function (response){
           
@@ -442,12 +440,13 @@ export default {
       buSuaItem =  await this.loadListDetail('BSB_UONG');
       nguItem = await this.loadListDetail('NGU');
       wcItem = await this.loadListDetail('WC');
-      benhItem = await this.loadListDetail('BENH');
+      eventItem = await this.loadListDetail('EVENT');
       let arr = [];
       arr.push(buSuaItem);
       arr.push(nguItem);
       arr.push(wcItem);
       arr.push(benhItem);
+      arr.push(eventItem);
       let k = 0;
       let ifor = 0;
       
@@ -593,7 +592,7 @@ export default {
             arr.push(data[i]);
             console.log('data[i]', data[i]);
           }
-          self.lstDetail = {
+          self.$refs.chamConListDialog.item = {
             title: 'Uống sữa',
             date: moment(new Date()).format(config.DATE_FM),
             item: {

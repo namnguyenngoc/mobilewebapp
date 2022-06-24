@@ -550,9 +550,6 @@
     <v-col cols="12" class="ma-0 pa-0">
       <ChamConListDialog
         ref="chamConListDialog"
-        :title="lstDetail.title"
-        :date="lstDetail.date"
-        :item="lstDetail.item"
         :v-model="lstDetail.vmodel"
         @refeshList="showChartKCBS()"
       />
@@ -3335,7 +3332,7 @@ export default {
               arr.push(data[i]);
               console.log('data[i]', data[i]);
             }
-            self.lstDetail = {
+            self.$refs.chamConListDialog.item = {
               title: type,
               date: moment(new Date()).format(config.DATE_FM),
               item: {

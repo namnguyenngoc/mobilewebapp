@@ -56,8 +56,6 @@
            <v-col cols="12">
             <chamConDetail
               ref="chamConDetail"
-              :title="chamConTitle"
-              :item="chamConItem"
               :v-model="chamConDetaillDialog"
               @refeshList="loadData()"
             />
@@ -71,9 +69,6 @@
     <v-col cols="12">
       <ChamConListDialog
         ref="chamConListDialog"
-        :title="lstDetail.title"
-        :date="lstDetail.date"
-        :item="lstDetail.item"
         :v-model="lstDetail.vmodel"
       />
     </v-col>
@@ -321,20 +316,27 @@ export default {
       let self = this;
       console.log('row', params.row);
       this.rowSelected =  params.row;
-      this.chamConItem = {
-        ma_cv: params.row.ma_cv,
-        gio_bat_dau:  moment(params.row.ngay_group).format(config.DATE_TIME_FULL_FM),
-        status: params.row.status,
-        working_time: params.row.working_time,
-        the_tich_sua: params.row.the_tich_sua,
-        item_time_lbl: params.row.ma_cv == 'BSB_UONG' ? `${params.row.the_tich_sua} ml` : `${Math.floor(params.row.working_time / 60) } giờ ${(Math.floor(params.row.working_time / 60)) % 24} phút`,
-        row_item: params.row,
-      }
-      // this.chamConTitle = `${params.row.ten_cong_viec} ngày ${moment(params.row.ngay_thuc_hien).format(config.DATE_TIME_FM)}`;
-      this.titleList = params.row.ten_cong_viec;
-      this.dateList = moment(params.row.ngay_group).format(config.DATE_FM);
+      // this.chamConItem = 
+      // this.$refs.chamConListDialog.item = {
+      //   ma_cv: params.row.ma_cv,
+      //   gio_bat_dau:  moment(params.row.ngay_group).format(config.DATE_TIME_FULL_FM),
+      //   status: params.row.status,
+      //   working_time: params.row.working_time,
+      //   the_tich_sua: params.row.the_tich_sua,
+      //   item_time_lbl: params.row.ma_cv == 'BSB_UONG' ? `${params.row.the_tich_sua} ml` : `${Math.floor(params.row.working_time / 60) } giờ ${(Math.floor(params.row.working_time / 60)) % 24} phút`,
+      //   row_item: params.row,
+      // }
+
+      this.$refs.chamConListDialog.title = params.row.ten_cong_viec;
+      this.$refs.chamConListDialog.date = moment(params.row.ngay_thuc_hien).format(config.DATE_FM);
+      // // this.chamConTitle = `${params.row.ten_cong_viec} ngày ${moment(params.row.ngay_thuc_hien).format(config.DATE_TIME_FM)}`;
+      // this.titleList = params.row.ten_cong_viec;
+      // this.dateList = moment(params.row.ngay_group).format(config.DATE_FM);
+     
+      let dataItems = [];
+
       await axios
-      .get(`${config.API_URL}/selectCongViecByDate/'${self.chamConItem.ma_cv}'/${moment(self.chamConItem.gio_bat_dau).format(config.DATE_FM)}`)
+      .get(`${config.API_URL}/selectCongViecByDate/'${params.row.ma_cv}'/${moment(self.chamConItem.gio_bat_dau).format(config.DATE_FM)}`)
       .then(response => {
         // seft.hotSettings.data = response.data.data;
         let data = response.data.data;
@@ -346,24 +348,42 @@ export default {
           arr.push(data[i]);
            console.log('data[i]', data[i]);
         }
-        self.lstDetail = {
+        // self.lstDetail = {
+        //   title: params.row.ma_cv ,
+        //   date: moment(new Date()).format(config.DATE_FM),
+        //   item: {
+        //     tblDataCongViec: [ 
+        //       {
+        //         children: arr,
+        //       }
+        //     ]
+        //   }
+          
+        // }
+        let detail = {
           title: params.row.ma_cv ,
           date: moment(new Date()).format(config.DATE_FM),
           item: {
-            tblDataCongViec: [
+            tblDataCongViec: [ 
               {
-                children: arr,
+                children: arr
               }
             ]
           }
-          
-        }
+        };
+      self.$refs.chamConListDialog.item = detail;
+      self.$refs.chamConListDialog.dialog = true;
         // self.$refs.chamConListDialog.total  =  params.row.ma_cv == 'BSB_UONG' ? `${total2} ml` : `${Math.floor(total2 / 60) } giờ ${total2 % 60} phút`;
-        self.$refs.chamConListDialog.dialog = true;
+        // self.$refs.chamConListDialog.dialog = true;
         
         // self.tblDataCongViec = data;
         console.log('item-data', arr);
       });
+
+// :title="lstDetail.title"
+//         :date="lstDetail.date"
+//         :item="lstDetail.item"
+      
       
 //  moment.tz(new Date(), tzString).format("YYYY-MM-DD HH:mm:ss"),
       // this.$refs.chamConDetail.dialog = true;

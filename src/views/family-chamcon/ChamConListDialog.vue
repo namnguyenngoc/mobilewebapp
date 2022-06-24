@@ -6,7 +6,7 @@
       fullscreen>
       <v-card>
         <v-card-title>
-          <span>{{title}} ngày {{date}}</span>
+          <span>{{item.title}} ngày {{item.date}}</span>
           <v-spacer></v-spacer>
           <v-btn color="error" text @click="dialog = false"> x </v-btn>
         </v-card-title>
@@ -60,7 +60,7 @@
               title="Công việc chăm con"
               styleClass="vgt-table bordered"
               :columns="colCongViec"
-              :rows="item.tblDataCongViec"
+              :rows="item.item.tblDataCongViec"
               :lineNumbers="true"
               :search-options="{
                 enabled: true,
@@ -84,8 +84,7 @@
     <v-col cols="12">
       <chamConDetail
         ref="chamConDetail2"
-        :title="chamConTitle"
-        :item="chamConItem"
+     
         :v-model="chamConDetaillDialog"
         @refeshList="loadData()"
       />
@@ -116,22 +115,18 @@ export default {
     chamConDetail
   },
   props: {
-    title: {
-      type: String,
-      default: 'Test',
-    },
-    date: {
-      type: String,
-      default: 'Test',
-    },
+    // date: {
+    //   type: String,
+    //   default: 'Test',
+    // },
     total: {
       type: String,
       default: '',
     },
-    item: {
-      type: Object,
-      default: () => ({}),
-    },
+    // item: {
+    //   type: Object,
+    //   default: () => ({}),
+    // },
     // dialog: {
     //   type: Boolean,
     //   default: false
@@ -272,6 +267,15 @@ export default {
       chamConTitle: '',
       chamConItem: {},
       chamConDetaillDialog: false,
+      item: {
+        // tblDataCongViec: [ 
+        //     {
+        //       children: [{"id":1835,"ho_ten":"NGUYEN DANG KHOI","nam_sinh":"23-11-2021","ma_cv":"BSB_UONG","ghi_chu":"","ngay_thuc_hien":"2022-06-24T11:33:43.000Z","gio_bat_dau":"2022-06-24T04:33:25.000Z","gio_ke_tiep":"2022-06-24T11:34:25.000Z","thong_tin_them":"Morigana 6-36","status":"","working_time":0,"can_nang":null,"chieu_cao":null,"tinh_trang_suc_khoe":null,"updated_date":"2022-06-24T04:33:43.000Z","create_date":"2022-06-24T04:33:43.000Z","the_tich_sua":"70","ten_cong_viec":"Uống sữa","ten_cv":"Uống sữa","server_code":""},{"id":1833,"ho_ten":"NGUYEN DANG KHOI","nam_sinh":"23-11-2021","ma_cv":"BSB_UONG","ghi_chu":"","ngay_thuc_hien":"2022-06-24T10:06:30.000Z","gio_bat_dau":"2022-06-24T03:06:18.000Z","gio_ke_tiep":"2022-06-24T10:07:18.000Z","thong_tin_them":"Morigana 6-36","status":"","working_time":0,"can_nang":null,"chieu_cao":null,"tinh_trang_suc_khoe":null,"updated_date":"2022-06-24T03:06:30.000Z","create_date":"2022-06-24T03:06:30.000Z","the_tich_sua":"80","ten_cong_viec":"Uống sữa","ten_cv":"Uống sữa","server_code":""},{"id":1831,"ho_ten":"NGUYEN DANG KHOI","nam_sinh":"23-11-2021","ma_cv":"BSB_UONG","ghi_chu":"","ngay_thuc_hien":"2022-06-24T09:50:56.000Z","gio_bat_dau":"2022-06-24T02:50:33.000Z","gio_ke_tiep":"2022-06-24T09:51:33.000Z","thong_tin_them":"Ăn cháo rây","status":"","working_time":0,"can_nang":null,"chieu_cao":null,"tinh_trang_suc_khoe":null,"updated_date":"2022-06-24T02:50:56.000Z","create_date":"2022-06-24T02:50:56.000Z","the_tich_sua":"10","ten_cong_viec":"Uống sữa","ten_cv":"Uống sữa","server_code":""},{"id":1823,"ho_ten":"NGUYEN DANG KHOI","nam_sinh":"23-11-2021","ma_cv":"BSB_UONG","ghi_chu":"","ngay_thuc_hien":"2022-06-24T07:09:02.000Z","gio_bat_dau":"2022-06-24T00:08:41.000Z","gio_ke_tiep":"2022-06-24T07:09:41.000Z","thong_tin_them":"Sữa mẹ","status":"","working_time":0,"can_nang":null,"chieu_cao":null,"tinh_trang_suc_khoe":null,"updated_date":"2022-06-24T00:09:02.000Z","create_date":"2022-06-24T00:09:02.000Z","the_tich_sua":"40","ten_cong_viec":"Uống sữa","ten_cv":"Uống sữa","server_code":""}],
+        //     }
+        //   ]
+      },
+      title: "",
+      date: new Date()
     }
   },
   computed: {
@@ -371,34 +375,38 @@ export default {
     // params.event - click event
 
       // console.log('row', params.row);
-      this.chamConTitle = `${params.row.ten_cong_viec} ngày ${moment(params.row.ngay_thuc_hien).format(config.DATE_TIME_FM)}`;
-      this.chamConItem = {
-       	id: params.row.id,
-        ho_ten: params.row.ho_ten,
-        nam_sinh: params.row.nam_sinh,
-        ma_cv: params.row.ma_cv,
-        ghi_chu: params.row.ghi_chu,
-        ngay_thuc_hien:  moment(params.row.ngay_thuc_hien).format(config.DATE_TIME_FULL_FM),
-        gio_bat_dau:  moment(params.row.gio_bat_dau).format(config.DATE_TIME_FULL_FM),
-        gio_ke_tiep:  moment(params.row.gio_ke_tiep).format(config.DATE_TIME_FULL_FM),
-        thong_tin_them: params.row.thong_tin_them,
-        status: params.row.status,
-        working_time: params.row.working_time,
-        can_nang: params.row.can_nang,
-        chieu_cao: params.row.chieu_cao,
-        tinh_trang_suc_khoe: params.row.tinh_trang_suc_khoe,
-        updated_date: params.row.updated_date,
-        create_date: params.row.create_date,
-        the_tich_sua: params.row.the_tich_sua,
-        ten_cong_viec: params.row.ten_cong_viec,
-        vgt_id: params.row.vgt_id,
-        originalIndex:params.row.originalIndex 
+      let detail = {
+        title:  `${params.row.ten_cong_viec} ngày ${moment(params.row.ngay_thuc_hien).format(config.DATE_TIME_FM)}`,
+        item: {
+          id: params.row.id,
+          ho_ten: params.row.ho_ten,
+          nam_sinh: params.row.nam_sinh,
+          ma_cv: params.row.ma_cv,
+          ghi_chu: params.row.ghi_chu,
+          ngay_thuc_hien:  moment(params.row.ngay_thuc_hien).format(config.DATE_TIME_FULL_FM),
+          gio_bat_dau:  moment(params.row.gio_bat_dau).format(config.DATE_TIME_FULL_FM),
+          gio_ke_tiep:  moment(params.row.gio_ke_tiep).format(config.DATE_TIME_FULL_FM),
+          thong_tin_them: params.row.thong_tin_them,
+          status: params.row.status,
+          working_time: params.row.working_time,
+          can_nang: params.row.can_nang,
+          chieu_cao: params.row.chieu_cao,
+          tinh_trang_suc_khoe: params.row.tinh_trang_suc_khoe,
+          updated_date: params.row.updated_date,
+          create_date: params.row.create_date,
+          the_tich_sua: params.row.the_tich_sua,
+          ten_cong_viec: params.row.ten_cong_viec,
+          vgt_id: params.row.vgt_id,
+          originalIndex:params.row.originalIndex 
+        }
       }
 //  moment.tz(new Date(), tzString).format("YYYY-MM-DD HH:mm:ss"),
+      this.$refs.chamConDetail2.item = detail.item;
       this.$refs.chamConDetail2.dialog = true;
     },
     sumWorkingTime(rowObj) {
-    	// console.log('sumWorkingTime', rowObj);
+    	console.log('sumWorkingTime', rowObj);
+      if( rowObj.children.length == 0) return 0;
     	let sum = 0;
 
       for (let i = 0; i < rowObj.children.length; i++) {

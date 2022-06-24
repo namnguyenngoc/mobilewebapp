@@ -58,8 +58,6 @@
            <v-col cols="12">
             <chamConDetail
               ref="chamConDetail"
-              :title="chamConTitle"
-              :item="chamConItem"
               :v-model="chamConDetaillDialog"
               @refeshList="loadData()"
             />
@@ -307,7 +305,7 @@ export default {
         //   }
         // ]
 
-        self.lstDetail = {
+        let detail = {
               title:params.ma_cv ,
               date: moment(new Date()).format(config.DATE_FM),
               item: {
@@ -319,7 +317,7 @@ export default {
               }
               
             }
-        
+        self.$refs.chamConListDialog.item = detail;
         self.$refs.chamConListDialog.total  =  params.ma_cv == 'BSB_UONG' ? `${total} ml` : `${Math.floor(total / 60) } giờ ${total % 60} phút`;
         self.$refs.chamConListDialog.dialog = true;
         

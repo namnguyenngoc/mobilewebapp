@@ -180,6 +180,10 @@ export default {
             name: 'Ngủ',
             code: 'NGU',
           },
+          {
+            name: 'Sự kiện khác',
+            code: 'EVENT',
+          },
         ],
       modal: {
         menuDateTime: false,

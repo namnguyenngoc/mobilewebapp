@@ -141,6 +141,15 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-col cols="12">
+    <dialogInformation
+        ref="dialogInformation"
+        :dialog="dialogInfo.dialog"
+        :title="dialogInfo.title"
+        :message="dialogInfo.message"
+        @agree="dialogInfo.dialog=true"
+      />
+  </v-col>
   </v-row>
 </template>
 
@@ -148,6 +157,7 @@
 import axios from 'axios'
 import config from '../../config/config.js'
 import moment from 'moment'
+import dialogInformation from '../../components/DialogInformation'
 
 import {
   mdiMinus,
@@ -163,7 +173,7 @@ import {
 export default {
   layout: 'chamConDetail',
   // inheritAttrs: false,
-  components: {},
+  components: {dialogInformation},
   props: {
     title: {
       type: String,
@@ -222,6 +232,10 @@ export default {
             name: 'Ngủ',
             code: 'NGU',
           },
+          {
+            name: 'Sự kiện khác',
+            code: 'EVENT',
+          },
         ],
       modal: {
         menuDateTime: false,
@@ -261,7 +275,12 @@ export default {
         durationStr: "",
 
       },
-      congviecParam: {}
+      congviecParam: {},
+      dialogInfo:{
+        dialog: false,
+        title: "Xác nhận!!!",
+        message: "Vui lòng nhập Nội dung sự kiện",
+      }
     }
   },
   computed: {
@@ -372,8 +391,15 @@ export default {
         the_tich_sua: 0,
         thong_tin_them: this.modal.ghi_chu_them,
         working_time: self.modal.duration,
-        status: ma_cv == 'NGU' ? 'N' : 'T'
+        status: ma_cv == 'NGU' ? 'N' : (ma_cv == 'THUC' ? 'T' : '')
         
+      }
+      if(ma_cv == 'EVENT' && (this.modal.ghi_chu_them == undefined ||  this.modal.ghi_chu_them.trim().length == 0)){
+        // this.dialogConfirm.value
+        this.dialogInfo.title = "Xác nhận!";
+        this.dialogInfo.message = "Vui lòng nhập nội dung sự kiện";
+        this.$refs.dialogInformation.dialog = true;
+        return;
       }
       await axios.post(config.API_URL + '/insertChamCon',  congviec).then(async function (response) {
         console.log("TEXXXXXXXXXXX", 'DONE');
@@ -383,7 +409,8 @@ export default {
       })
       this.dialog = false;
     },
-    time(){}
+    time(){},
+    search() {}
   }, // end created
 } // End exxport default
 </script>

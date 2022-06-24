@@ -40,7 +40,6 @@
            <v-col cols="12">
             <chamConDetail
               ref="chamConDetail"
-              :title="chamConTitle"
               :item="chamConItem"
               :v-model="chamConDetaillDialog"
               @refeshList="loadData()"
@@ -305,8 +304,8 @@ export default {
     // params.event - click event
 
       console.log('row', params.row);
-      this.chamConTitle = `${params.row.ten_cong_viec} ngày ${moment(params.row.ngay_thuc_hien).format(config.DATE_TIME_FM)}`;
-      this.chamConItem = {
+      // this.chamConTitle = `${params.row.ten_cong_viec} ngày ${moment(params.row.ngay_thuc_hien).format(config.DATE_TIME_FM)}`;
+      this.$refs.chamConDetail.item = {
        	id: params.row.id,
         ho_ten: params.row.ho_ten,
         nam_sinh: params.row.nam_sinh,
@@ -329,6 +328,8 @@ export default {
         originalIndex:params.row.originalIndex 
       }
 //  moment.tz(new Date(), tzString).format("YYYY-MM-DD HH:mm:ss"),
+      this.$refs.chamConDetail.title = `${params.row.ten_cong_viec} ngày ${moment(params.row.ngay_thuc_hien).format(config.DATE_TIME_FM)}`;
+
       this.$refs.chamConDetail.dialog = true;
     }
   },

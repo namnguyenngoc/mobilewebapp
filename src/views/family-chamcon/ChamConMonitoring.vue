@@ -959,10 +959,10 @@ export default {
    overflow: auto
  }
 
- html{
-   overflow:hidden
- }
- body {
-   overflow:hidden
- }
+//  html{
+//    overflow:hidden
+//  }
+//  body {
+//    overflow:hidden
+//  }
 </style>

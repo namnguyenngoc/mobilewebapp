@@ -13,7 +13,7 @@
               cols="10"
               style="color: #ffffff"
             >
-              Chi tiết
+              Chi tiết {{title}}
             </h4>
           </v-col>
           <v-col cols="2" class="ma-0 pa-0 text-right pr-4">
@@ -30,7 +30,31 @@
         </v-card-title>
         
         <v-divider />
-
+         <v-card-actions>
+            <v-btn
+              color="darken-1"
+              text
+              @click="save('NEW')"
+            >
+              Save New
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="save()"
+            >
+              Save
+            </v-btn>
+            <v-btn
+              color="error darken-1"
+              text
+              @click="confirmDelete()"
+            >
+              Delete
+            </v-btn>
+        </v-card-actions>
+        
         <v-card-text>
           <v-container class="pt-0 pb-0 mb-0 v-scroll">
             <v-row class="mt-1">
@@ -131,30 +155,6 @@
             
           </v-container>
         </v-card-text>
-        <v-card-actions>
-          <v-btn
-            color="darken-1"
-            text
-            @click="save('NEW')"
-          >
-            Save New
-          </v-btn>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="save()"
-          >
-            Save
-          </v-btn>
-          <v-btn
-            color="error darken-1"
-            text
-            @click="confirmDelete()"
-          >
-            Delete
-          </v-btn>
-        </v-card-actions>
         
       </v-form>
     </v-card>
@@ -173,14 +173,8 @@
       DialogConfirm
     },
     props: {
-      title: {
-        type: String,
-        default: 'Test'
-      },
-      item: {
-        type: Object,
-        default: () => ({})
-      },
+     
+      
       // dialog: {
       //   type: Boolean,
       //   default: false
@@ -189,6 +183,8 @@
     data () {
       return {
          dialog: false,
+        title: '',
+        item:{},
         // title: '',
         index: 1,
         itemChiTieu: {},

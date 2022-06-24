@@ -37,10 +37,10 @@ export default {
         type: String,
         default: null
       },
-      dialog: {
-        type: Boolean,
-        default: false
-      },
+      // dialog: {
+      //   type: Boolean,
+      //   default: false
+      // },
       resolve: {
         type: String,
         default: null
@@ -52,7 +52,7 @@ export default {
     },
     data () {
       return {
-
+        dialog: false,
       }
     },
     methods: {

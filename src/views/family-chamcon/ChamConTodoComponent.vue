@@ -15,7 +15,7 @@
           <v-col cols="12" md="12" class="ma-0 pt-1 pb-2 mb-0 pl-0 pb-0">
             <ChamConThongTin ref="ChamConThongTin2"
             @insertBSBUONG="insert('BSB_UONG')"
-            @insertAN="insert('AN')" />
+            @insertAN="insert('AN')"/>
           </v-col>
           <v-col cols="12" class="ml-0 pl-1 mb-0 pb-0">
             <v-row>
@@ -2174,8 +2174,12 @@ export default {
             
           }
           await axios.post(config.API_URL + '/insertChamCon', congviec).then(async function (response) {
-            await self.updateBtn()
+            await self.updateBtn();
+            // seft.$emit('refeshList');
+           
+            
           })
+          this.$refs.ChamConThongTin2.countWorkInDay2();
           this.dialogSua = false;
           // this.cuSuaModel.gio_bat_dau = gio_bat_dau;
           // this.cuSuaModel.the_tich_sua = the_tich_sua;
@@ -2344,126 +2348,126 @@ export default {
       console.log('MIN1', current.diff(min7, 'minutes')) // "7m"
       console.log('self.ti_me_model.gio_bat_dau', self.ti_me_model.gio_bat_dau) // "7m"
       
-      self.tibinhCountDown.circles = [];
-      self.tibinhCountDown.circles.push({
-        id: '4',
-        steps: 365,
-        size: 40,
-        value: parseInt(durationTM.asDays()),
-        // stepLength: -1,
-        label: 'Ngày',
-        strokeWidth: 3,
-        labelFontSize: 12,
-        fillColor: '#312d4b',
-        strokeColor: '#008080',
-        underneathStrokeColor: '#DCDCDC',
-        valueFontSize: 20,
-        labelFontSize: 12,
-        key: 'NGAY',
-      })
-      self.tibinhCountDown.circles.push({
-        id: '3',
-        steps: 60,
-        size: 40,
-        value: parseInt(durationTM.asHours() % 60),
-        // stepLength: -1,
-        label: 'Giờ',
-        strokeWidth: 3,
-        labelFontSize: 12,
-        fillColor: '#312d4b',
-        strokeColor: '#008080',
-        underneathStrokeColor: '#DCDCDC',
-        valueFontSize: 20,
-        labelFontSize: 12,
-        dependentCircles: ['4'],
-        key: 'GIO',
-      })
+      // self.tibinhCountDown.circles = [];
+      // self.tibinhCountDown.circles.push({
+      //   id: '4',
+      //   steps: 365,
+      //   size: 40,
+      //   value: parseInt(durationTM.asDays()),
+      //   // stepLength: -1,
+      //   label: 'Ngày',
+      //   strokeWidth: 3,
+      //   labelFontSize: 12,
+      //   fillColor: '#312d4b',
+      //   strokeColor: '#008080',
+      //   underneathStrokeColor: '#DCDCDC',
+      //   valueFontSize: 20,
+      //   labelFontSize: 12,
+      //   key: 'NGAY',
+      // })
+      // self.tibinhCountDown.circles.push({
+      //   id: '3',
+      //   steps: 60,
+      //   size: 40,
+      //   value: parseInt(durationTM.asHours() % 60),
+      //   // stepLength: -1,
+      //   label: 'Giờ',
+      //   strokeWidth: 3,
+      //   labelFontSize: 12,
+      //   fillColor: '#312d4b',
+      //   strokeColor: '#008080',
+      //   underneathStrokeColor: '#DCDCDC',
+      //   valueFontSize: 20,
+      //   labelFontSize: 12,
+      //   dependentCircles: ['4'],
+      //   key: 'GIO',
+      // })
 
-      self.tibinhCountDown.circles.push({
-        id: '2',
-        steps: 60,
-        size: 40,
-        value: parseInt(durationTM.asMinutes()) % 60,
-        // stepLength: -1,
-        strokeWidth: 3,
-        labelFontSize: 12,
-        fillColor: '#312d4b',
-        label: 'Phút',
-        strokeColor: '#4169E1',
-        underneathStrokeColor: '#DCDCDC',
-        dependentCircles: ['3'],
-        key: 'PHUT',
-      })
-      self.tibinhCountDown.circles.push({
-        id: '1',
-        steps: 60,
-        size: 40,
-        value: parseInt(durationTM.asSeconds) % 60,
-        // stepLength: -1,
-        label: 'Giây',
-        strokeWidth: 3,
-        labelFontSize: 12,
-        fillColor: '#312d4b',
-        strokeColor: '#C71585',
-        underneathStrokeColor: '#DCDCDC',
-        dependentCircles: ['2'],
-        key: 'GIAY',
-      })
+      // self.tibinhCountDown.circles.push({
+      //   id: '2',
+      //   steps: 60,
+      //   size: 40,
+      //   value: parseInt(durationTM.asMinutes()) % 60,
+      //   // stepLength: -1,
+      //   strokeWidth: 3,
+      //   labelFontSize: 12,
+      //   fillColor: '#312d4b',
+      //   label: 'Phút',
+      //   strokeColor: '#4169E1',
+      //   underneathStrokeColor: '#DCDCDC',
+      //   dependentCircles: ['3'],
+      //   key: 'PHUT',
+      // })
+      // self.tibinhCountDown.circles.push({
+      //   id: '1',
+      //   steps: 60,
+      //   size: 40,
+      //   value: parseInt(durationTM.asSeconds) % 60,
+      //   // stepLength: -1,
+      //   label: 'Giây',
+      //   strokeWidth: 3,
+      //   labelFontSize: 12,
+      //   fillColor: '#312d4b',
+      //   strokeColor: '#C71585',
+      //   underneathStrokeColor: '#DCDCDC',
+      //   dependentCircles: ['2'],
+      //   key: 'GIAY',
+      // })
 
-      //End ti bin
+      // //End ti bin
 
-      /** NGu */
-      let timeCountNgu = moment(self.ngu_model.gio_bat_dau)
-      var duration = moment.duration(current.diff(timeCountNgu))
-      console.log('self.ngu_model', parseInt(duration.asMinutes()) % 60)
+      // /** NGu */
+      // let timeCountNgu = moment(self.ngu_model.gio_bat_dau)
+      // var duration = moment.duration(current.diff(timeCountNgu))
+      // console.log('self.ngu_model', parseInt(duration.asMinutes()) % 60)
 
-      self.nguCountDown.circles = []
-      self.nguCountDown.circles.push({
-        id: '3',
-        steps: 60,
-        size: 40,
-        value: parseInt(duration.asHours()),
-        // value: 0,
-        // stepLength: -1,
-        // label: 'Giờ',
-        strokeWidth: 5,
-        strokeColor: '#008080',
-        underneathStrokeColor: '#DCDCDC',
-        valueFontSize: 20,
-        labelFontSize: 12,
-        fillColor: '#312d4b',
-      })
+      // self.nguCountDown.circles = []
+      // self.nguCountDown.circles.push({
+      //   id: '3',
+      //   steps: 60,
+      //   size: 40,
+      //   value: parseInt(duration.asHours()),
+      //   // value: 0,
+      //   // stepLength: -1,
+      //   // label: 'Giờ',
+      //   strokeWidth: 5,
+      //   strokeColor: '#008080',
+      //   underneathStrokeColor: '#DCDCDC',
+      //   valueFontSize: 20,
+      //   labelFontSize: 12,
+      //   fillColor: '#312d4b',
+      // })
 
-      self.nguCountDown.circles.push({
-        id: '2',
-        steps: 60,
-        size: 40,
-        value: parseInt(duration.asMinutes()) % 60,
-        // value: 0,
-        // stepLength: -1,
-        strokeWidth: 5,
-        labelFontSize: 12,
-        // label: 'Phút',
-        strokeColor: '#4169E1',
-        underneathStrokeColor: '#DCDCDC',
-        dependentCircles: ['3'],
-        fillColor: '#312d4b',
-      })
-      self.nguCountDown.circles.push({
-        id: '1',
-        steps: 60,
-        size: 40,
-        value: parseInt(duration.asSeconds()) % 60,
-        value: 0,
-        // stepLength: -1,
-        // label: 'Giây',
-        strokeColor: '#C71585',
-        underneathStrokeColor: '#DCDCDC',
-        dependentCircles: ['2'],
-        strokeWidth: 5,
-        labelFontSize: 12,
-        fillColor: '#312d4b',
-      })
+      // self.nguCountDown.circles.push({
+      //   id: '2',
+      //   steps: 60,
+      //   size: 40,
+      //   value: parseInt(duration.asMinutes()) % 60,
+      //   // value: 0,
+      //   // stepLength: -1,
+      //   strokeWidth: 5,
+      //   labelFontSize: 12,
+      //   // label: 'Phút',
+      //   strokeColor: '#4169E1',
+      //   underneathStrokeColor: '#DCDCDC',
+      //   dependentCircles: ['3'],
+      //   fillColor: '#312d4b',
+      // })
+      // self.nguCountDown.circles.push({
+      //   id: '1',
+      //   steps: 60,
+      //   size: 40,
+      //   value: parseInt(duration.asSeconds()) % 60,
+      //   value: 0,
+      //   // stepLength: -1,
+      //   // label: 'Giây',
+      //   strokeColor: '#C71585',
+      //   underneathStrokeColor: '#DCDCDC',
+      //   dependentCircles: ['2'],
+      //   strokeWidth: 5,
+      //   labelFontSize: 12,
+      //   fillColor: '#312d4b',
+      // })
       //End ngu
     },
     tinhCanNang(){

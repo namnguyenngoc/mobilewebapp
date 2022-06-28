@@ -123,16 +123,18 @@
     }, // end method
     async created () {
       this.countWorkInDay2();
-      //  let result = this.$crontab.addJob({
-      //   name: 'counter',
-      //   interval: {
-      //     seconds: '/1',
-      //   },
-      //   job: this.countWorkInDay2
-      // })
+      let result = this.$crontab.addJob({
+        name: 'counter',
+        interval: {
+          seconds: '/5000',
+        },
+        job: this.countWorkInDay2
+      })
+      
     }, // end data
     methods: {
       countWorkInDay2() {
+        console.log('countWorkInDay2');
         let self = this
         
         axios.get(`${config.API_URL}/countWorkInDay/BSB_UONG/now()`).then(response => {

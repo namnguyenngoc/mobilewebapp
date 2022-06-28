@@ -14,7 +14,8 @@
         <v-card-title class="pa-0 pt-5 pb-2 ma-0">
           <v-col cols="12" md="12" class="ma-0 pt-1 pb-2 mb-0 pl-0 pb-0">
             <ChamConThongTin ref="ChamConThongTin2"
-            @insert="insert('BSB_UONG')" />
+            @insertBSBUONG="insert('BSB_UONG')"
+            @insertAN="insert('AN')" />
           </v-col>
           <v-col cols="12" class="ml-0 pl-1 mb-0 pb-0">
             <v-row>
@@ -344,7 +345,7 @@
                 
               ></v-text-field>
             </v-col>
-            <v-col cols="12" md="12" v-show="cuSuaModel.showTheTich">
+            <v-col cols="12" md="12" v-show="cuSuaModel.showTheTich && cuSuaModel.ma_cv !='AN'">
              <v-combobox
                 v-model="cuSuaModel.ghi_chu_them"
                 :items="items_ghichu"
@@ -367,6 +368,18 @@
               </v-combobox>
             </v-col>
           </v-card-text>
+
+          <v-col cols="12" md="12"  class="pl-8 pr-8" v-show="cuSuaModel.showTheTich && cuSuaModel.ma_cv =='AN'">
+             <v-text-field
+                label="Thông tin món ăn"
+                v-model="cuSuaModel.ghi_chu_them"
+                clearable
+                hide-details
+                
+              ></v-text-field>
+            </v-col>
+          </v-card-text>
+
           <v-card-actions>
             <v-btn
               color="blue darken-1"
@@ -561,6 +574,10 @@
           :title="tuan_tuoi.date"
           :message="tuan_tuoi.value"
           @agree="tuan_tuoi.dialog=true"
+        />
+        <dialogInformation
+          ref="dialogInformation2"
+          @agree="true"
         />
     </v-col>
   </v-row>
@@ -1668,6 +1685,10 @@ export default {
         {
           code: 'BENH',
           name: 'Bệnh'
+        },
+        {
+          code: 'AN',
+          name: 'Ăn uống'
         }
       ],
       sliderKCBS: 5, //// KHOANG CACH BU SUA
@@ -2083,6 +2104,13 @@ export default {
           this.dialogSua = true;
 
           break;
+        case 'AN':
+          this.cuSuaModel.ma_cv = 'AN';
+          this.cuSuaModel.title = "Ăn dặm";
+          this.cuSuaModel.ghi_chu_them = "";
+          this.cuSuaModel.showTheTich = true;
+          this.dialogSua = true;
+          break;
         case 'BSB_UONG':
           var timeAndDate = moment(gio_bat_dau + ' ' + self.ti_me_model.timeTiBinh);
           // gio_bat_dau = moment(timeAndDate).format('YYYY-MM-DD HH:mm:ss');
@@ -2119,6 +2147,15 @@ export default {
 
           break;
         case 'BSB_UONG_SAVE':
+          if(this.cuSuaModel.ma_cv == 'AN'){
+            this.cuSuaModel.the_tich_sua_new = 20;
+            if(this.cuSuaModel.ghi_chu_them == ""){
+              this.$refs.dialogInformation2.title = "Xác nhận!";
+              this.$refs.dialogInformation2.message = "Vui lòng nhập thông tin món ăn";
+              this.$refs.dialogInformation2.dialog = true;
+              return;
+            }
+          }
           var timeAndDate = moment(gio_bat_dau + ' ' + self.ti_me_model.timeTiBinh);
           gio_bat_dau = moment(timeAndDate).format('YYYY-MM-DD HH:mm:ss');
           // if(!self.ti_me_model.isEditTimeTiBinh){

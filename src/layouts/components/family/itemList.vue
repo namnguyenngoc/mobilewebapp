@@ -4,26 +4,26 @@
       <v-row class="pa-0">
         <v-col cols="10" sm="10" class="pa-0 pt-1">
           <v-col cols="12" sm="12" class="ma-0 pa-0 pl-1 pr-1 mt-1 ml-1">
-            <h3>{{ item.ma_cv != 'NGU' ? item.title : (item.lastWorking == 'N' ? 'Ngủ' : 'Thức'  ) }} 
-            {{item.ma_cv != 'NGU' ? item.lastWorking : `- ${item.working_time_lbl}`}}
+            <h3>{{ item !=null && item.ma_cv != 'NGU' ? item !=null && item.title : (item !=null && item.lastWorking == 'N' ? 'Ngủ' : 'Thức'  ) }} 
+            {{item !=null && item.ma_cv != 'NGU' ? item.lastWorking : `- ${item != null ? item.working_time_lbl : ''}`}}
             </h3>
           </v-col>
           <v-col cols="12" sm="12" class="ma-0 pa-0 pl-1 pr-1 mt-1 ml-1">
             <v-col cols="12" sm="12" class="ma-0 pa-0">
-              Tổng {{ 
+              Tổng {{ item == null ? "" : (
                 item.ma_cv == 'BSB_UONG' ? `${item.total} ml` 
                 : (item.ma_cv == 'NGU' ? `${Math.floor(item.total / 60) } giờ ${(Math.floor(item.total % 60))} phút` :  `${item.so_lan == undefined ? 0 : item.so_lan} lần`)
-                }}
+                )}}
             </v-col>
             <v-col cols="12" sm="12" class="ma-0 pa-0">
-              <div class="cut-text">{{ item.sum_desc == undefined ? "" :  item.sum_desc}}</div>
+              <div class="cut-text">{{ item == undefined ? "" : ( item.sum_desc == undefined ? "" :  item.sum_desc)}}</div>
             </v-col>
             <v-col cols="12" sm="12" class="ma-0 pa-0">
               <div class="mt-2">
               <v-icon medium>
                 {{ icons.mdiProgressClock  }}
               </v-icon>
-              {{ item.last_time}}</div>
+              {{ item == undefined ? "" :  item.last_time}}</div>
             </v-col>
           </v-col>
         </v-col>

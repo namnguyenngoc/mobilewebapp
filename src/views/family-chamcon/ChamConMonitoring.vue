@@ -272,6 +272,11 @@ export default {
           code: 'BENH',
           name: 'Bệnh'
         }
+        ,
+        {
+          code: 'AN',
+          name: 'Ăn uống'
+        }
       ],
       cuSuaModel: {
         title: 'Uống sữa',
@@ -581,6 +586,9 @@ export default {
     async loadItemDetail(ma_cv) {
       console.log('loadListDetail');
       let self = this;
+      if('BSB_UONG'== ma_cv){
+        ma_cv = `BSB_UONG','AN`;
+      }
       await axios
         .get(`${config.API_URL}/selectCongViecByDate/'${ma_cv}'/${moment(this.lstDetail.date).format(config.DATE_FM)}`)
         .then(response => {

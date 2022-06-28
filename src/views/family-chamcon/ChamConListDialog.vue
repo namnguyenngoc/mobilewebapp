@@ -232,7 +232,16 @@ export default {
         {
           label: 'Công việc',
           field: 'ten_cv',
-           sortable: false,
+          sortable: false,
+          filterOptions: {
+            styleClass: 'class-filter', // class to be added to the parent th element
+              enabled: true, // enable filter for this column
+              placeholder: 'Công việc', // placeholder for filter input
+              filterValue: '', // initial populated value for this filter
+              filterDropdownItems: ['Ăn uống', 'Uống sữa'], // dropdown (with selected values) instead of text input
+              // filterFn: this.columnFilterFn, //custom filter function that
+              trigger: 'enter', //only trigger on enter not on keyup 
+          },
         },
         {
           label: 'Thể tích/Thời gian',
@@ -268,6 +277,13 @@ export default {
       chamConItem: {},
       chamConDetaillDialog: false,
       item: {
+        item: {
+                tblDataCongViec: [
+                  {
+                    children: [],
+                  }
+                ]
+              },
         // tblDataCongViec: [ 
         //     {
         //       children: [{"id":1835,"ho_ten":"NGUYEN DANG KHOI","nam_sinh":"23-11-2021","ma_cv":"BSB_UONG","ghi_chu":"","ngay_thuc_hien":"2022-06-24T11:33:43.000Z","gio_bat_dau":"2022-06-24T04:33:25.000Z","gio_ke_tiep":"2022-06-24T11:34:25.000Z","thong_tin_them":"Morigana 6-36","status":"","working_time":0,"can_nang":null,"chieu_cao":null,"tinh_trang_suc_khoe":null,"updated_date":"2022-06-24T04:33:43.000Z","create_date":"2022-06-24T04:33:43.000Z","the_tich_sua":"70","ten_cong_viec":"Uống sữa","ten_cv":"Uống sữa","server_code":""},{"id":1833,"ho_ten":"NGUYEN DANG KHOI","nam_sinh":"23-11-2021","ma_cv":"BSB_UONG","ghi_chu":"","ngay_thuc_hien":"2022-06-24T10:06:30.000Z","gio_bat_dau":"2022-06-24T03:06:18.000Z","gio_ke_tiep":"2022-06-24T10:07:18.000Z","thong_tin_them":"Morigana 6-36","status":"","working_time":0,"can_nang":null,"chieu_cao":null,"tinh_trang_suc_khoe":null,"updated_date":"2022-06-24T03:06:30.000Z","create_date":"2022-06-24T03:06:30.000Z","the_tich_sua":"80","ten_cong_viec":"Uống sữa","ten_cv":"Uống sữa","server_code":""},{"id":1831,"ho_ten":"NGUYEN DANG KHOI","nam_sinh":"23-11-2021","ma_cv":"BSB_UONG","ghi_chu":"","ngay_thuc_hien":"2022-06-24T09:50:56.000Z","gio_bat_dau":"2022-06-24T02:50:33.000Z","gio_ke_tiep":"2022-06-24T09:51:33.000Z","thong_tin_them":"Ăn cháo rây","status":"","working_time":0,"can_nang":null,"chieu_cao":null,"tinh_trang_suc_khoe":null,"updated_date":"2022-06-24T02:50:56.000Z","create_date":"2022-06-24T02:50:56.000Z","the_tich_sua":"10","ten_cong_viec":"Uống sữa","ten_cv":"Uống sữa","server_code":""},{"id":1823,"ho_ten":"NGUYEN DANG KHOI","nam_sinh":"23-11-2021","ma_cv":"BSB_UONG","ghi_chu":"","ngay_thuc_hien":"2022-06-24T07:09:02.000Z","gio_bat_dau":"2022-06-24T00:08:41.000Z","gio_ke_tiep":"2022-06-24T07:09:41.000Z","thong_tin_them":"Sữa mẹ","status":"","working_time":0,"can_nang":null,"chieu_cao":null,"tinh_trang_suc_khoe":null,"updated_date":"2022-06-24T00:09:02.000Z","create_date":"2022-06-24T00:09:02.000Z","the_tich_sua":"40","ten_cong_viec":"Uống sữa","ten_cv":"Uống sữa","server_code":""}],

@@ -2,13 +2,11 @@
   <v-row class="mb-0 pb-0 mr-1 pr-1 ml-1">
     <v-col cols="12" md="6" sm="12" class="pa-0 ma-0 text-left pr-1">
       <v-btn-toggle class="mr-1">
-        <v-btn color="success" @click="countWorkInDay2()" small class="pl-1 pr-1 btn-style-1"> 
-          <v-icon dark class="pl-0 pr-0">
-            {{ icons.mdiHistory }}
-          </v-icon>
+        <v-btn color="info" small class="pl-1 pr-1" @click="insert('BSBUONG')">
+         [Sữa][{{model.the_tich_sua_uong }}/{{model.sum_uong }}ml][{{model.duration}}]
         </v-btn>
-        <v-btn color="info" small class="pl-1 pr-1 btn-style-full-width" @click="insert()">
-         [Ăn] {{model.thoi_gian_gan_nhat_uong}} [{{model.the_tich_sua_uong }}/{{model.sum_uong }}ml][{{model.duration}}]
+        <v-btn color="warning" small class="pl-1 pr-1" @click="insert('AN')">
+         [{{model.an.ten_cong_viec}}][{{model.an.duration}}]
         </v-btn>
         <v-btn color="success" @click="loadListDetail()" small class="pl-1 pr-1 btn-style-1"> 
           <v-icon dark class="pl-1 pr-1">
@@ -91,6 +89,9 @@
           thoi_gian_gan_nhat_uong: new Date(),
           thoi_gian_gan_nhat_hut: new Date(),
           duration: null,
+          an: {
+
+          }
         },
         icons: {
           mdiMinus,
@@ -118,10 +119,10 @@
       }
     },
     async mounted () {
-    //  await this.countWorkInDay2();
+     this.countWorkInDay2();
     }, // end method
-    created () {
-       this.countWorkInDay2();
+    async created () {
+      this.countWorkInDay2();
       //  let result = this.$crontab.addJob({
       //   name: 'counter',
       //   interval: {
@@ -131,7 +132,7 @@
       // })
     }, // end data
     methods: {
-        countWorkInDay2() {
+      countWorkInDay2() {
         let self = this
         
         axios.get(`${config.API_URL}/countWorkInDay/BSB_UONG/now()`).then(response => {
@@ -155,6 +156,15 @@
           self.model.sum_hut = response.data.data[0]._sum;
         });
 
+        axios.get(`${config.API_URL}/countWorkInDay/AN/now()`).then(response => {
+          // seft.hotSettings.data = response.data.data;
+          console.log('thong tin countWorkInDay2', );
+          self.model.an.ten_cong_viec = response.data.data[0].ten_cong_viec; 
+          let duration = moment.duration(moment(new Date()).diff(moment(response.data.data[0].ngay_thuc_hien_gan_nhat)));
+          self.model.an.duration = `${duration._data.hours}h ${duration._data.minutes}m`;
+
+        });
+
         // console.log('countWorkInDay---cham con', this.model);
       },
       // countUp () {
@@ -165,7 +175,7 @@
         console.log('loadListDetail');
         let self = this;
         await axios
-          .get(`${config.API_URL}/selectCongViecByDate/'BSB_UONG'/${moment(this.lstDetail.date).format(config.DATE_FM)}`)
+          .get(`${config.API_URL}/selectCongViecByDate/'BSB_UONG','AN'/${moment(this.lstDetail.date).format(config.DATE_FM)}`)
           .then(response => {
             // seft.hotSettings.data = response.data.data;
             let data = response.data.data;
@@ -175,6 +185,7 @@
               arr.push(data[i]);
               console.log('data[i]', data[i]);
             }
+            console.log('loadListDetail-thongtin', arr);
             self.$refs.chamConListDialog.item = {
               title: 'Uống sữa',
               date: moment(new Date()).format(config.DATE_FM),
@@ -196,9 +207,10 @@
         this.$refs.chamConListDialog.dialog = true;
       },
 
-      insert() {
+      insert(type) {
         console.log('insert')
-        this.$emit('insert');
+
+        this.$emit('insert' + type);
       }
       
     }, // end created

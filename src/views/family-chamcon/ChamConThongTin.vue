@@ -136,8 +136,15 @@
       countWorkInDay2() {
         console.log('countWorkInDay2');
         const self = this;
-        
-        axios.get(`${config.API_URL}/countWorkInDay/BSB_UONG/now()`).then(response => {
+        let param = 
+              {
+                "ma_cv": [
+                    "AN",
+                    "BSB_UONG",
+                    
+                ]
+            }
+        axios.post(`${config.API_URL}/summaryTimeWorkByCodes`, param).then(response => {
           // seft.hotSettings.data = response.data.data;
 
           self.model.so_lan_uong = response.data.data[0]._count;
@@ -147,25 +154,42 @@
           let duration = moment.duration(moment(new Date()).diff(moment(response.data.data[0].ngay_thuc_hien_gan_nhat)));
           self.model.duration = `${duration._data.hours}h ${duration._data.minutes}m`;
           console.log("duration", duration);
-
-        });
-        axios.get(`${config.API_URL}/countWorkInDay/BSB_HUT/now()`).then(response => {
-          // seft.hotSettings.data = response.data.data;
-
-          self.model.so_lan_hut = response.data.data[0]._count;
-          self.model.thoi_gian_gan_nhat_hut =  moment(response.data.data[0].ngay_thuc_hien_gan_nhat).format(config.DATE_TIME_FM_1);
-          self.model.the_tich_sua_hut = response.data.data[0].the_tich_sua;
-          self.model.sum_hut = response.data.data[0]._sum;
-        });
-
-        axios.get(`${config.API_URL}/countWorkInDay/AN/now()`).then(response => {
-          // seft.hotSettings.data = response.data.data;
-          console.log('thong tin countWorkInDay2', );
           self.model.an_ten_cong_viec = response.data.data[0].ten_cong_viec; 
-          const duration = moment.duration(moment(new Date()).diff(moment(response.data.data[0].ngay_thuc_hien_gan_nhat)));
-          self.model.an_duration = `${duration._data.hours}h ${duration._data.minutes}m`;
+
 
         });
+
+        // axios.get(`${config.API_URL}/countWorkInDay/BSB_UONG/now()`).then(response => {
+        //   // seft.hotSettings.data = response.data.data;
+
+        //   self.model.so_lan_uong = response.data.data[0]._count;
+        //   self.model.thoi_gian_gan_nhat_uong =  moment(response.data.data[0].ngay_thuc_hien_gan_nhat).format(config.DATE_TIME_FM_1);
+        //   self.model.the_tich_sua_uong = response.data.data[0].the_tich_sua;
+        //   self.model.sum_uong = response.data.data[0]._sum;
+        //   let duration = moment.duration(moment(new Date()).diff(moment(response.data.data[0].ngay_thuc_hien_gan_nhat)));
+        //   self.model.duration = `${duration._data.hours}h ${duration._data.minutes}m`;
+        //   console.log("duration", duration);
+        //   self.model.an_ten_cong_viec = response.data.data[0].ten_cong_viec; 
+
+
+        // });
+        // axios.get(`${config.API_URL}/countWorkInDay/BSB_HUT/now()`).then(response => {
+        //   // seft.hotSettings.data = response.data.data;
+
+        //   self.model.so_lan_hut = response.data.data[0]._count;
+        //   self.model.thoi_gian_gan_nhat_hut =  moment(response.data.data[0].ngay_thuc_hien_gan_nhat).format(config.DATE_TIME_FM_1);
+        //   self.model.the_tich_sua_hut = response.data.data[0].the_tich_sua;
+        //   self.model.sum_hut = response.data.data[0]._sum;
+        // });
+
+        // axios.get(`${config.API_URL}/countWorkInDay/AN/now()`).then(response => {
+        //   // seft.hotSettings.data = response.data.data;
+        //   console.log('thong tin countWorkInDay2', );
+        //   self.model.an_ten_cong_viec = response.data.data[0].ten_cong_viec; 
+        //   const duration = moment.duration(moment(new Date()).diff(moment(response.data.data[0].ngay_thuc_hien_gan_nhat)));
+        //   self.model.an_duration = `${duration._data.hours}h ${duration._data.minutes}m`;
+
+        // });
 
         // console.log('countWorkInDay---cham con', this.model);
       },

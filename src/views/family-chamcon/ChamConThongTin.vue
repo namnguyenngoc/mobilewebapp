@@ -3,7 +3,7 @@
     <v-col cols="12" md="6" sm="12" class="pa-0 ma-0 text-left pr-1">
       <v-btn-toggle class="mr-1">
         <v-btn color="info" small class="pl-1 pr-1" @click="insert('BSBUONG')">
-         [Sữa][{{model.the_tich_sua_uong }}/{{model.sum_uong }}ml][{{model.duration}}]
+         [{{model.ten_cong_viec}}][{{model.the_tich_sua_uong }}/{{model.sum_uong }}ml][{{model.duration}}]
         </v-btn>
         <v-btn color="warning" small class="pl-1 pr-1" @click="insert('AN')">
          [{{model.an_ten_cong_viec}}][{{model.an_duration}}]
@@ -122,7 +122,7 @@
      this.countWorkInDay2();
     }, // end method
     async created () {
-      this.countWorkInDay2();
+      // this.countWorkInDay2();
       let result = this.$crontab.addJob({
         name: 'counter',
         interval: {
@@ -133,30 +133,47 @@
       
     }, // end data
     methods: {
-      countWorkInDay2() {
+      async countWorkInDay2() {
         console.log('countWorkInDay2');
-        const self = this;
+        let self = this;
         let param = 
               {
-                "ma_cv": [
+                ma_cv: [
                     "AN",
                     "BSB_UONG",
                     
                 ]
             }
-        axios.post(`${config.API_URL}/summaryTimeWorkByCodes`, param).then(response => {
+        await axios.post(`${config.API_URL}/summaryTimeWorkByCodes`, param).then(response => {
           // seft.hotSettings.data = response.data.data;
-
-          self.model.so_lan_uong = response.data.data[0]._count;
-          self.model.thoi_gian_gan_nhat_uong =  moment(response.data.data[0].ngay_thuc_hien_gan_nhat).format(config.DATE_TIME_FM_1);
-          self.model.the_tich_sua_uong = response.data.data[0].the_tich_sua;
-          self.model.sum_uong = response.data.data[0]._sum;
-          let duration = moment.duration(moment(new Date()).diff(moment(response.data.data[0].ngay_thuc_hien_gan_nhat)));
-          self.model.duration = `${duration._data.hours}h ${duration._data.minutes}m`;
-          console.log("duration", duration);
-          self.model.an_ten_cong_viec = response.data.data[0].ten_cong_viec; 
-
-
+          let dataResponse = response.data.data;
+          if(dataResponse != undefined && dataResponse != null){
+            for(let i = 0; i < dataResponse.length; i++){
+              const obj = dataResponse [i];
+              let duration = 0;
+              switch(obj.ten_cong_viec){
+                case 'Uống sữa':
+                  self.model.ten_cong_viec = "Sữa";
+                  self.model.so_lan_uong = obj._count;
+                  self.model.thoi_gian_gan_nhat_uong =  moment(obj.ngay_thuc_hien_gan_nhat).format(config.DATE_TIME_FM_1);
+                  self.model.the_tich_sua_uong = obj.the_tich_sua;
+                  self.model.sum_uong = obj._sum;
+                  duration = moment.duration(moment(new Date()).diff(moment(obj.ngay_thuc_hien_gan_nhat)));
+                  self.model.duration = `${duration._data.hours}h ${duration._data.minutes}m`;
+                  console.log("duration", duration);
+                  break;
+                case 'Ăn':
+                  self.model.an_ten_cong_viec = 'Ăn';
+ console.log("duration-an", self.model.ten_cong_viec);
+                  duration = moment.duration(moment(new Date()).diff(moment(obj.ngay_thuc_hien_gan_nhat)));
+                  self.model.an_duration = `${duration._data.hours}h ${duration._data.minutes}m`;
+                 
+                  break;
+              
+             
+              } 
+            }
+          }
         });
 
         // axios.get(`${config.API_URL}/countWorkInDay/BSB_UONG/now()`).then(response => {

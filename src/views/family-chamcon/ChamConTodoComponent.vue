@@ -2180,7 +2180,7 @@ export default {
           await axios.post(config.API_URL + '/insertChamCon', congviec).then(async function (response) {
             await self.updateBtn();
             // seft.$emit('refeshList');
-            self.$refs.chamConThongTin2.countWorkInDay2();
+            await self.$refs.chamConThongTin2.countWorkInDay2();
            
             
           })
@@ -3404,7 +3404,6 @@ export default {
         console.log('insertBSB');
         this.insert('BSB_UONG');
       },
-      searchInput() {}
   },
 }
 </script>

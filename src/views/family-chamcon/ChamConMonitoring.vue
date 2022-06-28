@@ -601,8 +601,8 @@ export default {
             console.log('data[i]', data[i]);
           }
           self.$refs.chamConListDialog.item = {
-            title: 'Uống sữa',
-            date: moment(new Date()).format(config.DATE_FM),
+            title: data[0].ma_cv,
+            date: moment(self.lstDetail.date).format(config.DATE_FM),
             item: {
               tblDataCongViec: [
                 {

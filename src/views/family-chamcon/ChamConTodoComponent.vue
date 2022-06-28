@@ -2176,10 +2176,11 @@ export default {
           await axios.post(config.API_URL + '/insertChamCon', congviec).then(async function (response) {
             await self.updateBtn();
             // seft.$emit('refeshList');
+            await self.$refs.ChamConThongTin2.countWorkInDay2();
            
             
           })
-          this.$refs.ChamConThongTin2.countWorkInDay2();
+           
           this.dialogSua = false;
           // this.cuSuaModel.gio_bat_dau = gio_bat_dau;
           // this.cuSuaModel.the_tich_sua = the_tich_sua;

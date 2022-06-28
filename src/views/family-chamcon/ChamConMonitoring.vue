@@ -275,7 +275,7 @@ export default {
         ,
         {
           code: 'AN',
-          name: 'Ăn uống'
+          name: 'Ăn'
         }
       ],
       cuSuaModel: {

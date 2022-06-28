@@ -238,7 +238,7 @@ export default {
               enabled: true, // enable filter for this column
               placeholder: 'Công việc', // placeholder for filter input
               filterValue: '', // initial populated value for this filter
-              filterDropdownItems: ['Ăn uống', 'Uống sữa'], // dropdown (with selected values) instead of text input
+              filterDropdownItems: ['Ăn', 'Uống sữa'], // dropdown (with selected values) instead of text input
               // filterFn: this.columnFilterFn, //custom filter function that
               trigger: 'enter', //only trigger on enter not on keyup 
           },

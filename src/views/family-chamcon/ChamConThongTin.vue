@@ -6,7 +6,7 @@
          [Sữa][{{model.the_tich_sua_uong }}/{{model.sum_uong }}ml][{{model.duration}}]
         </v-btn>
         <v-btn color="warning" small class="pl-1 pr-1" @click="insert('AN')">
-         [{{model.an.ten_cong_viec}}][{{model.an.duration}}]
+         [{{model.an_ten_cong_viec}}][{{model.an_duration}}]
         </v-btn>
         <v-btn color="success" @click="loadListDetail()" small class="pl-1 pr-1 btn-style-1"> 
           <v-icon dark class="pl-1 pr-1">
@@ -135,7 +135,7 @@
     methods: {
       countWorkInDay2() {
         console.log('countWorkInDay2');
-        let self = this
+        const self = this;
         
         axios.get(`${config.API_URL}/countWorkInDay/BSB_UONG/now()`).then(response => {
           // seft.hotSettings.data = response.data.data;
@@ -161,9 +161,9 @@
         axios.get(`${config.API_URL}/countWorkInDay/AN/now()`).then(response => {
           // seft.hotSettings.data = response.data.data;
           console.log('thong tin countWorkInDay2', );
-          self.model.an.ten_cong_viec = response.data.data[0].ten_cong_viec; 
-          let duration = moment.duration(moment(new Date()).diff(moment(response.data.data[0].ngay_thuc_hien_gan_nhat)));
-          self.model.an.duration = `${duration._data.hours}h ${duration._data.minutes}m`;
+          self.model.an_ten_cong_viec = response.data.data[0].ten_cong_viec; 
+          const duration = moment.duration(moment(new Date()).diff(moment(response.data.data[0].ngay_thuc_hien_gan_nhat)));
+          self.model.an_duration = `${duration._data.hours}h ${duration._data.minutes}m`;
 
         });
 

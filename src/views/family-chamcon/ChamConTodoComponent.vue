@@ -13,9 +13,9 @@
       <v-card class="ma-0 pa-0">
         <v-card-title class="pa-0 pt-5 pb-2 ma-0">
           <v-col cols="12" md="12" class="ma-0 pt-1 pb-2 mb-0 pl-0 pb-0">
-            <ChamConThongTin ref="ChamConThongTin2"
+            <ChamConThongTin ref="chamConThongTin2"
             @insertBSBUONG="insert('BSB_UONG')"
-            @insertAN="insert('AN')"/>
+            @insertAN='insert("AN")'/>
           </v-col>
           <v-col cols="12" class="ml-0 pl-1 mb-0 pb-0">
             <v-row>
@@ -159,7 +159,8 @@
               :items="wcItem"
               item-text="name"
               item-value="code"
-              dense>
+              dense
+              >
                 
               </v-autocomplete>
             </v-col>
@@ -234,9 +235,8 @@
                     readonly
                     v-bind="attrs"
                     v-on="on"
-                    hide-details
+                    hide-detail
                     required
-                    :rules="emptyRules"
                   ></v-text-field>
                 </template>
                 <v-date-picker v-model="cuSuaModel.ngay_thuc_hien" no-title scrollable>
@@ -734,6 +734,8 @@ export default {
         { holidayDate: '2021-09-02', description: 'Quoc Khanh' },
         { holidayDate: '2021-09-03', description: 'Quoc Khanh' },
       ],
+      searchInput: "",
+      search: "",
       headers: [
         {
           text: 'Trương',
@@ -1688,7 +1690,7 @@ export default {
         },
         {
           code: 'AN',
-          name: 'Ăn uống'
+          name: 'Ăn'
         }
       ],
       sliderKCBS: 5, //// KHOANG CACH BU SUA
@@ -1824,13 +1826,13 @@ export default {
     this.getCurrentDate()
     this.countWorkInDay()
     this.updateBtn('COUNT_DOWN')
-    this.loadingChart()
-    this.loadingChartSK();
+    // this.loadingChart()
+    // this.loadingChartSK();
     this.summarySuckhoeByCongViec();
-    this.showChartWC();
-    this.showChartBS();
-    this.showChartNGU();
-    this.showChartKCBS();
+    // this.showChartWC();
+    // this.showChartBS();
+    // this.showChartNGU();
+    // this.showChartKCBS();
     this.loadDataCongViec();
     this.loadNguThuc();
 
@@ -2049,7 +2051,7 @@ export default {
       await axios.post(`${config.API_URL}/insertSucKhoe`, this.thong_tin_suc_khoe).then(async function (response) {
         await self.updateBtn();
         self.thong_tin_suc_khoe.dialogCN = false;
-        await self.loadingChartSK();
+        // await self.loadingChartSK();
       })
     },
 
@@ -2105,6 +2107,7 @@ export default {
 
           break;
         case 'AN':
+          this.$refs.chamConThongTin2.countWorkInDay2();
           this.cuSuaModel.ma_cv = 'AN';
           this.cuSuaModel.title = "Ăn dặm";
           this.cuSuaModel.ghi_chu_them = "";
@@ -2112,6 +2115,7 @@ export default {
           this.dialogSua = true;
           break;
         case 'BSB_UONG':
+          this.$refs.chamConThongTin2.countWorkInDay2();
           var timeAndDate = moment(gio_bat_dau + ' ' + self.ti_me_model.timeTiBinh);
           // gio_bat_dau = moment(timeAndDate).format('YYYY-MM-DD HH:mm:ss');
           // if(!self.ti_me_model.isEditTimeTiBinh){
@@ -2176,7 +2180,7 @@ export default {
           await axios.post(config.API_URL + '/insertChamCon', congviec).then(async function (response) {
             await self.updateBtn();
             // seft.$emit('refeshList');
-            await self.$refs.ChamConThongTin2.countWorkInDay2();
+            self.$refs.chamConThongTin2.countWorkInDay2();
            
             
           })
@@ -2205,14 +2209,14 @@ export default {
           }
           await axios.post(config.API_URL + '/insertChamCon', congviec).then(async function (response) {
             self.dialogWC = false;
-            self.loadingChartSK();
+            // self.loadingChartSK();
             self.countWorkInDay();
             await self.updateBtn();
           })
           break;
         case 'CN':
           self.thong_tin_suc_khoe.dialogCN = true;
-          self.loadingChartSK();
+          // self.loadingChartSK();
           break;
         case 'THUC':
           // console.log('THUC');
@@ -3313,10 +3317,6 @@ export default {
       this.cuSuaModel.the_tich_sua_new  = (this.cuSuaModel.the_tich_sua_new  + 5 *(type=="+" ? 1 : -1 )) || 100; 
       
     },
-    search() {
-
-    },
-
     async loadNguThuc(){
       let self = this;
       console.log('cron');
@@ -3403,7 +3403,8 @@ export default {
       insertBSB(){
         console.log('insertBSB');
         this.insert('BSB_UONG');
-      }
+      },
+      searchInput() {}
   },
 }
 </script>

@@ -56,7 +56,7 @@
   } from '@mdi/js'
 
   export default {
-    layout: 'chamConDetail',
+    layout: 'chamconThongTin2',
     // inheritAttrs: false,
     components: {
       ChamConListDialog,
@@ -89,9 +89,8 @@
           thoi_gian_gan_nhat_uong: new Date(),
           thoi_gian_gan_nhat_hut: new Date(),
           duration: null,
-          an: {
-
-          }
+          an_ten_cong_viec: "Ăn",
+          an_duration: 0
         },
         icons: {
           mdiMinus,
@@ -116,13 +115,14 @@
     computed: {
       propsChiTieu: function(item) {
         return item;
-      }
+      },
+      
     },
     async mounted () {
-     this.countWorkInDay2();
+    //  this.countWorkInDay2();
     }, // end method
     async created () {
-      // this.countWorkInDay2();
+      this.countWorkInDay2();
       let result = this.$crontab.addJob({
         name: 'counter',
         interval: {
@@ -133,9 +133,9 @@
       
     }, // end data
     methods: {
-      async countWorkInDay2() {
-        console.log('countWorkInDay2');
-        let self = this;
+      countWorkInDay2() {
+        
+        const self = this;
         let param = 
               {
                 ma_cv: [
@@ -144,35 +144,54 @@
                     
                 ]
             }
-        await axios.post(`${config.API_URL}/summaryTimeWorkByCodes`, param).then(response => {
+          axios.post(`${config.API_URL}/summaryTimeWorkByCodes`, param).then(async function(response) {
           // seft.hotSettings.data = response.data.data;
           let dataResponse = response.data.data;
           if(dataResponse != undefined && dataResponse != null){
-            for(let i = 0; i < dataResponse.length; i++){
-              const obj = dataResponse [i];
-              let duration = 0;
-              switch(obj.ten_cong_viec){
-                case 'Uống sữa':
-                  self.model.ten_cong_viec = "Sữa";
-                  self.model.so_lan_uong = obj._count;
-                  self.model.thoi_gian_gan_nhat_uong =  moment(obj.ngay_thuc_hien_gan_nhat).format(config.DATE_TIME_FM_1);
-                  self.model.the_tich_sua_uong = obj.the_tich_sua;
-                  self.model.sum_uong = obj._sum;
-                  duration = moment.duration(moment(new Date()).diff(moment(obj.ngay_thuc_hien_gan_nhat)));
-                  self.model.duration = `${duration._data.hours}h ${duration._data.minutes}m`;
-                  console.log("duration", duration);
-                  break;
-                case 'Ăn':
-                  self.model.an_ten_cong_viec = 'Ăn';
- console.log("duration-an", self.model.ten_cong_viec);
-                  duration = moment.duration(moment(new Date()).diff(moment(obj.ngay_thuc_hien_gan_nhat)));
-                  self.model.an_duration = `${duration._data.hours}h ${duration._data.minutes}m`;
-                 
-                  break;
-              
-             
-              } 
+            // for(let i = 0; i < dataResponse.length; i++){
+            let duration = 0;
+            let uongSua = dataResponse.find(({ten_cong_viec}) => ten_cong_viec == 'Uống sữa');
+            let an = dataResponse.find(({ten_cong_viec}) => ten_cong_viec == 'Ăn');
+
+            self.model.ten_cong_viec = "Sữa";
+            if(uongSua != undefined && uongSua != null){
+              self.model.so_lan_uong = uongSua._count;
+              self.model.thoi_gian_gan_nhat_uong =  moment(uongSua.ngay_thuc_hien_gan_nhat).format(config.DATE_TIME_FM_1);
+              self.model.the_tich_sua_uong = uongSua.the_tich_sua;
+              self.model.sum_uong = uongSua._sum;
+              duration = moment.duration(moment(new Date()).diff(moment(uongSua.ngay_thuc_hien_gan_nhat)));
+              self.model.duration = `${duration._data.hours}h ${duration._data.minutes}m`;
             }
+           
+            if(an != undefined && an != null){
+              console.log('countWorkInDay2-an', new Date());
+              self.model.an_ten_cong_viec = an.ten_cong_viec;
+              const an_duration = moment.duration(moment(new Date()).diff(moment(an.ngay_thuc_hien_gan_nhat)));
+              self.model.an_duration = `${an_duration._data.hours}h ${an_duration._data.minutes}m`;
+              
+            }
+            //   const obj = dataResponse [i];
+            //   let duration = 0;
+              
+            //   if('Uống sữa' == obj.ten_cong_viec){
+            //       self.model.ten_cong_viec = "Sữa";
+            //       self.model.so_lan_uong = obj._count;
+            //       self.model.thoi_gian_gan_nhat_uong =  moment(obj.ngay_thuc_hien_gan_nhat).format(config.DATE_TIME_FM_1);
+            //       self.model.the_tich_sua_uong = obj.the_tich_sua;
+            //       self.model.sum_uong = obj._sum;
+            //       duration = moment.duration(moment(new Date()).diff(moment(obj.ngay_thuc_hien_gan_nhat)));
+            //       self.model.duration = `${duration._data.hours}h ${duration._data.minutes}m`;
+            //       console.log("duration", duration);
+            //   } else if('Ăn'== obj.ten_cong_viec){
+            //       self.model.an_ten_cong_viec = 'Ăn';
+                  
+            //       const an_duration = moment.duration(moment(new Date()).diff(moment(obj.ngay_thuc_hien_gan_nhat)));
+            //       console.log("duration-an", self.model.ten_cong_viec);
+            //       self.model.an_duration = `${an_duration._data.hours}h ${an_duration._data.minutes}m`;
+                 
+             
+            //   } 
+            // }
           }
         });
 
@@ -252,7 +271,7 @@
 
       insert(type) {
         console.log('insert')
-
+        this.countWorkInDay2();
         this.$emit('insert' + type);
       }
       

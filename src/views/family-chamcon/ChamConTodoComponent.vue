@@ -14,8 +14,8 @@
         <v-card-title class="pa-0 pt-5 pb-2 ma-0">
           <v-col cols="12" md="12" class="ma-0 pt-1 pb-2 mb-0 pl-0 pb-0">
             <ChamConThongTin ref="chamConThongTin2"
-            @insertBSBUONG="insert('BSB_UONG')"
-            @insertAN='insert("AN")'/>
+              @insertBSBUONG="insert('BSB_UONG')"
+              @insertAN="insert('AN')"/>
           </v-col>
           <v-col cols="12" class="ml-0 pl-1 mb-0 pb-0">
             <v-row>
@@ -2107,7 +2107,7 @@ export default {
 
           break;
         case 'AN':
-          this.$refs.chamConThongTin2.countWorkInDay2();
+          self.$refs.chamConThongTin2.countWorkInDay2();
           this.cuSuaModel.ma_cv = 'AN';
           this.cuSuaModel.title = "Ăn dặm";
           this.cuSuaModel.ghi_chu_them = "";
@@ -2180,11 +2180,10 @@ export default {
           await axios.post(config.API_URL + '/insertChamCon', congviec).then(async function (response) {
             await self.updateBtn();
             // seft.$emit('refeshList');
-            await self.$refs.chamConThongTin2.countWorkInDay2();
            
             
           })
-           
+          this.$refs.chamConThongTin2.countWorkInDay2();
           this.dialogSua = false;
           // this.cuSuaModel.gio_bat_dau = gio_bat_dau;
           // this.cuSuaModel.the_tich_sua = the_tich_sua;

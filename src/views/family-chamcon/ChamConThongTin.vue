@@ -165,7 +165,7 @@
            
             if(an != undefined && an != null){
               console.log('countWorkInDay2-an', new Date());
-              self.model.an_ten_cong_viec = 'ÂN';
+              self.model.an_ten_cong_viec = 'Ăn';
               const an_duration = moment.duration(moment(new Date()).diff(moment(an.ngay_thuc_hien_gan_nhat)));
               self.model.an_duration = `${an_duration._data.hours}h ${an_duration._data.minutes}m`;
               

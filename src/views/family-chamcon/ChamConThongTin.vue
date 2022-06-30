@@ -2,11 +2,11 @@
   <v-row class="mb-0 pb-0 mr-1 pr-1 ml-1">
     <v-col cols="12" md="6" sm="12" class="pa-0 ma-0 text-left pr-1">
       <v-btn-toggle class="mr-1">
-        <v-btn color="info" small class="pl-1 pr-1" @click="insert('BSBUONG')">
+        <v-btn color="info" small class="pl-1 pr-1 w-175" @click="insert('BSBUONG')">
          [{{model.ten_cong_viec}}][{{model.the_tich_sua_uong }}/{{model.sum_uong }}ml][{{model.duration}}]
         </v-btn>
-        <v-btn color="warning" small class="pl-1 pr-1" @click="insert('AN')">
-         [{{model.an_ten_cong_viec}}][{{model.an_duration}}]
+        <v-btn color="warning" small class="pl-1 pr-1 w-17" @click="insert('AN')">
+         [{{model.an.ten_cong_viec}}][{{model.an.duration}}]
         </v-btn>
         <v-btn color="success" @click="loadListDetail()" small class="pl-1 pr-1 btn-style-1"> 
           <v-icon dark class="pl-1 pr-1">
@@ -24,6 +24,21 @@
       </span>
     </v-col>
 
+    <v-col cols="12" md="12" sm="12" class="pa-0 ma-0 mt-1 text-left">
+      <v-btn-toggle class="mr-1">
+        <v-btn color="info" small class="pl-1 pr-1 w-17" @click="insert('BSBUONG')">
+          [{{model.ngu.ten_cong_viec}}][{{model.ngu.duration}}]
+        </v-btn>
+        <v-btn color="warning" small class="pl-1 pr-1 w-17" @click="insert('AN')">
+         [{{model.wc.ten_cong_viec}}][{{model.wc.duration}}]
+        </v-btn>
+        <v-btn color="success" @click="loadListDetail()" small class="pl-1 pr-1 btn-style-1"> 
+          <v-icon dark class="pl-1 pr-1">
+            {{ icons.mdiFormatListBulleted }}
+          </v-icon>
+        </v-btn>
+      </v-btn-toggle>
+    </v-col>
      <v-col cols="12" class="ma-0 pa-0">
       <ChamConListDialog
         ref="chamConListDialog"
@@ -90,7 +105,10 @@
           thoi_gian_gan_nhat_hut: new Date(),
           duration: null,
           an_ten_cong_viec: "Ăn",
-          an_duration: 0
+          an_duration: 0,
+          an: {},
+          ngu: {},
+          wc: {}
         },
         icons: {
           mdiMinus,
@@ -141,7 +159,8 @@
                 ma_cv: [
                     "AN",
                     "BSB_UONG",
-                    
+                    "NGU",
+                    "WC"
                 ]
             }
           axios.post(`${config.API_URL}/summaryTimeWorkByCodes`, param).then(async function(response) {
@@ -152,6 +171,9 @@
             let duration = 0;
             let uongSua = dataResponse.find(({ma_cv}) => ma_cv == 'BSB_UONG');
             let an = dataResponse.find(({ma_cv}) => ma_cv == 'AN');
+            let ngu = dataResponse.find(({ma_cv}) => ma_cv == 'NGU');
+            
+            let wc = dataResponse.find(({ma_cv}) => ma_cv == 'WC');
 
             self.model.ten_cong_viec = "Sữa";
             if(uongSua != undefined && uongSua != null){
@@ -165,9 +187,25 @@
            
             if(an != undefined && an != null){
               console.log('countWorkInDay2-an', new Date());
-              self.model.an_ten_cong_viec = 'Ăn';
+              self.model.an.ten_cong_viec = 'Ăn';
               const an_duration = moment.duration(moment(new Date()).diff(moment(an.ngay_thuc_hien_gan_nhat)));
-              self.model.an_duration = `${an_duration._data.hours}h ${an_duration._data.minutes}m`;
+              self.model.an.duration = `${an_duration._data.hours}h ${an_duration._data.minutes}m`;
+              
+            }
+            if(ngu != undefined && ngu != null){
+              console.log('countWorkInDay2-an', new Date());
+              self.model.ngu.ten_cong_viec = ngu.ten_cong_viec;
+              const ngu_duration = moment.duration(moment(new Date()).diff(moment(ngu.ngay_thuc_hien_gan_nhat)));
+              
+              self.model.ngu.duration = `${ngu_duration._data.hours}h ${ngu_duration._data.minutes}m`;
+              
+            }
+            if(wc != undefined && wc != null){
+              console.log('countWorkInDay2-an', new Date());
+              self.model.wc.ten_cong_viec = wc.ten_cong_viec;
+              const wc_duration = moment.duration(moment(new Date()).diff(moment(wc.ngay_thuc_hien_gan_nhat)));
+              
+              self.model.wc.duration = `${wc_duration._data.hours}h ${wc_duration._data.minutes}m`;
               
             }
             //   const obj = dataResponse [i];
@@ -284,4 +322,5 @@
     max-height: 700px;
     overflow-y: auto;
   }
+  
 </style>

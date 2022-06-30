@@ -150,8 +150,8 @@
           if(dataResponse != undefined && dataResponse != null){
             // for(let i = 0; i < dataResponse.length; i++){
             let duration = 0;
-            let uongSua = dataResponse.find(({ten_cong_viec}) => ten_cong_viec == 'Uống sữa');
-            let an = dataResponse.find(({ten_cong_viec}) => ten_cong_viec == 'Ăn');
+            let uongSua = dataResponse.find(({ma_cv}) => ma_cv == 'BSB_UONG');
+            let an = dataResponse.find(({ma_cv}) => ma_cv == 'AN');
 
             self.model.ten_cong_viec = "Sữa";
             if(uongSua != undefined && uongSua != null){
@@ -165,7 +165,7 @@
            
             if(an != undefined && an != null){
               console.log('countWorkInDay2-an', new Date());
-              self.model.an_ten_cong_viec = an.ten_cong_viec;
+              self.model.an_ten_cong_viec = 'ÂN';
               const an_duration = moment.duration(moment(new Date()).diff(moment(an.ngay_thuc_hien_gan_nhat)));
               self.model.an_duration = `${an_duration._data.hours}h ${an_duration._data.minutes}m`;
               

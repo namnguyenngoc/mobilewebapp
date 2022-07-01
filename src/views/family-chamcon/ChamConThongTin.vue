@@ -161,7 +161,8 @@
                     "BSB_UONG",
                     "NGU",
                     "WC"
-                ]
+                ],
+                _date: `${moment(String(new Date())).format('YYYY-MM-DD')}`
             }
           axios.post(`${config.API_URL}/summaryTimeWorkByCodes`, param).then(async function(response) {
           // seft.hotSettings.data = response.data.data;

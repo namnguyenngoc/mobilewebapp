@@ -2152,7 +2152,7 @@ export default {
           break;
         case 'BSB_UONG_SAVE':
           if(this.cuSuaModel.ma_cv == 'AN'){
-            this.cuSuaModel.the_tich_sua_new = 20;
+            
             if(this.cuSuaModel.ghi_chu_them == ""){
               this.$refs.dialogInformation2.title = "Xác nhận!";
               this.$refs.dialogInformation2.message = "Vui lòng nhập thông tin món ăn";

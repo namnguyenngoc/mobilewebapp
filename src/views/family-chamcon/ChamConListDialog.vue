@@ -427,14 +427,14 @@ export default {
 
       for (let i = 0; i < rowObj.children.length; i++) {
         // console.log('rowObj.children[i]', rowObj.children[i]);
-        if('BSB_UONG' == rowObj.children[i].ma_cv){
+        if('BSB_UONG' == rowObj.children[i].ma_cv || 'AN' == rowObj.children[i].ma_cv){
           sum += parseFloat(rowObj.children[i].the_tich_sua);
 
         }else {
           sum += parseFloat(rowObj.children[i].working_time);
         }
       }
-      if('BSB_UONG' == rowObj.children[0].ma_cv){
+      if('BSB_UONG' == rowObj.children[0].ma_cv || 'AN' == rowObj.children[0].ma_cv){
         return sum;
       } else {
         return `${Math.floor(sum / 60) } giờ ${sum % 60} phút`

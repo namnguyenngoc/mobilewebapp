@@ -139,24 +139,142 @@
           <v-row class="ma-0 pa-0">
             <v-col cols="12" md="12" class="pa-0 ma-0 text-right">
               <vue-good-table
-              title="Danh sách chi tiêu"
-              :columns="colChiTIeu"
-              :rows="tblChiTieu"
-              :paginate="true"
-              :lineNumbers="true"
-              max-height="700px"
-              :search-options="{
-                enabled: true,
-                placeholder: 'Search this table',
-              }"
-              :group-options="{
-                enabled: true,
-                headerPosition: 'top',
-              }"
-              styleClass="vgt-table bordered"
-              @on-row-dblclick="onRowDoubleClick"
-              @on-column-filter="onColumnFilter"
-              @on-cell-click="onCellClick"
+                title="Danh sách chi tiêu"
+                :columns="colChiTIeu"
+                :rows="tblChiTieu"
+                :paginate="true"
+                :lineNumbers="true"
+                max-height="700px"
+                :search-options="{
+                  enabled: true,
+                  placeholder: 'Search this table',
+                }"
+                :group-options="{
+                  enabled: true,
+                  headerPosition: 'top',
+                }"
+                styleClass="vgt-table bordered"
+                @on-row-dblclick="onRowDoubleClick"
+                @on-column-filter="onColumnFilter"
+                @on-cell-click="onCellClick"
+              >
+              <template slot="table-row" slot-scope="props">
+                <span v-if="props.column.field == 'id'">
+                   <!-- && props.formattedRow['status'] == 'DN' -->
+                  <v-btn
+                    v-if="props.formattedRow['status'] == 'DN'"
+                    color="info"
+                    @click="confirmChangeStatus(props, 'CSK')"
+                  >
+                   <span>
+                    Chốt SK
+                   </span>
+                  </v-btn>
+                  <v-btn
+                    v-else-if="props.formattedRow['status'] == 'CSK'"
+                    color="primary"
+                    @click="confirmChangeStatus(props, 'DTCSK')"
+                  >
+                   <span>
+                    Gạch nợ
+                   </span>
+                  </v-btn>
+                  <v-btn
+                    v-else-if="props.formattedRow['id_tra_gop'] == undefined || props.formattedRow['id_tra_gop'] == null || props.formattedRow['id_tra_gop'] == ''"
+                    color="info"
+                    @click="addTraGop(props)"
+                  >
+                   <span>
+                    Chuyển đổi {{props.formattedRow['id_tra_gop']}}
+                   </span>
+                  </v-btn>
+                </span>
+                <span v-else>
+                  {{props.formattedRow[props.column.field]}}
+                </span>
+              </template>
+              </vue-good-table>
+            </v-col>
+          </v-row>
+          <v-row class="mt-3">
+            <v-col cols="6" class="mt-1 mb-0 pt-0 pb-0">
+              <v-text-field
+                label="Folder Path"
+                value=""
+                v-model="saokeObject.folder_path"
+                hide-details
+                @change="loadFileInFolder()"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="2" class="mt-1 mb-0 pt-0 pb-0">
+              <v-autocomplete
+                  ref="refInputFile"
+                  v-model="saokeObject.file_name"
+                  :items="saokeObject.listFile"
+                  label="Input file"
+                  class="text-left"
+                  item-text="name"
+                  item-value="code"
+                  return-object
+                  clearable
+                  @change="procesFileName()"
+              >
+              <template v-slot:no-data>
+                <v-list-item>
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      No results matching "<strong>data</strong>". Press <kbd>enter</kbd> to create a new one
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </template>
+              </v-autocomplete>
+            </v-col>
+            <v-col cols="2" class="mt-1 mb-0 pt-0 pb-0">
+              <v-text-field
+                label="Output file"
+                v-model="saokeObject.file_name_output"
+                hide-details
+              ></v-text-field>
+            </v-col>
+            <v-col cols="1" class="mt-1 mb-0 pt-0 pb-0">
+              <v-text-field
+                label="Bank"
+                value=""
+                v-model="saokeObject.bank"
+                hide-details
+              ></v-text-field>
+            </v-col>
+            <v-col cols="1" class="mt-1 mb-0 pt-0 pb-0 text-right">
+              <v-btn
+                color="info"
+                @click="loadSaoKe()"
+              >
+                Load Sao Ke
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-row class="ma-0 pa-0 mt-5">
+            <v-col cols="12" md="12" class="pa-0 ma-0 text-right">
+              <vue-good-table
+                title="Danh sách chi tiêu"
+                :columns="colChiTIeuSaoKe"
+                :rows="tblChiTieuSaoKe"
+                :paginate="true"
+                :lineNumbers="true"
+                max-height="700px"
+                :search-options="{
+                  enabled: true,
+                  placeholder: 'Search this table SaoKe',
+                }"
+                :group-options="{
+                  enabled: true,
+                  headerPosition: 'top',
+                }"
+                styleClass="vgt-table bordered"
+                @on-row-dblclick="onRowDoubleClick"
+                @on-column-filter="onColumnFilter"
+                @on-cell-click="onCellClick"
               >
               <template slot="table-row" slot-scope="props">
                 <span v-if="props.column.field == 'id'">
@@ -404,6 +522,48 @@ export default {
           children: [],
         }
       ],
+      colChiTIeuSaoKe: [
+        {
+          label: 'Ngày giao dịch',
+          field: 'ngay_giao_dich',
+        },
+        {
+          label: 'Ngày hệ thống',
+          field: 'ngay_he_thong',
+        },
+        {
+          label: 'Nơi giao dịch',
+          field: 'noi_giao_dich',
+        },
+        {
+          label: 'Số tiền',
+          field: 'so_tien',
+          type: 'number',
+          formatFn: this.convertAndFormatPrice,
+          headerField: this.sumSaoKe,
+        },
+        {
+          label: 'Type',
+          field: 'type',
+        },
+        {
+          label: 'Page',
+          field: 'page',
+        },
+       
+      ],
+      tblChiTieuSaoKe:[ 
+        {
+        //   // name: 'Animals Total',
+        //   bank_code: '',
+        //   ky_chi: '',
+        //   so_tien: '',
+        //   noi_dung: '',
+        //   ngay_chi: '',
+        //   status: '',
+          children: [],
+        }
+      ],
       allStatusChecked: false,
       includeGop: "WO_GOP",
       chitieuTitle: "",
@@ -437,6 +597,14 @@ export default {
         end: moment().subtract(-5, 'days').format(config.DATE_FM),
         // new Date().toISOString().substr(0, 10),
       },
+      saokeObject: {
+        folder_path: './public/saoketindung/hsbc',
+        bank: 'hsbc',
+        file_name: '20170423.pdf',
+        file_name_output: '20170423',
+        listFile: [],
+
+      }
     }
   },
   created() {
@@ -455,6 +623,9 @@ export default {
         name: "wave",
     });
     this.loadChiTieu();
+    // this.loadSaoKe();
+    this.loadFileInFolder();
+    this.procesFileName();
      
   },
   mounted() {
@@ -501,6 +672,26 @@ export default {
       }
 
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    },
+    convertAndFormatPrice(value, tofix) {
+      try {
+        var number = Number(value.replace(/[^0-9.-]+/g,""));
+        // value = parseFloat(number);
+        if (!number) {
+          return ''
+        }
+        const val = (number / 1).toFixed(tofix).replace(',', '.')
+        if (!val) {
+          return ''
+        }
+
+        
+      }catch(error){
+
+      }
+      
+
+      return value
     },
     onRowDoubleClick(params) {
       // params.row - row object 
@@ -564,6 +755,161 @@ export default {
         self.close();
       });
     },
+    loadFileInFolder(){
+      // saokeObject.listFile
+      let self = this;
+      axios
+      .post(`${config.API_FAMILY}/api/pdf/getFileList`, this.saokeObject)
+      .then(response => {
+        console.log("response.data", response.data);
+        self.saokeObject.listFile = response.data.data;
+       
+
+      });
+
+      
+    },
+    procesFileName(){
+      //  file_name: '20170423.pdf',
+      //   file_name_output: '20170423',
+      let arr = [];
+      if(this.saokeObject.file_name != undefined && this.saokeObject.file_name != null){
+        let arr = this.saokeObject.file_name.name.split(".");
+        console.log("procesFileName", arr);
+        if(arr.length == 2){
+          this.saokeObject.file_name_output = arr[0];
+          
+          // return;
+        }
+
+      }
+    },
+    loadSaoKe(){
+      // this.loadingInstance.show();
+      this.show();
+      // this.show();
+      let self = this;
+      self.tblChiTieuSaoKe = 
+          [ 
+            {
+              // name: 'Animals Total',
+              // bank_code: '',
+              // ky_chi: '',
+              // so_tien: '',
+              // noi_dung: '',
+              // ngay_chi: '',
+              // status: '',
+              children: [],
+            }
+          ];
+      let currentNow = new Date();
+      let kyChi = [
+        this.selectDateCurrent == undefined ||
+        this.selectDateCurrent == null ||
+        this.selectDateCurrent == "" ||
+        this.selectDateCurrent == undefined ||
+        this.selectDateCurrent.code == undefined ||
+        this.selectDateCurrent.code == ""
+          ? (currentNow.getMonth() + (currentNow.getDate() > 27 ? 2 : 1))
+              .toString()
+              .concat(currentNow.getFullYear())
+          : this.selectDateCurrent.code,
+      ];
+      kyChi = ['ALLINONE'];
+      // let param = {
+      //   "bank": "hsbc",
+      //   "file_name": "20220721.pdf",
+      //   "file_name_output": "20220721"
+      //   };
+      axios
+      .post(`${config.API_FAMILY}/api/pdf/pdf2json`, this.saokeObject)
+      .then(response => {
+        // seft.hotSettings.data = response.data.data;
+        let data = response.data.body.Pages; //Texts
+        let tblData = [];
+        let flagStart = false;
+        let isStartPage = false;
+        let flagEnd = false;
+        for(let page = 0; page < data.length - 1; page++){
+
+          for(let i = 0; i < data[page].Texts.length; i ++) {
+            let textLine = data[page].Texts;
+            for(let j = 0; j < textLine[i].R.length; j ++){
+              if(!isStartPage && "Page" == textLine[i].R[j].T.toString().trim()){
+                isStartPage = true;
+                // i = i + 1;
+              }
+
+              if("ab" == textLine[i].R[j].T.toString().trim()){
+                isStartPage = false;
+                flagStart = false;
+                // i = i + 1;
+              }
+              if(!flagStart && "Ngày giao dịch" == textLine[i].R[j].T.toString().trim()){
+                flagStart = true;
+                if(page == 0){
+                  i = i + 14;
+
+                } else {
+                   i = i + 8; //	ACCOUNT BALANCE AS IN LAST STATEMENT
+                }
+                // i = i + 1;
+              }
+              if(isStartPage && flagStart){
+                textLine[i].R[j].start = `Page-${page + 1}`;
+                textLine[i].R[j].page =  `PAGE_${page}`;
+                tblData.push(textLine[i].R[j]);
+                
+              }
+              // if(flagStart){
+                
+               
+               
+              // }
+          
+                
+            }
+            
+          }
+        };
+
+        //process dataraw:
+        let newTable = [];
+        for(let i = 0; i < tblData.length - 6; i = i+4){
+          let item = {
+            ngay_giao_dich: self.dataValid(tblData[i]),
+            ngay_he_thong: self.dataValid(tblData[i + 1]),
+            noi_giao_dich: self.dataValid(tblData[i + 2]),
+            so_tien: self.dataValid(tblData[i + 3]),
+            type: "",
+            page: tblData[i].page,
+          }
+          if(tblData[i + 4] != undefined && tblData[i + 4] != null && tblData[i + 4].T != undefined && "CR" == tblData[i + 4].T.trim()){
+            item.type = "CR";
+            i++;
+          }
+          newTable.push(item);
+        }
+        
+
+        console.log("newTable", newTable);
+        self.tblChiTieuSaoKe = 
+          [ 
+            {
+              // name: 'Animals Total',
+              // bank_code: '',
+              // ky_chi: '',
+              // so_tien: '',
+              // noi_dung: '',
+              // ngay_chi: '',
+              // status: '',
+              children: newTable,
+            }
+          ];
+        console.log(tblData);
+        self.close();
+      });
+    },
 
     columnFilterFn(){
 
@@ -574,11 +920,21 @@ export default {
 
     },
     sumCount(rowObj) {
-    	console.log('sumCount', rowObj);
+    	// console.log('sumCount', rowObj);
     	let sum = 0;
       for (let i = 0; i < rowObj.children.length; i++) {
         sum += parseFloat(rowObj.children[i].so_tien);
       }
+      return sum;
+    },
+    sumSaoKe(rowObj) {
+    	// console.log('sumCount', rowObj);
+    	let sum = 0;
+      for (let i = 0; i < rowObj.children.length; i++) {
+        var number = Number(rowObj.children[i].so_tien.replace(/[^0-9.-]+/g,""));
+        sum += number;
+      }
+      // const val = (sum / 1).toFixed(2).replace(',', '.')
       return sum;
     },
     chitieuDetail(title, item) {
@@ -678,6 +1034,13 @@ export default {
     close() {
         this.loadingInstance.close();
     },
+
+    dataValid(item){
+      if(item != undefined && item != null && item.T != undefined){
+        return item.T;
+      }
+      return "";
+    }
 
   },
 }

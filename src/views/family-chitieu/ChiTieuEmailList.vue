@@ -602,7 +602,7 @@ export default {
 
     },
     sumCount(rowObj) {
-    	console.log('sumCount', rowObj);
+    	// console.log('sumCount', rowObj);
     	let sum = 0;
       for (let i = 0; i < rowObj.children.length; i++) {
         sum += parseFloat(rowObj.children[i].so_tien);

@@ -557,7 +557,7 @@ export default {
               enabled: true, // enable filter for this column
               placeholder: 'Bank', // placeholder for filter input
               filterValue: '', // initial populated value for this filter
-              filterDropdownItems: ['HSBC', 'VIB', 'SC BANK','VPBANK'], // dropdown (with selected values) instead of text input
+              filterDropdownItems: ['HSBC', 'VIB', 'SC','VPBANK'], // dropdown (with selected values) instead of text input
               // filterFn: this.columnFilterFn, //custom filter function that
               trigger: 'enter', //only trigger on enter not on keyup 
           },

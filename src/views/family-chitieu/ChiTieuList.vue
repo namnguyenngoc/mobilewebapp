@@ -108,11 +108,62 @@
                   </v-row>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <v-row>
-                    <v-col cols="12" sm="2" md="2" class="text-right">
-                    Test
+                  <v-row class="mt-3 pa-2">
+                    <v-col cols="12" md="6" sm="12" class="mt-1 mb-0 pt-0 pb-0">
+                      <v-text-field
+                        label="Folder Path"
+                        value=""
+                        v-model="saokeObject.folder_path"
+                        hide-details
+                        @change="loadFileInFolder()"
+                      ></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="1" md="1" class="ma-0 pb-0 pt-0">
+                    <v-col cols="12" md="2" sm="12" class="mt-1 mb-0 pt-0 pb-0">
+                      <v-autocomplete
+                          ref="refInputFile"
+                          v-model="saokeObject.file_name"
+                          :items="saokeObject.listFile"
+                          label="Input file"
+                          class="text-left"
+                          item-text="name"
+                          item-value="code"
+                          return-object
+                          clearable
+                          @change="procesFileName()"
+                      >
+                      <template v-slot:no-data>
+                        <v-list-item>
+                          <v-list-item-content>
+                            <v-list-item-title>
+                              No results matching "<strong>data</strong>". Press <kbd>enter</kbd> to create a new one
+                            </v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                      </template>
+                      </v-autocomplete>
+                    </v-col>
+                    <v-col cols="12" md="2" sm="12" class="mt-1 mb-0 pt-0 pb-0">
+                      <v-text-field
+                        label="Output file"
+                        v-model="saokeObject.file_name_output"
+                        hide-details
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="1" sm="12" class="mt-1 mb-0 pt-0 pb-0">
+                      <v-text-field
+                        label="Bank"
+                        value=""
+                        v-model="saokeObject.bank"
+                        hide-details
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="1" sm="12" class="mt-5 mb-0 pt-0 pb-0 text-right">
+                      <v-btn
+                        color="warning"
+                        @click="loadSaoKe()"
+                      >
+                        Compare Sao Kê
+                      </v-btn>
                     </v-col>
                   </v-row>
                 </v-expansion-panel-content>
@@ -167,7 +218,7 @@
                     @click="confirmChangeStatus(props, 'CSK')"
                   >
                    <span>
-                    Chốt SK
+                    CSK
                    </span>
                   </v-btn>
                   <v-btn
@@ -176,7 +227,7 @@
                     @click="confirmChangeStatus(props, 'DTCSK')"
                   >
                    <span>
-                    Gạch nợ
+                    ĐTRẢ
                    </span>
                   </v-btn>
                   <v-btn
@@ -185,7 +236,7 @@
                     @click="addTraGop(props)"
                   >
                    <span>
-                    Chuyển đổi {{props.formattedRow['id_tra_gop']}}
+                    GÓP {{props.formattedRow['id_tra_gop']}}
                    </span>
                   </v-btn>
                 </span>
@@ -196,8 +247,8 @@
               </vue-good-table>
             </v-col>
           </v-row>
-          <v-row class="mt-3">
-            <v-col cols="6" class="mt-1 mb-0 pt-0 pb-0">
+          <v-row class="mt-3 pa-2">
+            <v-col cols="12" md="6" sm="12" class="mt-1 mb-0 pt-0 pb-0">
               <v-text-field
                 label="Folder Path"
                 value=""
@@ -206,7 +257,7 @@
                 @change="loadFileInFolder()"
               ></v-text-field>
             </v-col>
-            <v-col cols="2" class="mt-1 mb-0 pt-0 pb-0">
+            <v-col cols="12" md="2" sm="12" class="mt-1 mb-0 pt-0 pb-0">
               <v-autocomplete
                   ref="refInputFile"
                   v-model="saokeObject.file_name"
@@ -230,14 +281,14 @@
               </template>
               </v-autocomplete>
             </v-col>
-            <v-col cols="2" class="mt-1 mb-0 pt-0 pb-0">
+            <v-col cols="12" md="2" sm="12" class="mt-1 mb-0 pt-0 pb-0">
               <v-text-field
                 label="Output file"
                 v-model="saokeObject.file_name_output"
                 hide-details
               ></v-text-field>
             </v-col>
-            <v-col cols="1" class="mt-1 mb-0 pt-0 pb-0">
+            <v-col cols="12" md="1" sm="12" class="mt-1 mb-0 pt-0 pb-0">
               <v-text-field
                 label="Bank"
                 value=""
@@ -245,7 +296,7 @@
                 hide-details
               ></v-text-field>
             </v-col>
-            <v-col cols="1" class="mt-1 mb-0 pt-0 pb-0 text-right">
+            <v-col cols="12" md="1" sm="12" class="mt-1 mb-0 pt-0 pb-0 text-right">
               <v-btn
                 color="info"
                 @click="loadSaoKe()"
@@ -285,7 +336,7 @@
                     @click="confirmChangeStatus(props, 'CSK')"
                   >
                    <span>
-                    Chốt SK
+                    CSK
                    </span>
                   </v-btn>
                   <v-btn
@@ -294,7 +345,7 @@
                     @click="confirmChangeStatus(props, 'DTCSK')"
                   >
                    <span>
-                    Gạch nợ
+                    HT
                    </span>
                   </v-btn>
                   <v-btn
@@ -303,7 +354,7 @@
                     @click="addTraGop(props)"
                   >
                    <span>
-                    Chuyển đổi {{props.formattedRow['id_tra_gop']}}
+                    CĐ {{props.formattedRow['id_tra_gop']}}
                    </span>
                   </v-btn>
                 </span>
@@ -392,6 +443,8 @@ export default {
         {
           label: 'Action',
           field: 'id',
+          with: '200px',
+          hidden: this.isMobile(),
          
         },
         {
@@ -424,6 +477,7 @@ export default {
               // filterFn: this.columnFilterFn, //custom filter function that
               trigger: 'enter', //only trigger on enter not on keyup 
           },
+          // hidden: this.isMobile(),
         },
         {
           label: 'Bank',
@@ -454,6 +508,7 @@ export default {
               // filterFn: this.columnFilterFn, //custom filter function that
               trigger: 'enter', //only trigger on enter not on keyup 
           },
+          hidden: this.isMobile(),
         },
         {
           label: 'Nội dung',
@@ -508,6 +563,7 @@ export default {
               // filterFn: this.columnFilterFn, //custom filter function that
               trigger: 'enter', //only trigger on enter not on keyup 
           },
+          hidden: this.isMobile(),
         },
       ],
       tblChiTieu:[ 
@@ -662,6 +718,17 @@ export default {
     }
   }, // end method
   methods: {
+    isMobile () {
+      if (
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent,
+        )
+      ) {
+        return true
+      } else {
+        return false
+      }
+    },
     formatPrice(value, tofix) {
       if (!value) {
         return ''
@@ -932,6 +999,7 @@ export default {
     	let sum = 0;
       for (let i = 0; i < rowObj.children.length; i++) {
         var number = Number(rowObj.children[i].so_tien.replace(/[^0-9.-]+/g,""));
+        
         sum += number;
       }
       // const val = (sum / 1).toFixed(2).replace(',', '.')

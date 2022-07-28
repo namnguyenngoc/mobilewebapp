@@ -728,7 +728,7 @@ export default {
         },
         kychi_list: this.getListKyChi(),
         bank: 'ALL',
-        bank_list:  ['All','HSBC', 'VIB', 'SC BANK','VPBANK'],
+        bank_list:  ['All','HSBC', 'VIB', 'SC', 'CITT','VPBANK'],
         // new Date().toISOString().substr(0, 10),
       },
       saokeObject: {

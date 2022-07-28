@@ -18,7 +18,7 @@
                     >
                       <v-row
                       >
-                        <v-col cols="12" md="5" sm="6" >
+                        <v-col cols="12" md="3" sm="4">
                           <v-menu
                             ref="startMenu"
                             :close-on-content-click="false"
@@ -61,7 +61,7 @@
                           </v-menu>
                         </v-col>
 
-                        <v-col cols="12" md="5" sm="6">
+                        <v-col cols="12" md="3" sm="4">
                           <v-menu
                             ref="endMenu"
                             :close-on-content-click="false"
@@ -102,6 +102,75 @@
                               </v-btn>
                             </v-date-picker>
                           </v-menu>
+                        </v-col>
+                        <v-col cols="12" md="2" sm="4">
+                            <v-autocomplete
+                              ref="refInputFile"
+                              v-model="trip.status"
+                              :items="trip.statusList"
+                              label="Status"
+                              class="text-left"
+                              item-text="name"
+                              item-value="code"
+                              return-object
+                              clearable
+                          >
+                          <template v-slot:no-data>
+                            <v-list-item>
+                              <v-list-item-content>
+                                <v-list-item-title>
+                                  No results matching "<strong>data</strong>". Press <kbd>enter</kbd> to create a new one
+                                </v-list-item-title>
+                              </v-list-item-content>
+                            </v-list-item>
+                          </template>
+                          </v-autocomplete>
+                        </v-col>
+                        <v-col cols="12" md="2" sm="4">
+                            <v-autocomplete
+                              ref="refInputFile"
+                              v-model="trip.kychi"
+                              :items="trip.kychi_list"
+                              label="Kỳ chi"
+                              class="text-left"
+                              item-text="title"
+                              item-value="code"
+                              return-object
+                              clearable
+                          >
+                          <template v-slot:no-data>
+                            <v-list-item>
+                              <v-list-item-content>
+                                <v-list-item-title>
+                                  No results matching "<strong>data</strong>". Press <kbd>enter</kbd> to create a new one
+                                </v-list-item-title>
+                              </v-list-item-content>
+                            </v-list-item>
+                          </template>
+                          </v-autocomplete>
+                        </v-col>
+                        <v-col cols="12" md="2" sm="4">
+                            <v-autocomplete
+                              ref="refInputFile"
+                              v-model="trip.bank"
+                              :items="trip.bank_list"
+                              label="Bank"
+                              class="text-left"
+                              item-text="name"
+                              item-value="code"
+                              return-object
+                              clearable
+                          >
+                          <template v-slot:no-data>
+                            <v-list-item>
+                              <v-list-item-content>
+                                <v-list-item-title>
+                                  No results matching "<strong>data</strong>". Press <kbd>enter</kbd> to create a new one
+                                </v-list-item-title>
+                              </v-list-item-content>
+                            </v-list-item>
+                          </template>
+                          </v-autocomplete>
                         </v-col>
                       </v-row>
                     </v-col>
@@ -468,15 +537,15 @@ export default {
           label: 'Status',
           field: 'status',
           filterable: true,
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Status', // placeholder for filter input
-              filterValue: (new Date()).getDate() > 21 ? 'CSK' : 'DN', // initial populated value for this filter
-              filterDropdownItems: ['DN', 'CSK', 'DTCSK', 'TG', 'HT', 'EMAIL_CSK'], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
+          // filterOptions: {
+          //   styleClass: 'class-filter', // class to be added to the parent th element
+          //     enabled: true, // enable filter for this column
+          //     placeholder: 'Status', // placeholder for filter input
+          //     filterValue: (new Date()).getDate() > 21 ? 'CSK' : 'DN', // initial populated value for this filter
+          //     filterDropdownItems: ['DN', 'CSK', 'DTCSK', 'TG', 'HT', 'EMAIL_CSK'], // dropdown (with selected values) instead of text input
+          //     // filterFn: this.columnFilterFn, //custom filter function that
+          //     trigger: 'enter', //only trigger on enter not on keyup 
+          // },
           // hidden: this.isMobile(),
         },
         {
@@ -499,15 +568,15 @@ export default {
           width: '120px',
           filterable: true,
           type: 'number',
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Kỳ Chi', // placeholder for filter input
-              filterValue: ((new Date()).getMonth() + ((new Date()).getDate() > 27 ? 2 : 1)).toString().concat((new Date()).getFullYear()), // initial populated value for this filter
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
+          // filterOptions: {
+          //   styleClass: 'class-filter', // class to be added to the parent th element
+          //     enabled: true, // enable filter for this column
+          //     placeholder: 'Kỳ Chi', // placeholder for filter input
+          //     filterValue: ((new Date()).getMonth() + ((new Date()).getDate() > 27 ? 2 : 1)).toString().concat((new Date()).getFullYear()), // initial populated value for this filter
+          //     filterDropdownItems: [], // dropdown (with selected values) instead of text input
+          //     // filterFn: this.columnFilterFn, //custom filter function that
+          //     trigger: 'enter', //only trigger on enter not on keyup 
+          // },
           hidden: this.isMobile(),
         },
         {
@@ -651,6 +720,15 @@ export default {
         location: null,
         start: moment().subtract(24, 'months').format(config.DATE_FM),
         end: moment().subtract(-5, 'days').format(config.DATE_FM),
+        status: (new Date()).getDate() > 21 ? 'CSK' : 'DN',
+        statusList: ['DN', 'CSK', 'DTCSK', 'TG', 'HT', 'EMAIL_CSK'],
+        kychi: {
+          code: ((new Date()).getMonth() + ((new Date()).getDate() > 27 ? 2 : 1)).toString().concat((new Date()).getFullYear()),
+          title: ((new Date()).getMonth() + ((new Date()).getDate() > 27 ? 2 : 1)).toString().concat((new Date()).getFullYear())
+        },
+        kychi_list: this.getListKyChi(),
+        bank: 'ALL',
+        bank_list:  ['All','HSBC', 'VIB', 'SC BANK','VPBANK'],
         // new Date().toISOString().substr(0, 10),
       },
       saokeObject: {
@@ -715,7 +793,46 @@ export default {
         ];
         console.log('kyChi', kyChi);
       return kyChi;
-    }
+    },
+    items_ky_chi_list: function() {
+        let month = "";
+        console.log("month_");
+        let monList = moment.months();
+        let yearList = config.NAM_THONG_KE;
+        let items_ky_chi_new = [];
+        let currentNow = new Date();
+        // console.log("currentNow.getMonth()", currentNow.getMonth())
+        // console.log("currentNow.getFullYear()", currentNow.getFullYear())
+        for (var i in yearList) {
+          for (var j in monList) {
+            let value = moment()
+              .month(monList[j])
+              .format("M")
+              .concat(yearList[i]);
+            let obj = {
+              code: value,
+              title: value,
+              disabled: this.allKyChi
+                ? false
+                : yearList[i] < currentNow.getFullYear() ||
+                  (moment().month(monList[j]).format("M") <
+                    currentNow.getMonth() + 1 &&
+                    yearList[i] == currentNow.getFullYear()),
+              // divider: this.allKyChi ? false : moment().month(monList[j]).format("M") < currentNow.getMonth() + 1
+              //           && yearList[i] < currentNow.getFullYear(),
+              // header: this.allKyChi ? false : (moment().month(monList[j]).format("M") < currentNow.getMonth() + 1
+              //           && yearList[i] < currentNow.getFullYear()) ? "Paste": ""
+            };
+            items_ky_chi_new.push(obj);
+          }
+        }
+        // console.log(moment().month().format("M"));
+        // console.log(moment.monthsShort().format("M"));
+        console.log("new Month");
+        console.log(items_ky_chi_new);
+        this.items_ky_chi = items_ky_chi_new;
+        return this.items_ky_chi;
+      },
   }, // end method
   methods: {
     isMobile () {
@@ -729,6 +846,45 @@ export default {
         return false
       }
     },
+    getListKyChi() {
+        let month = "";
+        console.log("month_");
+        let monList = moment.months();
+        let yearList = config.NAM_THONG_KE;
+        let items_ky_chi_new = [];
+        let currentNow = new Date();
+        // console.log("currentNow.getMonth()", currentNow.getMonth())
+        // console.log("currentNow.getFullYear()", currentNow.getFullYear())
+        for (var i in yearList) {
+          for (var j in monList) {
+            let value = moment()
+              .month(monList[j])
+              .format("M")
+              .concat(yearList[i]);
+            let obj = {
+              code: value,
+              title: value,
+              disabled: this.allKyChi
+                ? false
+                : yearList[i] < currentNow.getFullYear() ||
+                  (moment().month(monList[j]).format("M") <
+                    currentNow.getMonth() + 1 &&
+                    yearList[i] == currentNow.getFullYear()),
+              // divider: this.allKyChi ? false : moment().month(monList[j]).format("M") < currentNow.getMonth() + 1
+              //           && yearList[i] < currentNow.getFullYear(),
+              // header: this.allKyChi ? false : (moment().month(monList[j]).format("M") < currentNow.getMonth() + 1
+              //           && yearList[i] < currentNow.getFullYear()) ? "Paste": ""
+            };
+            items_ky_chi_new.push(obj);
+          }
+        }
+        // console.log(moment().month().format("M"));
+        // console.log(moment.monthsShort().format("M"));
+        console.log("new Month");
+        console.log(items_ky_chi_new);
+        this.items_ky_chi = items_ky_chi_new;
+        return this.items_ky_chi;
+      },
     formatPrice(value, tofix) {
       if (!value) {
         return ''
@@ -800,8 +956,17 @@ export default {
           : this.selectDateCurrent.code,
       ];
       kyChi = ['ALLINONE'];
+      console.log('ky_chi', this.trip.kychi);
+      let param = [
+        JSON.stringify([`${this.trip.kychi.code == undefined ? "ALLINONE" : this.trip.kychi.code}`]),
+        this.trip.status.toString(),
+        this.includeGop.toString(),
+        this.trip.start.toString(),
+        this.trip.end.toString(),
+        this.trip.bank.toString()
+      ];
       axios
-      .get(`${config.API_FAMILY}/api/chitieus/${JSON.stringify(kyChi)}/${this.allStatusChecked}/${this.includeGop}/${this.trip.start}/${this.trip.end}`)
+      .get(`${config.API_FAMILY}/api/chitieus/${param.join("/")}`)
       .then(response => {
         // seft.hotSettings.data = response.data.data;
         let data = response.data.data;
@@ -840,7 +1005,7 @@ export default {
       //  file_name: '20170423.pdf',
       //   file_name_output: '20170423',
       let arr = [];
-      if(this.saokeObject.file_name != undefined && this.saokeObject.file_name != null){
+      if(this.saokeObject.file_name != undefined && this.saokeObject.file_name != null && this.saokeObject.file_name.name != undefined){
         let arr = this.saokeObject.file_name.name.split(".");
         console.log("procesFileName", arr);
         if(arr.length == 2){

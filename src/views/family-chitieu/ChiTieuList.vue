@@ -126,11 +126,20 @@
                           </template>
                           </v-autocomplete>
                         </v-col>
-                        <v-col cols="12" md="2" sm="4">
+                        <v-col cols="12" md="1" sm="4">
+                          <v-checkbox v-model="allKyChi" @click="getListKyChi()">
+                            <template v-slot:label>
+                              <div>
+                                All kỳ chi
+                              </div>
+                            </template>
+                          </v-checkbox>
+                        </v-col>
+                        <v-col cols="12" md="1" sm="4">
                             <v-autocomplete
                               ref="refInputFile"
                               v-model="trip.kychi"
-                              :items="trip.kychi_list"
+                              :items="items_ky_chi"
                               label="Kỳ chi"
                               class="text-left"
                               item-text="title"
@@ -738,7 +747,8 @@ export default {
         file_name_output: '20170423',
         listFile: [],
 
-      }
+      },
+      allKyChi: false,
     }
   },
   created() {
@@ -809,6 +819,13 @@ export default {
               .month(monList[j])
               .format("M")
               .concat(yearList[i]);
+            const isShowAll = this.allKyChi
+                ? false
+                : yearList[i] < currentNow.getFullYear() ||
+                  (moment().month(monList[j]).format("M") <
+                    currentNow.getMonth() + 1 &&
+                    yearList[i] == currentNow.getFullYear());
+
             let obj = {
               code: value,
               title: value,
@@ -823,7 +840,10 @@ export default {
               // header: this.allKyChi ? false : (moment().month(monList[j]).format("M") < currentNow.getMonth() + 1
               //           && yearList[i] < currentNow.getFullYear()) ? "Paste": ""
             };
-            items_ky_chi_new.push(obj);
+            if(isShowAll){
+              items_ky_chi_new.push(obj);
+
+            }
           }
         }
         // console.log(moment().month().format("M"));
@@ -861,6 +881,14 @@ export default {
               .month(monList[j])
               .format("M")
               .concat(yearList[i]);
+
+            const isShowAll = this.allKyChi
+              ? false
+              : yearList[i] < currentNow.getFullYear() ||
+                (moment().month(monList[j]).format("M") <
+                  currentNow.getMonth() + 1 &&
+                  yearList[i] == currentNow.getFullYear());
+                  
             let obj = {
               code: value,
               title: value,
@@ -875,7 +903,9 @@ export default {
               // header: this.allKyChi ? false : (moment().month(monList[j]).format("M") < currentNow.getMonth() + 1
               //           && yearList[i] < currentNow.getFullYear()) ? "Paste": ""
             };
-            items_ky_chi_new.push(obj);
+            if(!isShowAll){
+             items_ky_chi_new.push(obj);
+            }
           }
         }
         // console.log(moment().month().format("M"));

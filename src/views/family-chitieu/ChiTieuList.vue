@@ -5,248 +5,249 @@
       <v-card>
         <v-card-title class="pt-5 pb-2 mr-0 pr-2">
           <v-col cols="12" sm="12" md="11" class="pa-0 ma-0">
-            <v-expansion-panels>
-              <v-expansion-panel>
-                <v-expansion-panel-header v-slot="{ open }">
-                  <v-row>
-                    <v-col cols="12" md="12" sm="12">
-                      <h3> Chi tiêu </h3>
-                    </v-col>
-                    <v-col
-                      cols="12" md="12" 
-                      sm="12"
+            <v-row>
+              <v-col cols="12" md="12" sm="12">
+                <h3> Chi tiêu </h3>
+              </v-col>
+              <v-col
+                cols="12" md="12" 
+                sm="12"
+              >
+                <v-row
+                >
+                  <v-col cols="12" md="3" sm="4">
+                    <v-menu
+                      ref="startMenu"
+                      :close-on-content-click="false"
+                      :return-value.sync="trip.start"
+                      offset-y
+                      min-width="290px"
                     >
-                      <v-row
-                      >
-                        <v-col cols="12" md="3" sm="4">
-                          <v-menu
-                            ref="startMenu"
-                            :close-on-content-click="false"
-                            :return-value.sync="trip.start"
-                            offset-y
-                            min-width="290px"
-                          >
-                            <template v-slot:activator="{ on, attrs }">
-                              <v-text-field
-                                v-model="trip.start"
-                                label="Start date"
-                                prepend-icon="mdi-calendar"
-                                readonly
-                                v-bind="attrs"
-                                v-on="on"
-                                hide-details
-                              ></v-text-field>
-                            </template>
-                            <v-date-picker
-                              v-model="date"
-                              no-title
-                              scrollable
-                            >
-                              <v-spacer></v-spacer>
-                              <v-btn
-                                text
-                                color="primary"
-                                @click="$refs.startMenu.isActive = false"
-                              >
-                                Cancel
-                              </v-btn>
-                              <v-btn
-                                text
-                                color="primary"
-                                @click="$refs.startMenu.save(date)"
-                              >
-                                OK
-                              </v-btn>
-                            </v-date-picker>
-                          </v-menu>
-                        </v-col>
-
-                        <v-col cols="12" md="3" sm="4">
-                          <v-menu
-                            ref="endMenu"
-                            :close-on-content-click="false"
-                            :return-value.sync="trip.end"
-                            offset-y
-                            min-width="290px"
-                          >
-                            <template v-slot:activator="{ on, attrs }">
-                              <v-text-field
-                                v-model="trip.end"
-                                label="End date"
-                                prepend-icon="mdi-calendar"
-                                readonly
-                                v-bind="attrs"
-                                v-on="on"
-                                hide-details
-                              ></v-text-field>
-                            </template>
-                            <v-date-picker
-                              v-model="date"
-                              no-title
-                              scrollable
-                            >
-                              <v-spacer></v-spacer>
-                              <v-btn
-                                text
-                                color="primary"
-                                @click="$refs.endMenu.isActive = false"
-                              >
-                                Cancel
-                              </v-btn>
-                              <v-btn
-                                text
-                                color="primary"
-                                @click="$refs.endMenu.save(date)"
-                              >
-                                OK
-                              </v-btn>
-                            </v-date-picker>
-                          </v-menu>
-                        </v-col>
-                        <v-col cols="12" md="2" sm="4">
-                            <v-autocomplete
-                              ref="refInputFile"
-                              v-model="trip.status"
-                              :items="trip.statusList"
-                              label="Status"
-                              class="text-left"
-                              item-text="name"
-                              item-value="code"
-                              return-object
-                              clearable
-                          >
-                          <template v-slot:no-data>
-                            <v-list-item>
-                              <v-list-item-content>
-                                <v-list-item-title>
-                                  No results matching "<strong>data</strong>". Press <kbd>enter</kbd> to create a new one
-                                </v-list-item-title>
-                              </v-list-item-content>
-                            </v-list-item>
-                          </template>
-                          </v-autocomplete>
-                        </v-col>
-                        <v-col cols="12" md="1" sm="4">
-                          <v-checkbox v-model="allKyChi" @click="getListKyChi()">
-                            <template v-slot:label>
-                              <div>
-                                All kỳ chi
-                              </div>
-                            </template>
-                          </v-checkbox>
-                        </v-col>
-                        <v-col cols="12" md="1" sm="4">
-                            <v-autocomplete
-                              ref="refInputFile"
-                              v-model="trip.kychi"
-                              :items="items_ky_chi"
-                              label="Kỳ chi"
-                              class="text-left"
-                              item-text="title"
-                              item-value="code"
-                              return-object
-                              clearable
-                          >
-                          <template v-slot:no-data>
-                            <v-list-item>
-                              <v-list-item-content>
-                                <v-list-item-title>
-                                  No results matching "<strong>data</strong>". Press <kbd>enter</kbd> to create a new one
-                                </v-list-item-title>
-                              </v-list-item-content>
-                            </v-list-item>
-                          </template>
-                          </v-autocomplete>
-                        </v-col>
-                        <v-col cols="12" md="2" sm="4">
-                            <v-autocomplete
-                              ref="refInputFile"
-                              v-model="trip.bank"
-                              :items="trip.bank_list"
-                              label="Bank"
-                              class="text-left"
-                              item-text="name"
-                              item-value="code"
-                              return-object
-                              clearable
-                          >
-                          <template v-slot:no-data>
-                            <v-list-item>
-                              <v-list-item-content>
-                                <v-list-item-title>
-                                  No results matching "<strong>data</strong>". Press <kbd>enter</kbd> to create a new one
-                                </v-list-item-title>
-                              </v-list-item-content>
-                            </v-list-item>
-                          </template>
-                          </v-autocomplete>
-                        </v-col>
-                      </v-row>
-                    </v-col>
-                  </v-row>
-                </v-expansion-panel-header>
-                <v-expansion-panel-content>
-                  <v-row class="mt-3 pa-2">
-                    <v-col cols="12" md="6" sm="12" class="mt-1 mb-0 pt-0 pb-0">
-                      <v-text-field
-                        label="Folder Path"
-                        value=""
-                        v-model="saokeObject.folder_path"
-                        hide-details
-                        @change="loadFileInFolder()"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" md="2" sm="12" class="mt-1 mb-0 pt-0 pb-0">
-                      <v-autocomplete
-                          ref="refInputFile"
-                          v-model="saokeObject.file_name"
-                          :items="saokeObject.listFile"
-                          label="Input file"
-                          class="text-left"
-                          item-text="name"
-                          item-value="code"
-                          return-object
-                          clearable
-                          @change="procesFileName()"
-                      >
-                      <template v-slot:no-data>
-                        <v-list-item>
-                          <v-list-item-content>
-                            <v-list-item-title>
-                              No results matching "<strong>data</strong>". Press <kbd>enter</kbd> to create a new one
-                            </v-list-item-title>
-                          </v-list-item-content>
-                        </v-list-item>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="trip.start"
+                          label="Start date"
+                          prepend-icon="mdi-calendar"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                          hide-details
+                        ></v-text-field>
                       </template>
-                      </v-autocomplete>
-                    </v-col>
-                    <v-col cols="12" md="2" sm="12" class="mt-1 mb-0 pt-0 pb-0">
-                      <v-text-field
-                        label="Output file"
-                        v-model="saokeObject.file_name_output"
-                        hide-details
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" md="1" sm="12" class="mt-1 mb-0 pt-0 pb-0">
-                      <v-text-field
-                        label="Bank"
-                        value=""
-                        v-model="saokeObject.bank"
-                        hide-details
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" md="1" sm="12" class="mt-5 mb-0 pt-0 pb-0 text-right">
-                      <v-btn
-                        color="warning"
-                        @click="loadSaoKe()"
+                      <v-date-picker
+                        v-model="date"
+                        no-title
+                        scrollable
                       >
-                        Compare Sao Kê
-                      </v-btn>
-                    </v-col>
-                  </v-row>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </v-expansion-panels>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.startMenu.isActive = false"
+                        >
+                          Cancel
+                        </v-btn>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.startMenu.save(date)"
+                        >
+                          OK
+                        </v-btn>
+                      </v-date-picker>
+                    </v-menu>
+                  </v-col>
+
+                  <v-col cols="12" md="3" sm="4">
+                    <v-menu
+                      ref="endMenu"
+                      :close-on-content-click="false"
+                      :return-value.sync="trip.end"
+                      offset-y
+                      min-width="290px"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="trip.end"
+                          label="End date"
+                          prepend-icon="mdi-calendar"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                          hide-details
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="date"
+                        no-title
+                        scrollable
+                      >
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.endMenu.isActive = false"
+                        >
+                          Cancel
+                        </v-btn>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.endMenu.save(date)"
+                        >
+                          OK
+                        </v-btn>
+                      </v-date-picker>
+                    </v-menu>
+                  </v-col>
+                  <v-col cols="12" md="1" sm="4">
+                      <v-autocomplete
+                        ref="refInputFile"
+                        v-model="trip.status"
+                        :items="trip.statusList"
+                        label="Status"
+                        class="text-left"
+                        item-text="name"
+                        item-value="code"
+                        return-object
+                        clearable
+                    >
+                    <template v-slot:no-data>
+                      <v-list-item>
+                        <v-list-item-content>
+                          <v-list-item-title>
+                            No results matching "<strong>data</strong>". Press <kbd>enter</kbd> to create a new one
+                          </v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </template>
+                    </v-autocomplete>
+                  </v-col>
+                  <v-col cols="12" md="1" sm="4">
+                    <v-checkbox v-model="isShowColumnSaoKe">
+                      <template v-slot:label>
+                        <div>
+                          Display Sao Kê
+                        </div>
+                      </template>
+                    </v-checkbox>
+                  </v-col>
+                  <v-col cols="12" md="1" sm="4">
+                    <v-checkbox v-model="allKyChi" @click="getListKyChi()">
+                      <template v-slot:label>
+                        <div>
+                          All kỳ chi
+                        </div>
+                      </template>
+                    </v-checkbox>
+                  </v-col>
+                  <v-col cols="12" md="1" sm="4">
+                      <v-autocomplete
+                        ref="refInputFile"
+                        v-model="trip.kychi"
+                        :items="items_ky_chi"
+                        label="Kỳ chi"
+                        class="text-left"
+                        item-text="title"
+                        item-value="code"
+                        return-object
+                        clearable
+                    >
+                    <template v-slot:no-data>
+                      <v-list-item>
+                        <v-list-item-content>
+                          <v-list-item-title>
+                            No results matching "<strong>data</strong>". Press <kbd>enter</kbd> to create a new one
+                          </v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </template>
+                    </v-autocomplete>
+                  </v-col>
+                  <v-col cols="12" md="2" sm="4">
+                      <v-autocomplete
+                        ref="refInputFile"
+                        v-model="trip.bank"
+                        :items="trip.bank_list"
+                        label="Bank"
+                        class="text-left"
+                        item-text="name"
+                        item-value="code"
+                        return-object
+                        clearable
+                    >
+                    <template v-slot:no-data>
+                      <v-list-item>
+                        <v-list-item-content>
+                          <v-list-item-title>
+                            No results matching "<strong>data</strong>". Press <kbd>enter</kbd> to create a new one
+                          </v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </template>
+                    </v-autocomplete>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+            <v-row class="mt-3 pa-2">
+              <v-col cols="12" md="6" sm="12" class="mt-1 mb-0 pt-0 pb-0">
+                <v-text-field
+                  label="Folder Path"
+                  value=""
+                  v-model="saokeObject.folder_path"
+                  hide-details
+                  @change="loadFileInFolder()"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" md="2" sm="12" class="mt-1 mb-0 pt-0 pb-0">
+                <v-autocomplete
+                    ref="refInputFile"
+                    v-model="saokeObject.file_name"
+                    :items="saokeObject.listFile"
+                    label="Input file"
+                    class="text-left"
+                    item-text="name"
+                    item-value="code"
+                    return-object
+                    clearable
+                    @change="procesFileName()"
+                >
+                <template v-slot:no-data>
+                  <v-list-item>
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        No results matching "<strong>data</strong>". Press <kbd>enter</kbd> to create a new one
+                      </v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </template>
+                </v-autocomplete>
+              </v-col>
+              <v-col cols="12" md="2" sm="12" class="mt-1 mb-0 pt-0 pb-0">
+                <v-text-field
+                  label="Output file"
+                  v-model="saokeObject.file_name_output"
+                  hide-details
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" md="1" sm="12" class="mt-1 mb-0 pt-0 pb-0">
+                <v-text-field
+                  label="Bank"
+                  value=""
+                  v-model="saokeObject.bank"
+                  hide-details
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" md="1" sm="12" class="mt-5 mb-0 pt-0 pb-0 text-right">
+                <v-btn
+                  color="warning"
+                  @click="compareSaoKe()"
+                >
+                  Compare Sao Kê
+                </v-btn>
+              </v-col>
+            </v-row>
           </v-col>
           
           <v-col
@@ -273,7 +274,7 @@
                 :rows="tblChiTieu"
                 :paginate="true"
                 :lineNumbers="true"
-                max-height="700px"
+                :row-style-class="rowStyleClassFn"
                 :search-options="{
                   enabled: true,
                   placeholder: 'Search this table',
@@ -283,6 +284,7 @@
                   headerPosition: 'top',
                 }"
                 styleClass="vgt-table bordered"
+                max-height="700px"
                 @on-row-dblclick="onRowDoubleClick"
                 @on-column-filter="onColumnFilter"
                 @on-cell-click="onCellClick"
@@ -543,6 +545,40 @@ export default {
           headerField: this.sumCount,
         },
         {
+          label: 'Nội dung',
+          field: 'noi_dung',
+          filterable: true,
+          filterOptions: {
+            styleClass: 'class-filter', // class to be added to the parent th element
+              enabled: true, // enable filter for this column
+              placeholder: 'Nội dung', // placeholder for filter input
+              filterValue: '', // initial populated value for this filter
+              filterDropdownItems: [], // dropdown (with selected values) instead of text input
+              // filterFn: this.columnFilterFn, //custom filter function that
+              trigger: 'enter', //only trigger on enter not on keyup 
+          },
+        },
+        {
+          label: 'Ngày chi',
+          field: 'ngay_chi',
+          type: 'date',
+          // dateInputFormat: "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+          // dateOutputFormat: 'dd-MM-yyyy',
+          formatFn: function (value) {
+              return value != null ? moment(value).format('DD-MM-yyyy HH:mm') : null
+          },
+          filterable: true,
+          filterOptions: {
+            styleClass: 'class-filter', // class to be added to the parent th element
+              enabled: true, // enable filter for this column
+              placeholder: 'Ngày chi', // placeholder for filter input
+              filterValue: '', // initial populated value for this filter
+              filterDropdownItems: [], // dropdown (with selected values) instead of text input
+              // filterFn: this.columnFilterFn, //custom filter function that
+              trigger: 'enter', //only trigger on enter not on keyup 
+          },
+        },
+        {
           label: 'Status',
           field: 'status',
           filterable: true,
@@ -589,40 +625,6 @@ export default {
           hidden: this.isMobile(),
         },
         {
-          label: 'Nội dung',
-          field: 'noi_dung',
-          filterable: true,
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Nội dung', // placeholder for filter input
-              filterValue: '', // initial populated value for this filter
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
-        },
-        {
-          label: 'Ngày chi',
-          field: 'ngay_chi',
-          type: 'date',
-          // dateInputFormat: "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-          // dateOutputFormat: 'dd-MM-yyyy',
-          formatFn: function (value) {
-              return value != null ? moment(value).format('DD-MM-yyyy HH:mm') : null
-          },
-          filterable: true,
-          filterOptions: {
-            styleClass: 'class-filter', // class to be added to the parent th element
-              enabled: true, // enable filter for this column
-              placeholder: 'Ngày chi', // placeholder for filter input
-              filterValue: '', // initial populated value for this filter
-              filterDropdownItems: [], // dropdown (with selected values) instead of text input
-              // filterFn: this.columnFilterFn, //custom filter function that
-              trigger: 'enter', //only trigger on enter not on keyup 
-          },
-        },
-        {
           label: 'Created Date',
           field: 'create_date',
           type: 'date',
@@ -641,7 +643,57 @@ export default {
               // filterFn: this.columnFilterFn, //custom filter function that
               trigger: 'enter', //only trigger on enter not on keyup 
           },
-          hidden: this.isMobile(),
+          hidden: true,
+        },
+
+        {
+          label: 'Nội dung SK',
+          field: 'saoke_noi_dung',
+          filterable: true,
+          filterOptions: {
+            styleClass: 'class-filter', // class to be added to the parent th element
+              enabled: true, // enable filter for this column
+              placeholder: 'Nội dung SK', // placeholder for filter input
+              filterValue: '', // initial populated value for this filter
+              filterDropdownItems: [], // dropdown (with selected values) instead of text input
+              // filterFn: this.columnFilterFn, //custom filter function that
+              trigger: 'enter', //only trigger on enter not on keyup 
+          },
+          hidden: true,
+        },
+
+        {
+          label: 'Số tiền SK',
+          field: 'saoke_so_tien',
+          type: 'number',
+          filterable: true,
+          formatFn: this.formatPrice,
+          filterOptions: {
+            styleClass: 'class-filter', // class to be added to the parent th element
+              enabled: true, // enable filter for this column
+              placeholder: 'saoke_so_tien', // placeholder for filter input
+              filterValue: '', // initial populated value for this filter
+              filterDropdownItems: [], // dropdown (with selected values) instead of text input
+              // filterFn: this.columnFilterFn, //custom filter function that
+              trigger: 'enter', //only trigger on enter not on keyup 
+          },
+          hidden: true,
+        },
+
+        {
+          label: 'Ngày giao dịch',
+          field: 'saoke_ngay_giao_dich',
+          filterable: true,
+          filterOptions: {
+            styleClass: 'class-filter', // class to be added to the parent th element
+              enabled: true, // enable filter for this column
+              placeholder: 'Ngày giao dịch', // placeholder for filter input
+              filterValue: '', // initial populated value for this filter
+              filterDropdownItems: [], // dropdown (with selected values) instead of text input
+              // filterFn: this.columnFilterFn, //custom filter function that
+              trigger: 'enter', //only trigger on enter not on keyup 
+          },
+          hidden: true,
         },
       ],
       tblChiTieu:[ 
@@ -749,6 +801,7 @@ export default {
 
       },
       allKyChi: false,
+      isShowColumnSaoKe: false,
     }
   },
   created() {
@@ -865,6 +918,9 @@ export default {
       } else {
         return false
       }
+    },
+    isDisplayCompareColumn(){
+      return !this.isDisplayCompareColumn;
     },
     getListKyChi() {
         let month = "";
@@ -1000,6 +1056,9 @@ export default {
       .then(response => {
         // seft.hotSettings.data = response.data.data;
         let data = response.data.data;
+        // for(let i = 0; i < data.length; i++){
+        //   data[i].saoke_noi_dung = '11111111';
+        // }
         self.tblChiTieu = 
           [ 
             {
@@ -1136,13 +1195,15 @@ export default {
         };
 
         //process dataraw:
+        //  var number = Number(value.replace(/[^0-9.-]+/g,""));
         let newTable = [];
         for(let i = 0; i < tblData.length - 6; i = i+4){
+          let so_tien_sk = self.dataValid(tblData[i + 3]);
           let item = {
             ngay_giao_dich: self.dataValid(tblData[i]),
             ngay_he_thong: self.dataValid(tblData[i + 1]),
             noi_giao_dich: self.dataValid(tblData[i + 2]),
-            so_tien: self.dataValid(tblData[i + 3]),
+            so_tien: Number(so_tien_sk.toString().replace(/[^0-9.-]+/g,"")),
             type: "",
             page: tblData[i].page,
           }
@@ -1172,7 +1233,134 @@ export default {
         self.close();
       });
     },
+    compareSaoKe(){
+      // this.loadingInstance.show();
+      this.show();
+      // this.show();
+      let self = this;
+      self.colChiTIeu[7].hidden = !this.isShowColumnSaoKe;
+      self.colChiTIeu[8].hidden = !this.isShowColumnSaoKe;
+      self.colChiTIeu[9].hidden = !this.isShowColumnSaoKe;
+      self.colChiTIeu[10].hidden = !this.isShowColumnSaoKe;
+      self.tblChiTieuSaoKe = 
+          [ 
+            {
+              // name: 'Animals Total',
+              // bank_code: '',
+              // ky_chi: '',
+              // so_tien: '',
+              // noi_dung: '',
+              // ngay_chi: '',
+              // status: '',
+              children: [],
+            }
+          ];
+      let currentNow = new Date();
+      let kyChi = [
+        this.selectDateCurrent == undefined ||
+        this.selectDateCurrent == null ||
+        this.selectDateCurrent == "" ||
+        this.selectDateCurrent == undefined ||
+        this.selectDateCurrent.code == undefined ||
+        this.selectDateCurrent.code == ""
+          ? (currentNow.getMonth() + (currentNow.getDate() > 27 ? 2 : 1))
+              .toString()
+              .concat(currentNow.getFullYear())
+          : this.selectDateCurrent.code,
+      ];
+      kyChi = ['ALLINONE'];
+      // let param = {
+      //   "bank": "hsbc",
+      //   "file_name": "20220721.pdf",
+      //   "file_name_output": "20220721"
+      //   };
+      axios
+      .post(`${config.API_FAMILY}/api/pdf/pdf2json`, this.saokeObject)
+      .then(response => {
+        // seft.hotSettings.data = response.data.data;
+        let data = response.data.body.Pages; //Texts
+        let tblData = [];
+        let flagStart = false;
+        let isStartPage = false;
+        let flagEnd = false;
+        for(let page = 0; page < data.length - 1; page++){
 
+          for(let i = 0; i < data[page].Texts.length; i ++) {
+            let textLine = data[page].Texts;
+            for(let j = 0; j < textLine[i].R.length; j ++){
+              if(!isStartPage && "Page" == textLine[i].R[j].T.toString().trim()){
+                isStartPage = true;
+                // i = i + 1;
+              }
+
+              if("ab" == textLine[i].R[j].T.toString().trim()){
+                isStartPage = false;
+                flagStart = false;
+                // i = i + 1;
+              }
+              if(!flagStart && "Ngày giao dịch" == textLine[i].R[j].T.toString().trim()){
+                flagStart = true;
+                if(page == 0){
+                  i = i + 14;
+
+                } else {
+                   i = i + 8; //	ACCOUNT BALANCE AS IN LAST STATEMENT
+                }
+                // i = i + 1;
+              }
+              if(isStartPage && flagStart){
+                textLine[i].R[j].start = `Page-${page + 1}`;
+                textLine[i].R[j].page =  `PAGE_${page}`;
+                tblData.push(textLine[i].R[j]);
+                
+              }
+              // if(flagStart){
+                
+               
+               
+              // }
+          
+                
+            }
+            
+          }
+        };
+
+        //process dataraw:
+        let newTable = [];
+        for(let i = 0; i < tblData.length - 6; i = i+4){
+          let so_tien_sk = self.dataValid(tblData[i + 3]);
+          let item = {
+            ngay_giao_dich: self.dataValid(tblData[i]),
+            ngay_he_thong: self.dataValid(tblData[i + 1]),
+            noi_giao_dich: self.dataValid(tblData[i + 2]),
+            so_tien: Number(so_tien_sk.toString().replace(/[^0-9.-]+/g,"")),
+            type: "",
+            page: tblData[i].page,
+          }
+          if(tblData[i + 4] != undefined && tblData[i + 4] != null && tblData[i + 4].T != undefined && "CR" == tblData[i + 4].T.trim()){
+            item.type = "CR";
+            i++;
+          }
+          newTable.push(item);
+        }
+        
+        let oldChiTieuData = self.tblChiTieu[0].children;
+        for(let i = 0; i < self.tblChiTieu[0].children.length; i ++){
+          let so_tien_sk = Number(self.tblChiTieu[0].children[i].so_tien.toString().replace(/[^0-9.-]+/g,""));
+          
+          var inSaoKe = newTable.find(({so_tien}) => so_tien == so_tien_sk);
+          if(inSaoKe != undefined){
+            console.log('inSaoKe', self.tblChiTieu[0].children[i]);
+            self.tblChiTieu[0].children[i].saoke_noi_dung = inSaoKe.noi_giao_dich;
+            self.tblChiTieu[0].children[i].saoke_so_tien = inSaoKe.so_tien;
+            self.tblChiTieu[0].children[i].saoke_ngay_giao_dich =inSaoKe.ngay_giao_dich;
+          }
+        }
+        
+        self.close();
+      });
+    },
     columnFilterFn(){
 
     },
@@ -1303,7 +1491,17 @@ export default {
         return item.T;
       }
       return "";
-    }
+    },
+    rowStyleClassFn(row){
+      if(row.children != undefined) return "";
+      if((row.saoke_so_tien == undefined || row.saoke_so_tien == null || row.saoke_so_tien == "")
+          && (row.so_tien != undefined && row.so_tien && row.so_tien != null)){
+            return "difference-sk";
+      }
+      console.log("rowStyleClassFn", row);
+      console.log("rowStyleClassFn", row.saoke_so_tien);
+      return row.so_tien != row.saoke_so_tien ? 'difference-sk' : '';
+    },
 
   },
 }
@@ -1335,5 +1533,9 @@ export default {
 
 .class-filter input[name='vgt-ky_chi'], .class-filter input[name='vgt-so_tien'] {
   text-align: right;
+}
+.difference-sk
+{
+      background: #FFC0CB;
 }
 </style>

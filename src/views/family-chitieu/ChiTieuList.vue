@@ -209,7 +209,6 @@
                     class="text-left"
                     item-text="name"
                     item-value="code"
-                    return-object
                     clearable
                     @change="procesFileName()"
                 >

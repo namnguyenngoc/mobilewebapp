@@ -4,7 +4,7 @@
       <!-- Theo doi suc khoe -->
       <v-card>
         <v-card-title class="pt-5 pb-2 mr-0 pr-2">
-          <v-col cols="12" sm="12" md="11" class="pa-0 ma-0">
+          <v-col cols="12" sm="12" md="12" class="pa-0 ma-0">
             <v-row>
               <v-col cols="12" md="12" sm="12">
                 <h3> Chi tiêu </h3>
@@ -164,7 +164,7 @@
                     </template>
                     </v-autocomplete>
                   </v-col>
-                  <v-col cols="12" md="2" sm="4">
+                  <v-col cols="12" md="1" sm="4">
                       <v-autocomplete
                         ref="refInputFile"
                         v-model="trip.bank"
@@ -187,11 +187,25 @@
                     </template>
                     </v-autocomplete>
                   </v-col>
+                  <v-col
+                      cols="12" md="1" sm="12"
+                      class="text--secondary pr-7 mt-2 text-right"
+                  >
+                    <v-btn
+                      color="info"
+                      @click="loadChiTieu()"
+                    >
+                      <!-- <v-icon>
+                          {{ icons.mdiReload }}
+                      </v-icon> -->
+                      Search
+                    </v-btn>
+                  </v-col>
                 </v-row>
               </v-col>
             </v-row>
             <v-row class="mt-3 pa-2">
-              <v-col cols="12" md="6" sm="12" class="mt-1 mb-0 pt-0 pb-0">
+              <v-col cols="12" md="2" sm="12" class="mt-1 mb-0 pt-0 pb-0">
                 <v-text-field
                   label="Folder Path"
                   value=""
@@ -199,6 +213,23 @@
                   hide-details
                   @change="loadFileInFolder()"
                 ></v-text-field>
+              </v-col>
+              <v-col cols="12" md="2" sm="12" class="mt-1 mb-0 pt-0 pb-0">
+              <v-btn-toggle>
+                  <v-file-input
+                    v-model="file" 
+                    show-size
+                    counter
+                    multiple
+                    accept="application/pdf" 
+                    label="File input"
+                  ></v-file-input>
+                  <v-btn color="success" @click="onUpload">
+                    <v-icon icon>
+                      {{ icons.mdiUpload }}
+                    </v-icon>
+                  </v-btn>
+                </v-btn-toggle>
               </v-col>
               <v-col cols="12" md="2" sm="12" class="mt-1 mb-0 pt-0 pb-0">
                 <v-autocomplete
@@ -238,30 +269,22 @@
                   hide-details
                 ></v-text-field>
               </v-col>
-              <v-col cols="12" md="1" sm="12" class="mt-5 mb-0 pt-0 pb-0 text-right">
+              <v-col cols="12" md="3" sm="12" class="mt-5 mb-0 pt-0 pb-0 text-right">
                 <v-btn
                   color="warning"
+                   class="mr-4"
                   @click="compareSaoKe()"
                 >
-                  Compare Sao Kê
+                  Compare
+                </v-btn>
+                <v-btn
+                  color="success"
+                  @click="compareSaoKe()"
+                >
+                  Upload
                 </v-btn>
               </v-col>
             </v-row>
-          </v-col>
-          
-          <v-col
-              cols="12" md="1" sm="12"
-            class="text--secondary pr-2"
-          >
-            <v-btn
-              color="info"
-              @click="loadChiTieu()"
-            >
-              <!-- <v-icon>
-                  {{ icons.mdiReload }}
-              </v-icon> -->
-              Search
-            </v-btn>
           </v-col>
         </v-card-title>
         <v-card-text class="mt-0 mb-0 pt-1 pb-1 ma-0 pa-0">
@@ -496,13 +519,13 @@ import moment from 'moment';
 import { VueGoodTable } from 'vue-good-table';
 
 
-import { mdiReload, mdiMinus, mdiOneUp, mdiPlus, mdiDeleteOutline, mdiCircleEditOutline, mdiSleep, mdiConsoleNetworkOutline } from '@mdi/js'
+import { mdiReload, mdiMinus, mdiOneUp, mdiPlus, mdiDeleteOutline, mdiCircleEditOutline, mdiSleep
+, mdiConsoleNetworkOutline, mdiUpload } from '@mdi/js'
 import { reactive } from '@vue/composition-api'
 import ChiTieuDetail from "./ChiTieuDetail";
 import ChiTieuChangeKyChi from "./ChiTieuChangeKyChi";
 import ChiTieuChangeStatus from "./ChiTieuChangeStatus";
 import TraGopAdd from "./TraGopAdd";
-
 export default {
   name: 'ChiTieuGiaDinh',
   components: {
@@ -800,6 +823,18 @@ export default {
       },
       allKyChi: false,
       isShowColumnSaoKe: false,
+      icons: {
+        mdiMinus,
+        mdiOneUp,
+        mdiPlus,
+        mdiDeleteOutline,
+        mdiCircleEditOutline,
+        mdiSleep,
+        mdiReload,
+        mdiUpload
+      },
+      file: null,
+      imageUrl: null
     }
   },
   created() {
@@ -1502,6 +1537,19 @@ export default {
       if(!row.saoke_noi_dung.includes(row.noi_dung) ) return 'difference-nd';
       return row.so_tien != row.saoke_so_tien ? 'difference-sk' : '';
     },
+
+    onUpload(){
+      console.log(this.file);
+      var formData = new FormData();
+      formData.append('myFile', this.file[0]);
+      formData.append('bank', 'hsbc');
+      formData.append('filename', 'hsbc.pdf');
+      axios.post(`http://anvatchibeo.ddns.net:81/api/uploadfileHsbc`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+      })
+    }
 
   },
 }

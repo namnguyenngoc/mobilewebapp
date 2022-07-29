@@ -1043,6 +1043,7 @@ export default {
       ];
       kyChi = ['ALLINONE'];
       console.log('ky_chi', this.trip.kychi);
+      this.includeGop = 'ALL';
       let param = [
         JSON.stringify([`${this.trip.kychi.code == undefined ? "ALLINONE" : this.trip.kychi.code}`]),
         this.trip.status.toString(),
@@ -1203,7 +1204,7 @@ export default {
             ngay_giao_dich: self.dataValid(tblData[i]),
             ngay_he_thong: self.dataValid(tblData[i + 1]),
             noi_giao_dich: self.dataValid(tblData[i + 2]),
-            so_tien: Number(so_tien_sk.toString().replace(/[^0-9.-]+/g,"")),
+            so_tien: Number(so_tien_sk.toString().replace(/[^0-9.-]+/g,"")).toFixed(0),
             type: "",
             page: tblData[i].page,
           }
@@ -1334,7 +1335,7 @@ export default {
             ngay_giao_dich: self.dataValid(tblData[i]),
             ngay_he_thong: self.dataValid(tblData[i + 1]),
             noi_giao_dich: self.dataValid(tblData[i + 2]),
-            so_tien: Number(so_tien_sk.toString().replace(/[^0-9.-]+/g,"")),
+            so_tien: Number(so_tien_sk.toString().replace(/[^0-9.-]+/g,"")).toFixed(0),
             type: "",
             page: tblData[i].page,
           }
@@ -1498,8 +1499,9 @@ export default {
           && (row.so_tien != undefined && row.so_tien && row.so_tien != null)){
             return "difference-sk";
       }
-      console.log("rowStyleClassFn", row);
-      console.log("rowStyleClassFn", row.saoke_so_tien);
+      
+      //Compare conent
+      if(!row.saoke_noi_dung.includes(row.noi_dung) ) return 'difference-nd';
       return row.so_tien != row.saoke_so_tien ? 'difference-sk' : '';
     },
 
@@ -1537,5 +1539,8 @@ export default {
 .difference-sk
 {
       background: #FFC0CB;
+}
+.difference-nd {
+   background: #FFF5EE
 }
 </style>

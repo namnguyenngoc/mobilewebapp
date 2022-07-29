@@ -1541,14 +1541,17 @@ export default {
     onUpload(){
       console.log(this.file);
       var formData = new FormData();
-      formData.append('myFile', this.file[0]);
+      formData.append('myFile', this.file[0], this.file[0].name);
       formData.append('bank', 'hsbc');
       formData.append('filename', 'hsbc.pdf');
-      axios.post(`http://anvatchibeo.ddns.net:81/api/uploadfileHsbc`, formData, {
+      axios.post(`${config.API_FAMILY}/uploadfileHsbc`, formData, {
           headers: {
-            'Content-Type': 'multipart/form-data'
+            'Content-Type': 'multipart/form-data; boundary=' + formData._boundary
           }
-      })
+      }).then((response) => {
+          console.log(response)
+        })
+     
     }
 
   },

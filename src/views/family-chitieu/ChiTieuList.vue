@@ -254,7 +254,14 @@
                 </template>
                 </v-autocomplete>
               </v-col>
-              <v-col cols="12" md="2" sm="12" class="mt-1 mb-0 pt-0 pb-0">
+              <v-col cols="12" md="1" sm="12" class="mt-1 mb-0 pt-0 pb-0">
+                <v-text-field
+                  label="Password"
+                  v-model="saokeObject.pwd"
+                  hide-details
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" md="1" sm="12" class="mt-1 mb-0 pt-0 pb-0">
                 <v-text-field
                   label="Output file"
                   v-model="saokeObject.file_name_output"
@@ -350,7 +357,7 @@
             </v-col>
           </v-row>
           <v-row class="mt-3 pa-2">
-            <v-col cols="12" md="6" sm="12" class="mt-1 mb-0 pt-0 pb-0">
+            <v-col cols="12" md="2" sm="12" class="mt-1 mb-0 pt-0 pb-0">
               <v-text-field
                 label="Folder Path"
                 value=""
@@ -359,7 +366,25 @@
                 @change="loadFileInFolder()"
               ></v-text-field>
             </v-col>
+            <v-col cols="12" md="1" sm="12" class="mt-1 mb-0 pt-0 pb-0">
+              <v-text-field
+                label="Start Number"
+                value=""
+                v-model="saokeObject.startNumber"
+                hide-details
+                @change="loadFileInFolder()"
+              ></v-text-field>
+            </v-col>
             <v-col cols="12" md="2" sm="12" class="mt-1 mb-0 pt-0 pb-0">
+              <v-text-field
+                label="Giảm phần cuối"
+                value=""
+                v-model="saokeObject.subEnd"
+                hide-details
+                @change="loadFileInFolder()"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="1" sm="12" class="mt-1 mb-0 pt-0 pb-0">
               <v-autocomplete
                   ref="refInputFile"
                   v-model="saokeObject.file_name"
@@ -382,6 +407,13 @@
               </template>
               </v-autocomplete>
             </v-col>
+            <v-col cols="12" md="2" sm="12" class="mt-1 mb-0 pt-0 pb-0">
+                <v-text-field
+                  label="Password"
+                  v-model="saokeObject.pwd"
+                  hide-details
+                ></v-text-field>
+              </v-col>
             <v-col cols="12" md="2" sm="12" class="mt-1 mb-0 pt-0 pb-0">
               <v-text-field
                 label="Output file"
@@ -563,7 +595,7 @@ export default {
               // filterFn: this.columnFilterFn, //custom filter function that
               trigger: 'enter', //only trigger on enter not on keyup 
           },
-          headerField: this.sumCount,
+          // headerField: this.sumCount,
         },
         {
           label: 'Nội dung',
@@ -733,10 +765,12 @@ export default {
         {
           label: 'Ngày giao dịch',
           field: 'ngay_giao_dich',
+          width: '120px',
         },
         {
           label: 'Ngày hệ thống',
           field: 'ngay_he_thong',
+          width: '120px',
         },
         {
           label: 'Nơi giao dịch',
@@ -745,9 +779,9 @@ export default {
         {
           label: 'Số tiền',
           field: 'so_tien',
-          type: 'number',
-          formatFn: this.convertAndFormatPrice,
-          headerField: this.sumSaoKe,
+          // type: 'number',
+          // formatFn: this.convertAndFormatPrice,
+          // headerField: this.sumSaoKe,
         },
         {
           label: 'Type',
@@ -814,12 +848,14 @@ export default {
         // new Date().toISOString().substr(0, 10),
       },
       saokeObject: {
-        folder_path: './public/saoketindung/hsbc',
-        bank: 'hsbc',
-        file_name: '20170423.pdf',
-        file_name_output: '20170423',
+        folder_path: './public/saoketindung/vib',
+        bank: 'vib',
+        file_name: 'VIB_20220725.pdf',
+        file_name_output: 'VIB_20220725',
+        pwd: '27069944',
         listFile: [],
-
+        startNumber: 16,
+        subEnd: 18
       },
       allKyChi: false,
       isShowColumnSaoKe: false,
@@ -1139,11 +1175,11 @@ export default {
 
       }
     },
-    loadSaoKe(){
+    async loadSaoKe(){
       // this.loadingInstance.show();
       this.show();
       // this.show();
-      let self = this;
+      const self = this;
       self.tblChiTieuSaoKe = 
           [ 
             {
@@ -1178,94 +1214,43 @@ export default {
       //   };
       axios
       .post(`${config.API_FAMILY}/api/pdf/pdf2json`, this.saokeObject)
-      .then(response => {
+      .then(async function(response) {
         // seft.hotSettings.data = response.data.data;
-        let data = response.data.body.Pages; //Texts
-        let tblData = [];
-        let flagStart = false;
-        let isStartPage = false;
-        let flagEnd = false;
-        for(let page = 0; page < data.length - 1; page++){
-
-          for(let i = 0; i < data[page].Texts.length; i ++) {
-            let textLine = data[page].Texts;
-            for(let j = 0; j < textLine[i].R.length; j ++){
-              if(!isStartPage && "Page" == textLine[i].R[j].T.toString().trim()){
-                isStartPage = true;
-                // i = i + 1;
-              }
-
-              if("ab" == textLine[i].R[j].T.toString().trim()){
-                isStartPage = false;
-                flagStart = false;
-                // i = i + 1;
-              }
-              if(!flagStart && "Ngày giao dịch" == textLine[i].R[j].T.toString().trim()){
-                flagStart = true;
-                if(page == 0){
-                  i = i + 14;
-
-                } else {
-                   i = i + 8; //	ACCOUNT BALANCE AS IN LAST STATEMENT
-                }
-                // i = i + 1;
-              }
-              if(isStartPage && flagStart){
-                textLine[i].R[j].start = `Page-${page + 1}`;
-                textLine[i].R[j].page =  `PAGE_${page}`;
-                tblData.push(textLine[i].R[j]);
-                
-              }
-              // if(flagStart){
-                
-               
-               
-              // }
-          
-                
-            }
-            
-          }
-        };
-
-        //process dataraw:
-        //  var number = Number(value.replace(/[^0-9.-]+/g,""));
-        let newTable = [];
-        for(let i = 0; i < tblData.length - 6; i = i+4){
-          let so_tien_sk = self.dataValid(tblData[i + 3]);
-          let item = {
-            ngay_giao_dich: self.dataValid(tblData[i]),
-            ngay_he_thong: self.dataValid(tblData[i + 1]),
-            noi_giao_dich: self.dataValid(tblData[i + 2]),
-            so_tien: Number(so_tien_sk.toString().replace(/[^0-9.-]+/g,"")).toFixed(0),
-            type: "",
-            page: tblData[i].page,
-          }
-          if(tblData[i + 4] != undefined && tblData[i + 4] != null && tblData[i + 4].T != undefined && "CR" == tblData[i + 4].T.trim()){
-            item.type = "CR";
-            i++;
-          }
-          newTable.push(item);
-        }
-        
-
-        console.log("newTable", newTable);
-        self.tblChiTieuSaoKe = 
+        let newTable = [];0
+        if('hsbc' == self.saokeObject.bank){
+          newTable = self.parseJsonDataBankHSBC(response);
+          self.tblChiTieuSaoKe = 
           [ 
             {
-              // name: 'Animals Total',
-              // bank_code: '',
-              // ky_chi: '',
-              // so_tien: '',
-              // noi_dung: '',
-              // ngay_chi: '',
-              // status: '',
               children: newTable,
             }
           ];
-        console.log(tblData);
-        self.close();
+            self.close();
+        }
+
+        if('vib' == self.saokeObject.bank){
+         
+          const vibDataList = [];
+          self.tblChiTieuSaoKe = 
+          [ 
+            {
+              children: [],
+            }
+          ];
+          newTable = self.parseJsonDataBankVIB(response);
+          
+          self.tblChiTieuSaoKe = 
+          [ 
+            {
+              children: newTable,
+            }
+          ];
+          self.close();
+        }
+        
+        
       });
+        
     },
     compareSaoKe(){
       // this.loadingInstance.show();
@@ -1317,81 +1302,25 @@ export default {
         let flagStart = false;
         let isStartPage = false;
         let flagEnd = false;
-        for(let page = 0; page < data.length - 1; page++){
-
-          for(let i = 0; i < data[page].Texts.length; i ++) {
-            let textLine = data[page].Texts;
-            for(let j = 0; j < textLine[i].R.length; j ++){
-              if(!isStartPage && "Page" == textLine[i].R[j].T.toString().trim()){
-                isStartPage = true;
-                // i = i + 1;
-              }
-
-              if("ab" == textLine[i].R[j].T.toString().trim()){
-                isStartPage = false;
-                flagStart = false;
-                // i = i + 1;
-              }
-              if(!flagStart && "Ngày giao dịch" == textLine[i].R[j].T.toString().trim()){
-                flagStart = true;
-                if(page == 0){
-                  i = i + 14;
-
-                } else {
-                   i = i + 8; //	ACCOUNT BALANCE AS IN LAST STATEMENT
-                }
-                // i = i + 1;
-              }
-              if(isStartPage && flagStart){
-                textLine[i].R[j].start = `Page-${page + 1}`;
-                textLine[i].R[j].page =  `PAGE_${page}`;
-                tblData.push(textLine[i].R[j]);
-                
-              }
-              // if(flagStart){
-                
-               
-               
-              // }
-          
-                
-            }
-            
-          }
-        };
-
-        //process dataraw:
         let newTable = [];
-        for(let i = 0; i < tblData.length - 6; i = i+4){
-          let so_tien_sk = self.dataValid(tblData[i + 3]);
-          let item = {
-            ngay_giao_dich: self.dataValid(tblData[i]),
-            ngay_he_thong: self.dataValid(tblData[i + 1]),
-            noi_giao_dich: self.dataValid(tblData[i + 2]),
-            so_tien: Number(so_tien_sk.toString().replace(/[^0-9.-]+/g,"")).toFixed(0),
-            type: "",
-            page: tblData[i].page,
-          }
-          if(tblData[i + 4] != undefined && tblData[i + 4] != null && tblData[i + 4].T != undefined && "CR" == tblData[i + 4].T.trim()){
-            item.type = "CR";
-            i++;
-          }
-          newTable.push(item);
-        }
-        
-        let oldChiTieuData = self.tblChiTieu[0].children;
-        for(let i = 0; i < self.tblChiTieu[0].children.length; i ++){
-          let so_tien_sk = Number(self.tblChiTieu[0].children[i].so_tien.toString().replace(/[^0-9.-]+/g,""));
-          
-          var inSaoKe = newTable.find(({so_tien}) => so_tien == so_tien_sk);
-          if(inSaoKe != undefined){
-            console.log('inSaoKe', self.tblChiTieu[0].children[i]);
-            self.tblChiTieu[0].children[i].saoke_noi_dung = inSaoKe.noi_giao_dich;
-            self.tblChiTieu[0].children[i].saoke_so_tien = inSaoKe.so_tien;
-            self.tblChiTieu[0].children[i].saoke_ngay_giao_dich =inSaoKe.ngay_giao_dich;
+        if('hsbc' == self.saokeObject.bank){
+          newTable = self.parseJsonDataBankHSBC(response);
+          let oldChiTieuData = self.tblChiTieu[0].children;
+          for(let i = 0; i < self.tblChiTieu[0].children.length; i ++){
+            let so_tien_sk = Number(self.tblChiTieu[0].children[i].so_tien.toString().replace(/[^0-9.-]+/g,""));
+            
+            var inSaoKe = newTable.find(({so_tien}) => so_tien == so_tien_sk);
+            if(inSaoKe != undefined){
+              console.log('inSaoKe', self.tblChiTieu[0].children[i]);
+              self.tblChiTieu[0].children[i].saoke_noi_dung = inSaoKe.noi_giao_dich;
+              self.tblChiTieu[0].children[i].saoke_so_tien = inSaoKe.so_tien;
+              self.tblChiTieu[0].children[i].saoke_ngay_giao_dich =inSaoKe.ngay_giao_dich;
+            }
           }
         }
-        
+        if('vib' == self.saokeObject.bank){
+          newTable = self.parseJsonDataBankVIB(response);
+        }
         self.close();
       });
     },
@@ -1417,7 +1346,7 @@ export default {
       for (let i = 0; i < rowObj.children.length; i++) {
         var number = Number(rowObj.children[i].so_tien.replace(/[^0-9.-]+/g,""));
         
-        sum += number;
+        sum += number == undefined ? 0 : number;
       }
       // const val = (sum / 1).toFixed(2).replace(',', '.')
       return sum;
@@ -1526,6 +1455,12 @@ export default {
       }
       return "";
     },
+    dataValid2(item){
+      if(item != undefined && item != null && item != ""){
+        return item;
+      }
+      return "";
+    },
     rowStyleClassFn(row){
       if(row.children != undefined) return "";
       if((row.saoke_so_tien == undefined || row.saoke_so_tien == null || row.saoke_so_tien == "")
@@ -1552,8 +1487,181 @@ export default {
           console.log(response)
         })
      
-    }
+    },
 
+    parseJsonDataBankHSBC(response){
+      let newTable = [];
+      let data = response.data.body.Pages; //Texts
+      let tblData = [];
+      let flagStart = false;
+      let isStartPage = false;
+      let flagEnd = false;
+      for(let page = 0; page < data.length - 1; page++){
+
+        for(let i = 0; i < data[page].Texts.length; i ++) {
+          let textLine = data[page].Texts;
+          for(let j = 0; j < textLine[i].R.length; j ++){
+            if(!isStartPage && "Page" == textLine[i].R[j].T.toString().trim()){
+              isStartPage = true;
+              // i = i + 1;
+            }
+
+            if("ab" == textLine[i].R[j].T.toString().trim()){
+              isStartPage = false;
+              flagStart = false;
+              // i = i + 1;
+            }
+            if(!flagStart && "Ngày giao dịch" == textLine[i].R[j].T.toString().trim()){
+              flagStart = true;
+              if(page == 0){
+                i = i + 14;
+
+              } else {
+                i = i + 8; //	ACCOUNT BALANCE AS IN LAST STATEMENT
+              }
+              // i = i + 1;
+            }
+            if(isStartPage && flagStart){
+              textLine[i].R[j].start = `Page-${page + 1}`;
+              textLine[i].R[j].page =  `PAGE_${page}`;
+              tblData.push(textLine[i].R[j]);
+              
+            }
+          }
+          
+        }
+      };
+
+      //process dataraw:
+      //  var number = Number(value.replace(/[^0-9.-]+/g,""));
+      
+      for(let i = 0; i < tblData.length - 6; i = i+4){
+        let so_tien_sk = this.dataValid(tblData[i + 3]);
+        let item = {
+          ngay_giao_dich: this.dataValid(tblData[i]),
+          ngay_he_thong: this.dataValid(tblData[i + 1]),
+          noi_giao_dich: this.dataValid(tblData[i + 2]),
+          so_tien: Number(so_tien_sk.toString().replace(/[^0-9.-]+/g,"")).toFixed(0),
+          type: "",
+          page: tblData[i].page,
+        }
+        if(tblData[i + 4] != undefined && tblData[i + 4] != null && tblData[i + 4].T != undefined && "CR" == tblData[i + 4].T.trim()){
+          item.type = "CR";
+          i++;
+        }
+        newTable.push(item);
+      }
+      
+
+      console.log("newTable", newTable);
+      return newTable;
+    },
+    parseJsonDataBankVIB(response){
+      let newTable = [];
+      let data = response.data.body.Pages; //Texts
+      let tblDataVIB = [];
+      let flagStart = false;
+      let isStartPage = false;
+      let flagEnd = false;
+      // let iEnd = 
+      let isStop = false;
+      for(let page = 0; page < data.length; page++){
+        if(!isStop){
+          for(let i = 0; i < data[page].Texts.length; i ++) {
+            if(!isStop){
+              const textLine = data[page].Texts;
+              console.log(`textLine[${page}][${i}]`, textLine[i]);
+              if(textLine != undefined && textLine[i] != "undefined" && textLine[i].R != undefined){
+                try{
+                  for(let j = 0; j < textLine[i].R.length; j ++){
+                    if(!isStop){
+                      
+                      const text = textLine[i].R[j].T.toString().trim();
+                      // if(!isStartPage && "Page" == textLine[i].R[j].T.toString().trim()){
+                      //   isStartPage = true;
+                      //   // i = i + 1;
+                      // }
+
+                      // if("ab" == textLine[i].R[j].T.toString().trim()){
+                      //   isStartPage = false;
+                      //   flagStart = false;
+                      //   // i = i + 1;
+                      // }
+                      console.log( textLine[i].R[j].T.toString().trim());
+                      if("Quý khách vui lòng đọc trang tiếp theo để xem chi tiết về cách đọc và hiểu Bảng Sao Kê và hướng dẫn cách thức thanh toán thẻ tín dụng." == text){
+                        isStop = true;
+                      } 
+                        
+                      if(!flagStart && "Ngày giao dịch" == text){
+                        flagStart = true;
+                        // if(page == 0){
+                        //   i = i + 14;
+
+                        // } else {
+                          // if( i + this.saokeObject.startNumber < textLine[i].R.length ){
+                          //   i = i + this.saokeObject.startNumber; //	ACCOUNT BALANCE AS IN LAST STATEMENT
+                          // }
+                        // }
+                        // i = i + 1;
+                      }
+                      if(flagStart){
+                        // textLine[i].R[j].start = `Page-${page + 1}`;
+                        textLine[i].R[j].page =  page;
+                        if(textLine[i] != undefined && textLine[i].R != undefined){
+                          tblDataVIB.push({
+                            value: textLine[i].R[j].T,
+                            page: textLine[i].R[j].page
+                            });
+                            // let item = {
+                            //   ngay_giao_dich: this.dataValid(textLine[i].R[j]),
+                            //   // // ngay_he_thong: this.dataValid(tblData[i + 1]),
+                            //   // noi_giao_dich: this.dataValid(tblData[i + 1]),
+                            //   // // so_tien: Number(so_tien_sk.toString().replace(/[^0-9.-]+/g,"")).toFixed(0),
+                            //   // so_tien: 0,
+                            //   // type: "",
+                            //   // page: tblData[i].page,
+                            // }
+                            // newTable.push(item);
+
+                        }
+                        
+                      }
+                    }
+                  }
+                } catch(error){
+                  console.log(error);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      for(var i = parseInt(this.saokeObject.startNumber); i < tblDataVIB.length - parseInt(this.saokeObject.subEnd); i = i+3){
+        
+        if(tblDataVIB[i] != undefined && tblDataVIB[i] != null  && tblDataVIB[i + 1] != undefined && tblDataVIB[i + 1] != null
+        && tblDataVIB[i + 2] != undefined && tblDataVIB[i + 2] != null ){
+          let so_tien_sk = this.dataValid2(tblDataVIB[i + 2]);
+          let item = {
+            ngay_giao_dich: this.dataValid2(tblDataVIB[i].value),
+            ngay_he_thong: this.dataValid2(tblDataVIB[i].value),
+            noi_giao_dich: this.dataValid2(tblDataVIB[i + 1].value),
+            so_tien:so_tien_sk.value,
+            // so_tien: Number(so_tien_sk.toString().replace(/[^0-9.-]+/g,"")).toFixed(0),
+            // type: "",
+            // page: tblDataVIB[i].page,
+          }
+          // if(tblDataVIB[i + 4] != undefined && tblDataVIB[i + 4] != null && tblDataVIB[i + 4].T != undefined && "CR" == tblDataVIB[i + 4].T.trim()){
+          //   item.type = "CR";
+          //   i++;
+          // }
+          newTable.push(item);
+        }
+      }
+      
+      return newTable;
+    }
+    //End
   },
 }
 </script>

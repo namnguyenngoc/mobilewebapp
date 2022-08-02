@@ -224,14 +224,19 @@
                     accept="application/pdf" 
                     label="File input"
                   ></v-file-input>
-                  <v-btn color="success" @click="onUpload">
+                  <v-btn
+                    color="success"
+                    class="mt-3"
+                    :disabled="!(trip.bank == 'HSBC' ||  this.trip.bank == 'VIB' || trip.bank =='CITI' || trip.bank =='SC')"
+                    @click="onUpload"
+                    >
                     <v-icon icon>
                       {{ icons.mdiUpload }}
                     </v-icon>
                   </v-btn>
                 </v-btn-toggle>
               </v-col>
-              <v-col cols="12" md="2" sm="12" class="mt-1 mb-0 pt-0 pb-0">
+              <v-col cols="12" md="3" sm="12" class="mt-1 mb-0 pt-0 pb-0">
                 <v-autocomplete
                     ref="refInputFile"
                     v-model="saokeObject.file_name"
@@ -268,14 +273,7 @@
                   hide-details
                 ></v-text-field>
               </v-col>
-              <v-col cols="12" md="1" sm="12" class="mt-1 mb-0 pt-0 pb-0">
-                <v-text-field
-                  label="Bank"
-                  value=""
-                  v-model="saokeObject.bank"
-                  hide-details
-                ></v-text-field>
-              </v-col>
+           
               <v-col cols="12" md="3" sm="12" class="mt-5 mb-0 pt-0 pb-0 text-right">
                 <v-btn
                   color="warning"
@@ -283,12 +281,6 @@
                   @click="compareSaoKe()"
                 >
                   Compare
-                </v-btn>
-                <v-btn
-                  color="success"
-                  @click="compareSaoKe()"
-                >
-                  Upload
                 </v-btn>
               </v-col>
             </v-row>
@@ -1164,8 +1156,9 @@ export default {
       //  file_name: '20170423.pdf',
       //   file_name_output: '20170423',
       let arr = [];
-      if(this.saokeObject.file_name != undefined && this.saokeObject.file_name != null && this.saokeObject.file_name.name != undefined){
-        let arr = this.saokeObject.file_name.name.split(".");
+      console.log("this.saokeObject", this.saokeObject);
+      if(this.saokeObject.file_name != undefined && this.saokeObject.file_name != null){
+        let arr = this.saokeObject.file_name.split(".");
         console.log("procesFileName", arr);
         if(arr.length == 2){
           this.saokeObject.file_name_output = arr[0];
@@ -1472,14 +1465,21 @@ export default {
       if(!row.saoke_noi_dung.includes(row.noi_dung) ) return 'difference-nd';
       return row.so_tien != row.saoke_so_tien ? 'difference-sk' : '';
     },
+    capitalizeFirstLetter(str) {
 
-    onUpload(){
+        // converting first letter to uppercase
+        const capitalized = str.charAt(0).toUpperCase() + str.slice(1);
+
+        return capitalized;
+    },
+    async onUpload(){
       console.log(this.file);
+     
       var formData = new FormData();
       formData.append('myFile', this.file[0], this.file[0].name);
-      formData.append('bank', 'hsbc');
+      formData.append('bank', this.trip.bank.toString().toLowerCase());
       formData.append('filename', 'hsbc.pdf');
-      axios.post(`${config.API_FAMILY}/uploadfileHsbc`, formData, {
+      await axios.post(`${config.API_FAMILY}/uploadfile${this.capitalizeFirstLetter(this.trip.bank.toString().toLowerCase())}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data; boundary=' + formData._boundary
           }

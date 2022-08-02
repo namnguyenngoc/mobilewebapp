@@ -1217,13 +1217,14 @@ export default {
       //   "file_name": "20220721.pdf",
       //   "file_name_output": "20220721"
       //   };
-      this.saokeObject.bank = trip.bank.toString().toLowerCase();
+      this.saokeObject.bank = this.trip.bank.toString().toLowerCase();
       axios
       .post(`${config.API_FAMILY}/api/pdf/pdf2json`, this.saokeObject)
-      .then(async function(response) {
+      .then(response =>  {
         // seft.hotSettings.data = response.data.data;
-        let newTable = [];0
-        if('hsbc' == self.trip.bank){
+        let newTable = [];
+        console.log('self.trip.bank', self.trip.bank);
+        if('HSBC' == self.trip.bank){
           newTable = self.parseJsonDataBankHSBC(response);
           self.tblChiTieuSaoKe = 
           [ 
@@ -1231,10 +1232,8 @@ export default {
               children: newTable,
             }
           ];
-            self.close();
-        }
-
-        if('vib' == self.trip.bank){
+          self.close();
+        } else if('VIB' == self.trip.bank){
          
           const vibDataList = [];
           self.tblChiTieuSaoKe = 
@@ -1251,6 +1250,9 @@ export default {
               children: newTable,
             }
           ];
+          self.close();
+        } else {
+          alert('Vui lòng chọn bank');
           self.close();
         }
         

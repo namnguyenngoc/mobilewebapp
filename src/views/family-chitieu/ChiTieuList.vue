@@ -277,7 +277,9 @@
               <v-col cols="12" md="3" sm="12" class="mt-5 mb-0 pt-0 pb-0 text-right">
                 <v-btn
                   color="warning"
-                   class="mr-4"
+                  class="mr-4"
+                  :disabled="!(saokeObject.file_name != undefined && saokeObject.file_name != null && saokeObject.file_name != '')"
+
                   @click="compareSaoKe()"
                 >
                   Compare
@@ -363,6 +365,7 @@
                 label="Start Number"
                 value=""
                 v-model="saokeObject.startNumber"
+                :disabled="true"
                 hide-details
                 @change="loadFileInFolder()"
               ></v-text-field>
@@ -424,6 +427,7 @@
             <v-col cols="12" md="1" sm="12" class="mt-1 mb-0 pt-0 pb-0 text-right">
               <v-btn
                 color="info"
+                :disabled="!(saokeObject.file_name != undefined && saokeObject.file_name != null && saokeObject.file_name != '')"
                 @click="loadSaoKe()"
               >
                 Load Sao Ke
@@ -842,8 +846,8 @@ export default {
       saokeObject: {
         folder_path: './public/saoketindung/vib',
         bank: 'vib',
-        file_name: 'VIB_20220725.pdf',
-        file_name_output: 'VIB_20220725',
+        file_name: '',
+        file_name_output: '',
         pwd: '27069944',
         listFile: [],
         startNumber: 16,
@@ -1071,7 +1075,7 @@ export default {
       // params.event - click event
       console.log('row', params.row);
     },
-    loadChiTieu(){
+    async loadChiTieu(){
       // this.loadingInstance.show();
       this.show();
       // this.show();
@@ -1113,9 +1117,9 @@ export default {
         this.trip.end.toString(),
         this.trip.bank.toString()
       ];
-      axios
+      await axios
       .get(`${config.API_FAMILY}/api/chitieus/${param.join("/")}`)
-      .then(response => {
+      .then(async function(response) {
         // seft.hotSettings.data = response.data.data;
         let data = response.data.data;
         // for(let i = 0; i < data.length; i++){
@@ -1134,7 +1138,13 @@ export default {
               children: data,
             }
           ];
-        console.log(self.tblChiTieu);
+
+        if(self.saokeObject.file_name != undefined 
+          && self.saokeObject.file_name != null 
+          && self.saokeObject.file_name.trim().length > 0){
+          await self.compareSaoKe();
+
+        }
         self.close();
       });
     },
@@ -1245,7 +1255,7 @@ export default {
       });
         
     },
-    compareSaoKe(){
+    async compareSaoKe(){
       // this.loadingInstance.show();
       this.show();
       // this.show();
@@ -1286,7 +1296,7 @@ export default {
       //   "file_name": "20220721.pdf",
       //   "file_name_output": "20220721"
       //   };
-      axios
+      await axios
       .post(`${config.API_FAMILY}/api/pdf/pdf2json`, this.saokeObject)
       .then(response => {
         // seft.hotSettings.data = response.data.data;
@@ -1313,6 +1323,18 @@ export default {
         }
         if('vib' == self.saokeObject.bank){
           newTable = self.parseJsonDataBankVIB(response);
+          let oldChiTieuData = self.tblChiTieu[0].children;
+          for(let i = 0; i < self.tblChiTieu[0].children.length; i ++){
+            let so_tien_sk = Number(self.tblChiTieu[0].children[i].so_tien.toString().replace(/[^0-9.-]+/g,""));
+            
+            var inSaoKe = newTable.find(({so_tien}) => so_tien == so_tien_sk);
+            if(inSaoKe != undefined){
+              console.log('inSaoKe', self.tblChiTieu[0].children[i]);
+              self.tblChiTieu[0].children[i].saoke_noi_dung = inSaoKe.noi_giao_dich;
+              self.tblChiTieu[0].children[i].saoke_so_tien = inSaoKe.so_tien;
+              self.tblChiTieu[0].children[i].saoke_ngay_giao_dich =inSaoKe.ngay_giao_dich;
+            }
+          }
         }
         self.close();
       });
@@ -1567,12 +1589,14 @@ export default {
       let flagEnd = false;
       // let iEnd = 
       let isStop = false;
+      let idxStartLoadGrid = 0;
+
       for(let page = 0; page < data.length; page++){
         if(!isStop){
           for(let i = 0; i < data[page].Texts.length; i ++) {
             if(!isStop){
               const textLine = data[page].Texts;
-              console.log(`textLine[${page}][${i}]`, textLine[i]);
+              // console.log(`textLine[${page}][${i}]`, textLine[i]);
               if(textLine != undefined && textLine[i] != "undefined" && textLine[i].R != undefined){
                 try{
                   for(let j = 0; j < textLine[i].R.length; j ++){
@@ -1584,12 +1608,12 @@ export default {
                       //   // i = i + 1;
                       // }
 
-                      // if("ab" == textLine[i].R[j].T.toString().trim()){
+                      // if("ab" == textLin].R[j].T.toString().trim()){
                       //   isStartPage = false;
                       //   flagStart = false;
                       //   // i = i + 1;
                       // }
-                      console.log( textLine[i].R[j].T.toString().trim());
+                      // console.log( textLine[i].R[j].T.toString().trim());
                       if("Quý khách vui lòng đọc trang tiếp theo để xem chi tiết về cách đọc và hiểu Bảng Sao Kê và hướng dẫn cách thức thanh toán thẻ tín dụng." == text){
                         isStop = true;
                       } 
@@ -1610,20 +1634,20 @@ export default {
                         // textLine[i].R[j].start = `Page-${page + 1}`;
                         textLine[i].R[j].page =  page;
                         if(textLine[i] != undefined && textLine[i].R != undefined){
-                          tblDataVIB.push({
-                            value: textLine[i].R[j].T,
+                          let value = textLine[i].R[j].T;
+                          let obj = {
+                            value: value,
                             page: textLine[i].R[j].page
-                            });
-                            // let item = {
-                            //   ngay_giao_dich: this.dataValid(textLine[i].R[j]),
-                            //   // // ngay_he_thong: this.dataValid(tblData[i + 1]),
-                            //   // noi_giao_dich: this.dataValid(tblData[i + 1]),
-                            //   // // so_tien: Number(so_tien_sk.toString().replace(/[^0-9.-]+/g,"")).toFixed(0),
-                            //   // so_tien: 0,
-                            //   // type: "",
-                            //   // page: tblData[i].page,
-                            // }
-                            // newTable.push(item);
+                          }
+                          if(value.includes("000000000435688-L_Thanh toan the lien ngan hang-")){
+                            console.log("value", value);
+                            obj.value = `${textLine[i].R[j].T}${textLine[i + 1].R[j].T}`;
+                            i++;
+                          }
+                          tblDataVIB.push(obj);
+                          if(value.includes("526887xxxxxx9944")){
+                            idxStartLoadGrid = tblDataVIB.length;
+                          }
 
                         }
                         
@@ -1638,19 +1662,31 @@ export default {
           }
         }
       }
-
-      for(var i = parseInt(this.saokeObject.startNumber); i < tblDataVIB.length - parseInt(this.saokeObject.subEnd); i = i+3){
+      tblDataVIB = this.processRawData('vib', tblDataVIB);
+      console.log("tblDataVIB", tblDataVIB);
+      this.saokeObject.startNumber = idxStartLoadGrid;
+      // parseInt(this.saokeObject.startNumber)
+      for(var i = idxStartLoadGrid; i < tblDataVIB.length - parseInt(this.saokeObject.subEnd); i = i+3){
         
         if(tblDataVIB[i] != undefined && tblDataVIB[i] != null  && tblDataVIB[i + 1] != undefined && tblDataVIB[i + 1] != null
         && tblDataVIB[i + 2] != undefined && tblDataVIB[i + 2] != null ){
           let so_tien_sk = this.dataValid2(tblDataVIB[i + 2]);
+          let so_tien = so_tien_sk.value;
+          let type = "";
+          if(so_tien_sk != undefined && so_tien_sk != null && so_tien_sk != ""){
+            let arr = so_tien_sk.value.trim().toString().split(" ");
+            if(arr != undefined && arr.length == 2){
+              so_tien = arr[0];
+              type = arr[1];
+            }
+          }
+            
           let item = {
             ngay_giao_dich: this.dataValid2(tblDataVIB[i].value),
             ngay_he_thong: this.dataValid2(tblDataVIB[i].value),
             noi_giao_dich: this.dataValid2(tblDataVIB[i + 1].value),
-            so_tien:so_tien_sk.value,
-            // so_tien: Number(so_tien_sk.toString().replace(/[^0-9.-]+/g,"")).toFixed(0),
-            // type: "",
+            so_tien:Number(so_tien.toString().replace(/[^0-9.-]+/g,"")).toFixed(0),
+            type: type,
             // page: tblDataVIB[i].page,
           }
           // if(tblDataVIB[i + 4] != undefined && tblDataVIB[i + 4] != null && tblDataVIB[i + 4].T != undefined && "CR" == tblDataVIB[i + 4].T.trim()){
@@ -1662,6 +1698,26 @@ export default {
       }
       
       return newTable;
+    },
+    processRawData(bank, data){
+      let regexRemove = ['Vietnam International Bank', 'www.vib.com.vn'];
+      let newArr =[...data];
+      if('vib' == bank){
+        let isRemove = false;
+        for(let i = 0; i < newArr.length; i ++){
+          isRemove = false;
+          let item = newArr[i];
+          for(let j = 0; j < regexRemove.length; j++){
+            if(item.value.trim().includes(regexRemove[j].trim())){
+              isRemove = true;
+            }
+          }
+          if(isRemove){
+            newArr.splice(i, 1)
+          }
+        }
+      }
+      return newArr;
     }
     //End
   },

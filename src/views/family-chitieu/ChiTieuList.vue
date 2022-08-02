@@ -277,6 +277,25 @@
            
               <v-col cols="12" md="3" sm="12" class="mt-5 mb-0 pt-0 pb-0 text-right">
                 <v-btn
+                  color="info"
+                  class="mr-4"
+                  @click="confirmChangeStatus(null, 'CSK', true)"
+                >
+                  CSK
+                </v-btn>
+                <v-btn
+                  color="success"
+                  class="mr-4"
+                >
+                  Tất toán
+                </v-btn>
+                <v-btn
+                  color="success"
+                  class="mr-4"
+                >
+                  Trả góp
+                </v-btn>
+                <v-btn
                   color="warning"
                   class="mr-4"
                   :disabled="!(saokeObject.file_name != undefined && saokeObject.file_name != null && saokeObject.file_name != '')"
@@ -307,11 +326,13 @@
                   enabled: true,
                   headerPosition: 'top',
                 }"
+                :select-options="{ enabled: true }"
                 styleClass="vgt-table bordered"
                 max-height="700px"
                 @on-row-dblclick="onRowDoubleClick"
                 @on-column-filter="onColumnFilter"
                 @on-cell-click="onCellClick"
+                @on-selected-rows-change="selectionChanged"
               >
               <template slot="table-row" slot-scope="props">
                 <span v-if="props.column.field == 'id'">
@@ -450,6 +471,7 @@
                 @on-column-filter="onColumnFilter"
                 @on-cell-click="onCellClick"
               >
+              
               <template slot="table-row" slot-scope="props">
                 <span v-if="props.column.field == 'id'">
                    <!-- && props.formattedRow['status'] == 'DN' -->
@@ -860,7 +882,8 @@ export default {
         mdiUpload
       },
       file: null,
-      imageUrl: null
+      imageUrl: null,
+      rowSelected: [],
     }
   },
   created() {
@@ -1399,14 +1422,25 @@ export default {
       console.log("item", item);
       this.$refs.ChiTieuChangeKyChi.dialog = true;
     },
-    async changeChiTieuStatus(title, item, itemData, statusMoi, isDoiSoat) {
+    async changeChiTieuStatus(title, item, itemData, statusMoi, isDoiSoat, isList) {
       console.log("changeChiTieuStatus");
       this.chitieuTitle = title;
       this.chitieuItem = item;
       this.itemDataStatus = item;
       this.statusMoi = statusMoi;
-      
-      console.log("itemData", itemData);
+
+      for(let i = 0; i < this.$refs.ChiTieuChangeStatus.items; i++){
+        this.$refs.ChiTieuChangeStatus.items.splice(i, 1);
+      }
+      if(!isList){
+        let arr = [];
+        arr.push(item);
+        this.$refs.ChiTieuChangeStatus.items = arr;
+      }else {
+        this.$refs.ChiTieuChangeStatus.items = [...this.rowSelected.selectedRows];
+
+      }
+
       this.$refs.ChiTieuChangeStatus.dialog = true;
     },
     onCellClick(params) {
@@ -1431,13 +1465,22 @@ export default {
       // this.chiTieuDetailDialog = true;
     },
 
-    confirmChangeStatus (props, status){
-      console.log("props", props);
-      console.log("status", status);
+    confirmChangeStatus (props, status, isList){
+      console.log("this.rowSelected.selectedRows", this.rowSelected.selectedRows);
       this.itemStatusMoi = config.CHITIEU_ITEMS_STATUS.find(({id}) => id == status);
-      
-      console.log("this.itemStatusMoi", this.itemStatusMoi);
-      this.changeChiTieuStatus(props.row.noi_dung, props.row, props.row, props.row, true);
+      if(props == null){
+        props = this.rowSelected.selectedRows[0];
+        this.changeChiTieuStatus(props.noi_dung, props, props, props, true, isList);
+      } else {
+        if(this.rowSelected != undefined && this.rowSelected.selectedRows != undefined){
+          for(let i = 0; i < this.rowSelected.selectedRows.length; i ++){
+            this.rowSelected.selectedRows.slice(i, 1);
+          }
+        }
+        
+        this.changeChiTieuStatus(props.row.noi_dung, props.row, props.row, props.row, true, isList);
+
+      }
     },
     addTraGop (props) {
       let item =  props.row;
@@ -1734,6 +1777,10 @@ export default {
         }
       }
       return newArr;
+    },
+    selectionChanged(params){
+      this.rowSelected = params;
+      console.log('a');
     }
     //End
   },

@@ -1474,17 +1474,19 @@ export default {
     },
     async onUpload(){
       console.log(this.file);
-     
+      let self = this;
       var formData = new FormData();
       formData.append('myFile', this.file[0], this.file[0].name);
       formData.append('bank', this.trip.bank.toString().toLowerCase());
       formData.append('filename', 'hsbc.pdf');
+      self.show();
       await axios.post(`${config.API_FAMILY}/uploadfile${this.capitalizeFirstLetter(this.trip.bank.toString().toLowerCase())}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data; boundary=' + formData._boundary
           }
       }).then((response) => {
-          console.log(response)
+          console.log(response);
+          self.close();
         })
      
     },

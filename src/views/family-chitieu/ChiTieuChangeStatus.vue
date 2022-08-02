@@ -244,7 +244,7 @@
           }
           console.log("params", params);
           await axios
-            .post(`${config.API_FAMILY}/api/updateChiTIeu2"`, params)
+            .post(`${config.API_FAMILY}/api/updateChiTIeu2`, params)
             .then(function (response) {
               console.log("succuess");
               var data = response.data.data;

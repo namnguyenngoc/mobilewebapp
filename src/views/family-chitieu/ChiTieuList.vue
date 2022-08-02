@@ -1143,6 +1143,10 @@ export default {
     },
     loadFileInFolder(){
       // saokeObject.listFile
+      this.saokeObject.file_name = '';
+      this.saokeObject.file_name_output = '';
+      this.saokeObject.pwd = '';
+
       if(this.trip.bank != undefined && this.trip.bank != 'ALL' && this.trip.bank != 'All' && this.trip.bank != ''){
         this.saokeObject.folder_path = `./public/saoketindung/${this.trip.bank.toString().toLowerCase()}`;
 

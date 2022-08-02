@@ -585,7 +585,7 @@ export default {
               // filterFn: this.columnFilterFn, //custom filter function that
               trigger: 'enter', //only trigger on enter not on keyup 
           },
-          // headerField: this.sumCount,
+          headerField: this.sumCount,
         },
         {
           label: 'Nội dung',
@@ -721,6 +721,7 @@ export default {
               trigger: 'enter', //only trigger on enter not on keyup 
           },
           hidden: true,
+          headerField: this.sumSaoKe,
         },
 
         {
@@ -1372,7 +1373,7 @@ export default {
     	// console.log('sumCount', rowObj);
     	let sum = 0;
       for (let i = 0; i < rowObj.children.length; i++) {
-        var number = Number(rowObj.children[i].so_tien.replace(/[^0-9.-]+/g,""));
+        var number = Number(rowObj.children[i].saoke_so_tien);
         
         sum += number == undefined ? 0 : number;
       }

@@ -175,6 +175,7 @@
                         item-value="code"
                         return-object
                         clearable
+                        @change="loadFileInFolder()"
                     >
                     <template v-slot:no-data>
                       <v-list-item>
@@ -416,14 +417,7 @@
                 hide-details
               ></v-text-field>
             </v-col>
-            <v-col cols="12" md="1" sm="12" class="mt-1 mb-0 pt-0 pb-0">
-              <v-text-field
-                label="Bank"
-                value=""
-                v-model="saokeObject.bank"
-                hide-details
-              ></v-text-field>
-            </v-col>
+            
             <v-col cols="12" md="1" sm="12" class="mt-1 mb-0 pt-0 pb-0 text-right">
               <v-btn
                 color="info"
@@ -844,8 +838,7 @@ export default {
         // new Date().toISOString().substr(0, 10),
       },
       saokeObject: {
-        folder_path: './public/saoketindung/vib',
-        bank: 'vib',
+        folder_path: './',
         file_name: '',
         file_name_output: '',
         pwd: '27069944',
@@ -1150,6 +1143,10 @@ export default {
     },
     loadFileInFolder(){
       // saokeObject.listFile
+      if(this.trip.bank != undefined && this.trip.bank != 'ALL' && this.trip.bank != 'All' && this.trip.bank != ''){
+        this.saokeObject.folder_path = `./public/saoketindung/${this.trip.bank.toString().toLowerCase()}`;
+
+      }
       let self = this;
       axios
       .post(`${config.API_FAMILY}/api/pdf/getFileList`, this.saokeObject)
@@ -1215,12 +1212,13 @@ export default {
       //   "file_name": "20220721.pdf",
       //   "file_name_output": "20220721"
       //   };
+      this.saokeObject.bank = trip.bank.toString().toLowerCase();
       axios
       .post(`${config.API_FAMILY}/api/pdf/pdf2json`, this.saokeObject)
       .then(async function(response) {
         // seft.hotSettings.data = response.data.data;
         let newTable = [];0
-        if('hsbc' == self.saokeObject.bank){
+        if('hsbc' == self.trip.bank){
           newTable = self.parseJsonDataBankHSBC(response);
           self.tblChiTieuSaoKe = 
           [ 
@@ -1231,7 +1229,7 @@ export default {
             self.close();
         }
 
-        if('vib' == self.saokeObject.bank){
+        if('vib' == self.trip.bank){
          
           const vibDataList = [];
           self.tblChiTieuSaoKe = 
@@ -1260,84 +1258,95 @@ export default {
       this.show();
       // this.show();
       let self = this;
-      self.colChiTIeu[7].hidden = !this.isShowColumnSaoKe;
-      self.colChiTIeu[8].hidden = !this.isShowColumnSaoKe;
-      self.colChiTIeu[9].hidden = !this.isShowColumnSaoKe;
-      self.colChiTIeu[10].hidden = !this.isShowColumnSaoKe;
-      self.tblChiTieuSaoKe = 
-          [ 
-            {
-              // name: 'Animals Total',
-              // bank_code: '',
-              // ky_chi: '',
-              // so_tien: '',
-              // noi_dung: '',
-              // ngay_chi: '',
-              // status: '',
-              children: [],
-            }
-          ];
-      let currentNow = new Date();
-      let kyChi = [
-        this.selectDateCurrent == undefined ||
-        this.selectDateCurrent == null ||
-        this.selectDateCurrent == "" ||
-        this.selectDateCurrent == undefined ||
-        this.selectDateCurrent.code == undefined ||
-        this.selectDateCurrent.code == ""
-          ? (currentNow.getMonth() + (currentNow.getDate() > 27 ? 2 : 1))
-              .toString()
-              .concat(currentNow.getFullYear())
-          : this.selectDateCurrent.code,
-      ];
-      kyChi = ['ALLINONE'];
-      // let param = {
-      //   "bank": "hsbc",
-      //   "file_name": "20220721.pdf",
-      //   "file_name_output": "20220721"
-      //   };
-      await axios
-      .post(`${config.API_FAMILY}/api/pdf/pdf2json`, this.saokeObject)
-      .then(response => {
-        // seft.hotSettings.data = response.data.data;
-        let data = response.data.body.Pages; //Texts
-        let tblData = [];
-        let flagStart = false;
-        let isStartPage = false;
-        let flagEnd = false;
-        let newTable = [];
-        if('hsbc' == self.saokeObject.bank){
-          newTable = self.parseJsonDataBankHSBC(response);
-          let oldChiTieuData = self.tblChiTieu[0].children;
-          for(let i = 0; i < self.tblChiTieu[0].children.length; i ++){
-            let so_tien_sk = Number(self.tblChiTieu[0].children[i].so_tien.toString().replace(/[^0-9.-]+/g,""));
-            
-            var inSaoKe = newTable.find(({so_tien}) => so_tien == so_tien_sk);
-            if(inSaoKe != undefined){
-              console.log('inSaoKe', self.tblChiTieu[0].children[i]);
-              self.tblChiTieu[0].children[i].saoke_noi_dung = inSaoKe.noi_giao_dich;
-              self.tblChiTieu[0].children[i].saoke_so_tien = inSaoKe.so_tien;
-              self.tblChiTieu[0].children[i].saoke_ngay_giao_dich =inSaoKe.ngay_giao_dich;
+      try{
+        self.colChiTIeu[7].hidden = !this.isShowColumnSaoKe;
+        self.colChiTIeu[8].hidden = !this.isShowColumnSaoKe;
+        self.colChiTIeu[9].hidden = !this.isShowColumnSaoKe;
+        self.colChiTIeu[10].hidden = !this.isShowColumnSaoKe;
+        self.tblChiTieuSaoKe = 
+            [ 
+              {
+                // name: 'Animals Total',
+                // bank_code: '',
+                // ky_chi: '',
+                // so_tien: '',
+                // noi_dung: '',
+                // ngay_chi: '',
+                // status: '',
+                children: [],
+              }
+            ];
+        let currentNow = new Date();
+        let kyChi = [
+          this.selectDateCurrent == undefined ||
+          this.selectDateCurrent == null ||
+          this.selectDateCurrent == "" ||
+          this.selectDateCurrent == undefined ||
+          this.selectDateCurrent.code == undefined ||
+          this.selectDateCurrent.code == ""
+            ? (currentNow.getMonth() + (currentNow.getDate() > 27 ? 2 : 1))
+                .toString()
+                .concat(currentNow.getFullYear())
+            : this.selectDateCurrent.code,
+        ];
+        kyChi = ['ALLINONE'];
+        // let param = {
+        //   "bank": "hsbc",
+        //   "file_name": "20220721.pdf",
+        //   "file_name_output": "20220721"
+        //   };
+        this.saokeObject.bank = this.trip.bank.toString().toLowerCase();
+        await axios
+        .post(`${config.API_FAMILY}/api/pdf/pdf2json`, this.saokeObject)
+        .then(response => {
+          // seft.hotSettings.data = response.data.data;
+          if(response.data.status == 'FAIL'){
+            self.close();
+            alert(response.data.message);
+            return;
+          }
+          let data = response.data.body.Pages; //Texts
+          let tblData = [];
+          let flagStart = false;
+          let isStartPage = false;
+          let flagEnd = false;
+          let newTable = [];
+          if('hsbc' == self.trip.bank.toString().toLowerCase()){
+            newTable = self.parseJsonDataBankHSBC(response);
+            let oldChiTieuData = self.tblChiTieu[0].children;
+            for(let i = 0; i < self.tblChiTieu[0].children.length; i ++){
+              let so_tien_sk = Number(self.tblChiTieu[0].children[i].so_tien.toString().replace(/[^0-9.-]+/g,""));
+              
+              var inSaoKe = newTable.find(({so_tien}) => so_tien == so_tien_sk);
+              if(inSaoKe != undefined){
+                console.log('inSaoKe', self.tblChiTieu[0].children[i]);
+                self.tblChiTieu[0].children[i].saoke_noi_dung = inSaoKe.noi_giao_dich;
+                self.tblChiTieu[0].children[i].saoke_so_tien = inSaoKe.so_tien;
+                self.tblChiTieu[0].children[i].saoke_ngay_giao_dich =inSaoKe.ngay_giao_dich;
+              }
             }
           }
-        }
-        if('vib' == self.saokeObject.bank){
-          newTable = self.parseJsonDataBankVIB(response);
-          let oldChiTieuData = self.tblChiTieu[0].children;
-          for(let i = 0; i < self.tblChiTieu[0].children.length; i ++){
-            let so_tien_sk = Number(self.tblChiTieu[0].children[i].so_tien.toString().replace(/[^0-9.-]+/g,""));
-            
-            var inSaoKe = newTable.find(({so_tien}) => so_tien == so_tien_sk);
-            if(inSaoKe != undefined){
-              console.log('inSaoKe', self.tblChiTieu[0].children[i]);
-              self.tblChiTieu[0].children[i].saoke_noi_dung = inSaoKe.noi_giao_dich;
-              self.tblChiTieu[0].children[i].saoke_so_tien = inSaoKe.so_tien;
-              self.tblChiTieu[0].children[i].saoke_ngay_giao_dich =inSaoKe.ngay_giao_dich;
+          if('vib' == self.trip.bank.toString().toLowerCase()){
+            newTable = self.parseJsonDataBankVIB(response);
+            let oldChiTieuData = self.tblChiTieu[0].children;
+            for(let i = 0; i < self.tblChiTieu[0].children.length; i ++){
+              let so_tien_sk = Number(self.tblChiTieu[0].children[i].so_tien.toString().replace(/[^0-9.-]+/g,""));
+              
+              var inSaoKe = newTable.find(({so_tien}) => so_tien == so_tien_sk);
+              if(inSaoKe != undefined){
+                console.log('inSaoKe', self.tblChiTieu[0].children[i]);
+                self.tblChiTieu[0].children[i].saoke_noi_dung = inSaoKe.noi_giao_dich;
+                self.tblChiTieu[0].children[i].saoke_so_tien = inSaoKe.so_tien;
+                self.tblChiTieu[0].children[i].saoke_ngay_giao_dich =inSaoKe.ngay_giao_dich;
+              }
             }
           }
-        }
-        self.close();
-      });
+          self.close();
+        });
+      } catch(error){
+        console.log(error);
+         self.close();
+      }
     },
     columnFilterFn(){
 

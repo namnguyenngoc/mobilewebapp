@@ -19,42 +19,45 @@
           </v-col>
           <v-col cols="12" class="ml-0 pl-1 mb-0 pb-0">
             <v-row>
-              <v-col cols="12" md="6" sm="12" class="text-left mb-0 pb-0">
-                <v-btn-toggle v-model="toggle_exclusive">
-                  <v-btn :color="nguThucModal.code=='N' ? 'info' : 'warning'" @click="updateNgu('OPEN')" small class="pl-1 pr-1">
-                      {{nguThucModal.name}} ({{nguThucModal.code=='N' ?  'N:' : 'T:' }} {{nguThucModal.lastTime}})
+              <v-col cols="12" md="6" sm="12" :class="'text-left mb-0 pb-0 pr-6 ' + classMobile()">
+                <v-btn-toggle>
+                    
+                    <v-btn :color="nguThucModal.code=='N' ? 'info' : 'warning'" @click="updateNgu('OPEN')" small class="pl-1 pr-1">
+                      {{nguThucModal.name}}<br/>{{nguThucModal.code=='N' ?  'N:' : 'T:' }} {{nguThucModal.lastTime}}
                     </v-btn>
-                    <v-btn color="success" @click="loadListDetail('NGU')" small class="pl-1 pr-1 btn-style-1 mr-2"> 
+
+                    <v-btn color="purple" @click="insert('WC')" small class="pl-1 pr-1">
+                      WC<br/>({{be_wc_model.ngay_thuc_hien_gan_nhat }})
+                    </v-btn>
+
+                    <v-btn color="success" @click="loadListDetail('NGU')" small class="pl-1 pr-1 btn-style-1"> 
                       <v-icon dark  class="mr-1 pl-1 pr-1">
                         {{ icons.mdiFormatListBulleted   }}
                       </v-icon>
                     </v-btn>
-                      <v-btn color="info" @click="insert('WC')" small class="pl-1 pr-1">
-                      WC ({{be_wc_model.ngay_thuc_hien_gan_nhat }})
-                  </v-btn>
 
                 
                 </v-btn-toggle>
               </v-col>
-              <v-col cols="12" md="4" sm="12" class="text-right mr-0 pl-1">
+              <v-col cols="12" md="4" sm="12" :class="'text-right mr-0 pl-3 pr-12 ' + classMobile('5')">
                 <v-btn-toggle v-model="toggle_exclusive">
-                  <v-btn color="warning" @click="updateNgu()" class="pl-1 pr-1 btn-style-1 mr-1" small>
+                  <v-btn color="warning" @click="updateNgu()" small>
                     <v-icon dark>
                       {{ icons.mdiReload }}
                     </v-icon>
                   </v-btn>
-                <v-btn color="info" @click="insert('CN')" class="mr-1 pl-1 pr-1" small>S.KHÓE </v-btn>
+                <v-btn color="info" @click="insert('CN')" class="" small>S.KHÓE </v-btn>
 
-                <v-btn color="warning" @click="insert('BSB_HUT')" class="mr-1 pl-1 pr-1" small> T.SỮA </v-btn>
+                <v-btn color="warning" @click="insert('BSB_HUT')" class="" small> T.SỮA </v-btn>
 
                 
-                <v-btn color="error" @click="insert('BENH')" class="mr-0 pl-1 pr-0" small> 
+                <v-btn color="error" @click="insert('BENH')" small> 
                     <v-icon dark>
                       {{ icons.mdiHospitalBoxOutline  }}
                     </v-icon>
                 </v-btn>
-                <v-btn color="success" @click="loadListDetail('BENH')" small class="pl-1 pr-1 btn-style-1"> 
-                  <v-icon dark class="pl-0 pr-1">
+                <v-btn color="success" @click="loadListDetail('BENH')" small>
+                  <v-icon dark>
                     {{ icons.mdiFormatListBulleted }}
                   </v-icon>
                 </v-btn>
@@ -380,17 +383,16 @@
             </v-col>
           </v-card-text>
 
-          <v-card-actions>
+          <v-card-actions class ="text-right">
+            <v-spacer />
             <v-btn
-              color="blue darken-1"
-              text
+              color="error"
               @click="dialogSua = false"
             >
               Close
             </v-btn>
             <v-btn
-              color="blue darken-1"
-              text
+              color="info"
               @click="insert('BSB_UONG_SAVE')"
             >
               Save
@@ -1671,8 +1673,8 @@ export default {
         ngay_thuc_hien: moment(new Date()).format("YYYY-MM-DD"),
         gio_bat_dau: new Date(),
         the_tich_sua: 0,
-        the_tich_sua_new: 100,
-        ghi_chu_them: 'Sữa mẹ',
+        the_tich_sua_new: 120,
+        ghi_chu_them: 'Morigana 6-36',
         showTheTich: true,
       },
       tichSuaType: [
@@ -3402,6 +3404,17 @@ export default {
       insertBSB(){
         console.log('insertBSB');
         this.insert('BSB_UONG');
+      },
+      classMobile (idx) {
+        if (
+          /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+            navigator.userAgent,
+          )
+        ) {
+          return `mobile${idx == undefined ? "" : idx}`;
+        } else {
+          return '';
+        }
       },
   },
 }

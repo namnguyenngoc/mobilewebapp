@@ -1,12 +1,12 @@
 <template>
-  <v-row class="mb-0 pb-0 mr-1 pr-1 ml-1">
+  <v-row :class="'mb-0 pb-0 mr-1 pr-1 ml-1 ' + classMobile()">
     <v-col cols="12" md="6" sm="12" class="pa-0 ma-0 text-left pr-1">
       <v-btn-toggle class="mr-1">
         <v-btn color="info" small class="pl-1 pr-1 w-175" @click="insert('BSBUONG')">
-         [{{model.ten_cong_viec}}][{{model.the_tich_sua_uong }}/{{model.sum_uong }}ml][{{model.duration}}]
+         {{model.ten_cong_viec}}<br/>[{{model.the_tich_sua_uong }}/{{model.sum_uong }}ml][{{model.duration}}]
         </v-btn>
         <v-btn color="warning" small class="pl-1 pr-1 w-17" @click="insert('AN')">
-         [{{model.an.ten_cong_viec}}][{{model.an.duration}}]
+         {{model.an.ten_cong_viec}}<br/>[{{model.an.duration}}]
         </v-btn>
         <v-btn color="success" @click="loadListDetail()" small class="pl-1 pr-1 btn-style-1"> 
           <v-icon dark class="pl-1 pr-1">
@@ -24,13 +24,13 @@
       </span>
     </v-col>
 
-    <v-col cols="12" md="12" sm="12" class="pa-0 ma-0 mt-1 text-left">
+    <v-col cols="12" md="12" sm="12" class="pa-0 ma-0 mt-1 text-left pr-1">
       <v-btn-toggle class="mr-1">
         <v-btn color="info" small class="pl-1 pr-1 w-17" @click="insert('BSBUONG')">
-          [{{model.ngu.ten_cong_viec}}][{{model.ngu.duration}}]
+          {{model.ngu.ten_cong_viec}}<br/>[{{model.ngu.duration}}]
         </v-btn>
         <v-btn color="warning" small class="pl-1 pr-1 w-17" @click="insert('AN')">
-         [{{model.wc.ten_cong_viec}}][{{model.wc.duration}}]
+         {{model.wc.ten_cong_viec}}<br/>[{{model.wc.duration}}]
         </v-btn>
         <v-btn color="success" @click="loadListDetail()" small class="pl-1 pr-1 btn-style-1"> 
           <v-icon dark class="pl-1 pr-1">
@@ -209,64 +209,10 @@
               self.model.wc.duration = `${wc_duration._data.hours}h ${wc_duration._data.minutes}m`;
               
             }
-            //   const obj = dataResponse [i];
-            //   let duration = 0;
-              
-            //   if('Uống sữa' == obj.ten_cong_viec){
-            //       self.model.ten_cong_viec = "Sữa";
-            //       self.model.so_lan_uong = obj._count;
-            //       self.model.thoi_gian_gan_nhat_uong =  moment(obj.ngay_thuc_hien_gan_nhat).format(config.DATE_TIME_FM_1);
-            //       self.model.the_tich_sua_uong = obj.the_tich_sua;
-            //       self.model.sum_uong = obj._sum;
-            //       duration = moment.duration(moment(new Date()).diff(moment(obj.ngay_thuc_hien_gan_nhat)));
-            //       self.model.duration = `${duration._data.hours}h ${duration._data.minutes}m`;
-            //       console.log("duration", duration);
-            //   } else if('Ăn'== obj.ten_cong_viec){
-            //       self.model.an_ten_cong_viec = 'Ăn';
-                  
-            //       const an_duration = moment.duration(moment(new Date()).diff(moment(obj.ngay_thuc_hien_gan_nhat)));
-            //       console.log("duration-an", self.model.ten_cong_viec);
-            //       self.model.an_duration = `${an_duration._data.hours}h ${an_duration._data.minutes}m`;
-                 
-             
-            //   } 
-            // }
+           
           }
         });
 
-        // axios.get(`${config.API_URL}/countWorkInDay/BSB_UONG/now()`).then(response => {
-        //   // seft.hotSettings.data = response.data.data;
-
-        //   self.model.so_lan_uong = response.data.data[0]._count;
-        //   self.model.thoi_gian_gan_nhat_uong =  moment(response.data.data[0].ngay_thuc_hien_gan_nhat).format(config.DATE_TIME_FM_1);
-        //   self.model.the_tich_sua_uong = response.data.data[0].the_tich_sua;
-        //   self.model.sum_uong = response.data.data[0]._sum;
-        //   let duration = moment.duration(moment(new Date()).diff(moment(response.data.data[0].ngay_thuc_hien_gan_nhat)));
-        //   self.model.duration = `${duration._data.hours}h ${duration._data.minutes}m`;
-        //   console.log("duration", duration);
-        //   self.model.an_ten_cong_viec = response.data.data[0].ten_cong_viec; 
-
-
-        // });
-        // axios.get(`${config.API_URL}/countWorkInDay/BSB_HUT/now()`).then(response => {
-        //   // seft.hotSettings.data = response.data.data;
-
-        //   self.model.so_lan_hut = response.data.data[0]._count;
-        //   self.model.thoi_gian_gan_nhat_hut =  moment(response.data.data[0].ngay_thuc_hien_gan_nhat).format(config.DATE_TIME_FM_1);
-        //   self.model.the_tich_sua_hut = response.data.data[0].the_tich_sua;
-        //   self.model.sum_hut = response.data.data[0]._sum;
-        // });
-
-        // axios.get(`${config.API_URL}/countWorkInDay/AN/now()`).then(response => {
-        //   // seft.hotSettings.data = response.data.data;
-        //   console.log('thong tin countWorkInDay2', );
-        //   self.model.an_ten_cong_viec = response.data.data[0].ten_cong_viec; 
-        //   const duration = moment.duration(moment(new Date()).diff(moment(response.data.data[0].ngay_thuc_hien_gan_nhat)));
-        //   self.model.an_duration = `${duration._data.hours}h ${duration._data.minutes}m`;
-
-        // });
-
-        // console.log('countWorkInDay---cham con', this.model);
       },
       // countUp () {
       //   // this.counter += 1;
@@ -312,7 +258,19 @@
         console.log('insert')
         this.countWorkInDay2();
         this.$emit('insert' + type);
-      }
+      },
+
+      classMobile () {
+          if (
+            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+              navigator.userAgent,
+            )
+          ) {
+            return 'mobile';
+          } else {
+            return '';
+          }
+        },
       
     }, // end created
   } // End exxport default
@@ -323,5 +281,7 @@
     max-height: 700px;
     overflow-y: auto;
   }
+
+
   
 </style>

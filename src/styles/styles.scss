@@ -29,3 +29,39 @@
 .w-17{
     width: 105px !important;
 }
+
+
+.mobile .v-btn-toggle{
+    width: 100%;
+}
+.mobile .v-btn-toggle .v-btn{
+    height: 60px !important;
+}
+.mobile .v-btn-toggle .v-btn:first-child {
+    width: 55%!important;
+    height: 60px !important;
+}
+
+.mobile .v-btn-toggle .v-btn:not(:last-child):not(:first-child) {
+    width: 35% !important;
+    height: 60px !important;
+}
+
+.mobile .v-btn-toggle .v-btn:last-child {
+    width: 10%!important;
+    height: 60px !important;
+}
+
+.mobile5 .v-btn-toggle{
+    width: 100%;
+}
+
+.mobile5 .v-btn-toggle .v-btn:not(:last-child){
+    width: 22.5% !important;
+    height: 60px !important;
+}
+
+.mobile5 .v-btn-toggle > .v-btn:last-child {
+    width: 10%!important;
+    height: 60px !important;
+}

@@ -135,9 +135,9 @@
           </v-col>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="error" text @click="dialog = false"> Close </v-btn>
-          <v-spacer></v-spacer>
-          <v-btn color="info" text @click="insert()"> Save </v-btn>
+          <v-spacer />
+          <v-btn color="error" @click="dialog = false"> Close </v-btn>
+          <v-btn color="info" @click="insert()"> Save </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

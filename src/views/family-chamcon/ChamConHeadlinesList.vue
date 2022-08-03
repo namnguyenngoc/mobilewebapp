@@ -27,7 +27,6 @@
               styleClass="vgt-table bordered"
               :columns="colCongViec"
               :rows="tblDataCongViec"
-              :paginate="true"
               :lineNumbers="true"
               :search-options="{
                 enabled: true,
@@ -35,6 +34,9 @@
               }"
               @on-row-dblclick="onRowDoubleClick"
               max-height="700px"
+              :pagination-options="{
+                enabled: true,
+              }"
               />
           </v-col>
            <v-col cols="12">

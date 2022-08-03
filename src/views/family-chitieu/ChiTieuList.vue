@@ -13,16 +13,14 @@
                 cols="12" md="12" 
                 sm="12"
               >
-                <v-row
-                >
-                  <v-col cols="12" md="3" sm="4">
+                <v-row>
+                  <v-col cols="12" md="4" sm="6"  class="d-inline-flex">
                     <v-menu
-                      ref="startMenu"
-                      :close-on-content-click="false"
-                      :return-value.sync="trip.start"
-                      offset-y
-                      min-width="290px"
-                    >
+                        ref="startMenu"
+                        :close-on-content-click="false"
+                        :return-value.sync="trip.start"
+                        offset-y
+                      >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
                           v-model="trip.start"
@@ -56,15 +54,11 @@
                         </v-btn>
                       </v-date-picker>
                     </v-menu>
-                  </v-col>
-
-                  <v-col cols="12" md="3" sm="4">
                     <v-menu
                       ref="endMenu"
                       :close-on-content-click="false"
                       :return-value.sync="trip.end"
                       offset-y
-                      min-width="290px"
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
@@ -99,114 +93,125 @@
                         </v-btn>
                       </v-date-picker>
                     </v-menu>
-                  </v-col>
-                  <v-col cols="12" md="1" sm="4">
-                      <v-autocomplete
+                  </v-col> 
+                  <v-col cols="12" md="3" sm="4" class="d-inline-flex">
+                    <v-autocomplete
                         ref="refInputFile"
                         v-model="trip.status"
                         :items="trip.statusList"
                         label="Status"
-                        class="text-left"
+                        class="text-left mr-4"
                         item-text="name"
                         item-value="code"
                         return-object
                         clearable
-                    >
-                    <template v-slot:no-data>
-                      <v-list-item>
-                        <v-list-item-content>
-                          <v-list-item-title>
-                            No results matching "<strong>data</strong>". Press <kbd>enter</kbd> to create a new one
-                          </v-list-item-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                    </template>
-                    </v-autocomplete>
+                        hide-details
+                    />
+                    <v-autocomplete
+                        ref="refInputFile"
+                        v-model="trip.bank"
+                        :items="trip.bank_list"
+                        label="Bank"
+                        item-text="name"
+                        item-value="code"
+                        return-object
+                        clearable
+                        @change="loadFileInFolder()"
+                        hide-details
+                      />
                   </v-col>
-                  <v-col cols="12" md="1" sm="4">
-                    <v-checkbox v-model="isShowColumnSaoKe">
-                      <template v-slot:label>
-                        <div>
-                          Display Sao Kê
-                        </div>
-                      </template>
+                  
+                  <v-col cols="12" md="5" sm="4" class="d-inline-flex">
+                    <v-checkbox v-model="allKyChi" 
+                      @click="getListKyChi()"
+                      class="ml-0 mr-5 pl-0 pr-0"
+                      label="Tất cả kỳ"
+                      >
                     </v-checkbox>
-                  </v-col>
-                  <v-col cols="12" md="1" sm="4">
-                    <v-checkbox v-model="allKyChi" @click="getListKyChi()">
-                      <template v-slot:label>
-                        <div>
-                          All kỳ chi
-                        </div>
-                      </template>
-                    </v-checkbox>
-                  </v-col>
-                  <v-col cols="12" md="1" sm="4">
                       <v-autocomplete
                         ref="refInputFile"
                         v-model="trip.kychi"
                         :items="items_ky_chi"
+                        width="100vh"
                         label="Kỳ chi"
                         class="text-left"
                         item-text="title"
                         item-value="code"
                         return-object
                         clearable
-                    >
-                    <template v-slot:no-data>
-                      <v-list-item>
-                        <v-list-item-content>
-                          <v-list-item-title>
-                            No results matching "<strong>data</strong>". Press <kbd>enter</kbd> to create a new one
-                          </v-list-item-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                    </template>
-                    </v-autocomplete>
+                        hide-details
+                      />
                   </v-col>
-                  <v-col cols="12" md="1" sm="4">
-                      <v-autocomplete
-                        ref="refInputFile"
-                        v-model="trip.bank"
-                        :items="trip.bank_list"
-                        label="Bank"
-                        class="text-left"
-                        item-text="name"
-                        item-value="code"
-                        return-object
-                        clearable
-                        @change="loadFileInFolder()"
-                    >
-                    <template v-slot:no-data>
-                      <v-list-item>
-                        <v-list-item-content>
-                          <v-list-item-title>
-                            No results matching "<strong>data</strong>". Press <kbd>enter</kbd> to create a new one
-                          </v-list-item-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                    </template>
-                    </v-autocomplete>
-                  </v-col>
-                  <v-col
-                      cols="12" md="1" sm="12"
-                      class="text--secondary pr-7 mt-2 text-right"
-                  >
-                    <v-btn
-                      color="info"
-                      @click="loadChiTieu()"
-                    >
-                      <!-- <v-icon>
-                          {{ icons.mdiReload }}
-                      </v-icon> -->
-                      Search
-                    </v-btn>
-                  </v-col>
+                  
+                  
                 </v-row>
               </v-col>
             </v-row>
-            <v-row class="mt-3 pa-2">
-              <v-col cols="12" md="2" sm="12" class="mt-1 mb-0 pt-0 pb-0">
+            
+            <v-row class="mb-0 mt-5 mr-0">
+              <v-btn
+                color="info"
+                class="mr-2"
+                small
+                @click="loadChiTieu()"
+              >
+                <!-- <v-icon>
+                    {{ icons.mdiReload }}
+                </v-icon> -->
+                Search
+              </v-btn>
+              <v-btn
+                  color="success"
+                  class="mr-2"
+                  small
+                  @click="confirmChangeStatus(null, 'CSK', true)"
+                >
+                  Cập nhật trạng thái
+                  
+              </v-btn>
+              <v-btn
+                color="warning"
+                class=""
+                small
+                :disabled="!(saokeObject.file_name != undefined && saokeObject.file_name != null && saokeObject.file_name != '')"
+
+                @click="compareSaoKe()"
+              >
+                Compare
+              </v-btn>
+              <v-spacer/>
+            </v-row>
+            <v-row>
+              <v-col cols="12" md="12" sm="12" class="ma-0 pa-0">
+                <v-checkbox 
+                  v-model="isShowColumnSaoKe"
+                  label="Hiển thị (Số tiền, Ngày giao dịch... trong sao kê)">
+                 
+                </v-checkbox>
+              </v-col>
+            </v-row>
+            <v-row class="mt-1 pa-2" v-show="isShowColumnSaoKe">
+              <v-col cols="12" md="2" sm="12" class="mt-1 mb-0 pt-0 pb-0 d-inline-flex">
+                <v-file-input
+                  v-model="file" 
+                  show-size
+                  counter
+                  multiple
+                  accept="application/pdf" 
+                  label="File input"
+                ></v-file-input>
+                <v-btn
+                  color="blue-grey"
+                  class="mt-3 text-right"
+                  :disabled="!(trip.bank == 'HSBC' ||  this.trip.bank == 'VIB' || trip.bank =='CITI' || trip.bank =='SC')"
+                  @click="onUpload"
+                  >
+                  <v-icon icon>
+                    {{ icons.mdiUpload }}
+                  </v-icon>
+                </v-btn>
+              </v-col>
+              <v-col cols="12" md="3" sm="12" class="mt-1 mb-0 pt-0 pb-0">
                 <v-text-field
                   label="Folder Path"
                   value=""
@@ -215,28 +220,7 @@
                   @change="loadFileInFolder()"
                 ></v-text-field>
               </v-col>
-              <v-col cols="12" md="2" sm="12" class="mt-1 mb-0 pt-0 pb-0">
-              <v-btn-toggle>
-                  <v-file-input
-                    v-model="file" 
-                    show-size
-                    counter
-                    multiple
-                    accept="application/pdf" 
-                    label="File input"
-                  ></v-file-input>
-                  <v-btn
-                    color="success"
-                    class="mt-3"
-                    :disabled="!(trip.bank == 'HSBC' ||  this.trip.bank == 'VIB' || trip.bank =='CITI' || trip.bank =='SC')"
-                    @click="onUpload"
-                    >
-                    <v-icon icon>
-                      {{ icons.mdiUpload }}
-                    </v-icon>
-                  </v-btn>
-                </v-btn-toggle>
-              </v-col>
+              
               <v-col cols="12" md="3" sm="12" class="mt-1 mb-0 pt-0 pb-0">
                 <v-autocomplete
                     ref="refInputFile"
@@ -260,14 +244,14 @@
                 </template>
                 </v-autocomplete>
               </v-col>
-              <v-col cols="12" md="1" sm="12" class="mt-1 mb-0 pt-0 pb-0">
+              <v-col cols="12" md="2" sm="12" class="mt-1 mb-0 pt-0 pb-0">
                 <v-text-field
                   label="Password"
                   v-model="saokeObject.pwd"
                   hide-details
                 ></v-text-field>
               </v-col>
-              <v-col cols="12" md="1" sm="12" class="mt-1 mb-0 pt-0 pb-0">
+              <v-col cols="12" md="2" sm="12" class="mt-1 mb-0 pt-0 pb-0">
                 <v-text-field
                   label="Output file"
                   v-model="saokeObject.file_name_output"
@@ -275,36 +259,7 @@
                 ></v-text-field>
               </v-col>
            
-              <v-col cols="12" md="3" sm="12" class="mt-5 mb-0 pt-0 pb-0 text-right">
-                <v-btn
-                  color="info"
-                  class="mr-4"
-                  @click="confirmChangeStatus(null, 'CSK', true)"
-                >
-                  CSK
-                </v-btn>
-                <v-btn
-                  color="success"
-                  class="mr-4"
-                >
-                  Tất toán
-                </v-btn>
-                <v-btn
-                  color="success"
-                  class="mr-4"
-                >
-                  Trả góp
-                </v-btn>
-                <v-btn
-                  color="warning"
-                  class="mr-4"
-                  :disabled="!(saokeObject.file_name != undefined && saokeObject.file_name != null && saokeObject.file_name != '')"
-
-                  @click="compareSaoKe()"
-                >
-                  Compare
-                </v-btn>
-              </v-col>
+              
             </v-row>
           </v-col>
         </v-card-title>
@@ -340,6 +295,7 @@
                   <v-btn
                     v-if="props.formattedRow['status'] == 'DN'"
                     color="info"
+                    depressed
                     @click="confirmChangeStatus(props, 'CSK')"
                   >
                    <span>
@@ -356,7 +312,7 @@
                    </span>
                   </v-btn>
                   <v-btn
-                    v-else-if="props.formattedRow['id_tra_gop'] == undefined || props.formattedRow['id_tra_gop'] == null || props.formattedRow['id_tra_gop'] == ''"
+                    v-else-if="props.formattedRow['status'] !== 'DTCSK' && (props.formattedRow['id_tra_gop'] == undefined || props.formattedRow['id_tra_gop'] == null || props.formattedRow['id_tra_gop'] == '')"
                     color="info"
                     @click="addTraGop(props)"
                   >
@@ -884,6 +840,7 @@ export default {
       file: null,
       imageUrl: null,
       rowSelected: [],
+      conditionCompare: false,
     }
   },
   created() {
